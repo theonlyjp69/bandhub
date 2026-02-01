@@ -11,10 +11,10 @@
 
 | Severity | Count | Status |
 |----------|-------|--------|
-| Critical | 1 | Pending |
-| High | 3 | Pending |
-| Medium | 3 | Pending |
-| Low | 2 | Pending |
+| Critical | 1 | ✅ RESOLVED |
+| High | 3 | ✅ RESOLVED |
+| Medium | 3 | ✅ RESOLVED |
+| Low | 2 | ✅ RESOLVED |
 
 ---
 
@@ -23,7 +23,7 @@
 ### SEC-001: Missing INSERT policy for `profiles` table
 **File:** `supabase/migrations/20260201000001_create_profiles.sql`
 **Lines:** 12-18
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Users cannot create their own profile after signup. Without an INSERT policy, new users will get RLS errors when the auth trigger tries to create their profile.
 
@@ -43,7 +43,7 @@ CREATE POLICY "Users can insert own profile"
 ### SEC-002: Missing INSERT policy for `band_members` table
 **File:** `supabase/migrations/20260201000003_create_band_members.sql`
 **Lines:** 14-20
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** No policy allows adding members to bands. Band creators can't add themselves as admin, and invitation acceptance won't work.
 
@@ -77,7 +77,7 @@ CREATE POLICY "Admins can add members"
 ### SEC-003: Missing UPDATE policy for `invitations` table
 **File:** `supabase/migrations/20260201000004_create_invitations.sql`
 **Lines:** 24-29
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Invited users cannot accept/decline invitations (change status from 'pending').
 
@@ -96,7 +96,7 @@ CREATE POLICY "Invitees can update invitation status"
 ### SEC-004: Missing UPDATE/DELETE policies for `events` table
 **File:** `supabase/migrations/20260201000005_create_events.sql`
 **Lines:** 18-28
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Events cannot be updated or deleted once created.
 
@@ -136,7 +136,7 @@ CREATE POLICY "Event creator or admin can delete events"
 ### SEC-005: Missing UPDATE/DELETE policies for `announcements`
 **File:** `supabase/migrations/20260201000007_create_communication.sql`
 **Lines:** 34-42
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Admins cannot edit or delete announcements after creation.
 
@@ -147,7 +147,7 @@ CREATE POLICY "Event creator or admin can delete events"
 ### SEC-006: Missing UPDATE/DELETE policies for `threads`
 **File:** `supabase/migrations/20260201000007_create_communication.sql`
 **Lines:** 44-50
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Thread creators cannot edit or delete their threads.
 
@@ -158,7 +158,7 @@ CREATE POLICY "Event creator or admin can delete events"
 ### SEC-007: Missing UPDATE/DELETE policies for `availability_polls`
 **File:** `supabase/migrations/20260201000008_create_availability_polling.sql`
 **Lines:** 25-31
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Poll creators cannot close or delete polls.
 
@@ -171,7 +171,7 @@ CREATE POLICY "Event creator or admin can delete events"
 ### SEC-008: Missing UPDATE policy for `files` metadata
 **File:** `supabase/migrations/20260201000009_create_files.sql`
 **Lines:** 16-26
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 **Problem:** File uploaders cannot update file name/description.
 
@@ -182,7 +182,7 @@ CREATE POLICY "Event creator or admin can delete events"
 ### SEC-009: `event_rsvps` FOR ALL policy clarity
 **File:** `supabase/migrations/20260201000006_create_event_rsvps.sql`
 **Lines:** 22-24
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01) - Clarified in migration `20260201000012_security_remediation.sql`
 
 **Problem:** Using `FOR ALL` with only USING clause. Consider splitting into separate INSERT/UPDATE/DELETE policies for clarity.
 

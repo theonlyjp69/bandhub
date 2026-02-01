@@ -137,9 +137,21 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 ## Known Issues
 
-- Missing RLS policies for `band_members` (INSERT/UPDATE/DELETE) - see `docs/03-logs/security-audit-stage3.md`
-- Missing RLS UPDATE policy for `invitations` table
-- `getBand()` and `declineInvitation()` lack auth checks
+*None - all security issues from audit have been resolved (2026-02-01)*
+
+## Security Status
+
+**Audit Complete:** 21 vulnerabilities fixed
+
+| Category | Status |
+|----------|--------|
+| Open Redirect | ✓ Fixed (path validation in OAuth callback) |
+| Server Actions | ✓ Fixed (8 functions with auth/authz checks) |
+| RLS Policies | ✓ Fixed (17 policies added) |
+
+**Migration Applied:** `supabase/migrations/20260201000012_security_remediation.sql`
+
+See [security implementation log](../03-logs/security/implementation-logs/implementation-log-stage1-2-3.md) for details.
 
 ## Technical Debt
 

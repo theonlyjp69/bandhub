@@ -6,6 +6,25 @@ BandHub follows a stage-based development workflow with checkpoints and validati
 
 ---
 
+## Current Progress
+
+| Stage | Status |
+|-------|--------|
+| 0 - Research | ✓ Complete |
+| 1 - Foundation | ✓ Complete |
+| 2 - Authentication | ✓ Complete |
+| 3 - Band Management | ✓ Complete |
+| **4 - Events** | **← Current** |
+| 5 - Communication | Pending |
+| 6 - Tests | Pending |
+| 7 - UI | Pending |
+| 8 - Polish | Pending |
+| 9 - Deploy | Pending |
+
+**Last Updated:** 2026-02-01
+
+---
+
 ## Development Stages
 
 ```

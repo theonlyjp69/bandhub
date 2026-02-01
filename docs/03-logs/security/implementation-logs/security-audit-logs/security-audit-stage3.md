@@ -13,11 +13,11 @@
 
 ## Summary
 
-| Severity | Count |
-|----------|-------|
-| **HIGH** | 3 |
-| **MEDIUM** | 2 |
-| **LOW** | 1 |
+| Severity | Count | Status |
+|----------|-------|--------|
+| **HIGH** | 3 | ✅ RESOLVED |
+| **MEDIUM** | 2 | ✅ RESOLVED |
+| **LOW** | 1 | ✅ RESOLVED |
 
 ---
 
@@ -55,7 +55,7 @@ CREATE POLICY "Admins can delete band members"
   );
 ```
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 ---
 
@@ -71,7 +71,7 @@ CREATE POLICY "Users can update their own invitations"
   USING (email = (SELECT email FROM auth.users WHERE id = auth.uid()));
 ```
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Added in migration `20260201000012_security_remediation.sql`
 
 ---
 
@@ -92,7 +92,7 @@ export async function getBand(bandId: string) {
 }
 ```
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Auth + membership check added in `actions/bands.ts`
 
 ---
 
@@ -105,7 +105,7 @@ export async function getBand(bandId: string) {
 
 **Remediation:** Add explicit email filter or document that RLS handles filtering.
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Email filter added in `actions/invitations.ts`
 
 ---
 
@@ -120,7 +120,7 @@ const { data: { user } } = await supabase.auth.getUser()
 if (!user) throw new Error('Not authenticated')
 ```
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Auth + email check added in `actions/invitations.ts`
 
 ---
 
@@ -136,7 +136,7 @@ if (!user) throw new Error('Not authenticated')
 if (error) throw new Error('Failed to create band')
 ```
 
-**Status:** OPEN
+**Status:** ✅ RESOLVED (2026-02-01) - Generic error messages used in all server actions
 
 ---
 
@@ -165,4 +165,8 @@ if (error) throw new Error('Failed to create band')
 
 | Issue | Resolution | Date |
 |-------|------------|------|
-| - | - | - |
+| Missing RLS policies | Added 17 policies in migration `20260201000012_security_remediation.sql` | 2026-02-01 |
+| getBand() lacks auth | Added auth + membership check | 2026-02-01 |
+| getUserInvitations() filter | Added explicit email filter | 2026-02-01 |
+| declineInvitation() lacks auth | Added auth + email verification | 2026-02-01 |
+| Error message leakage | Wrapped with generic error messages | 2026-02-01 |

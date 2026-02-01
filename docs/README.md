@@ -11,9 +11,17 @@ Welcome to the BandHub documentation. This structure follows a 5-tier hierarchy 
 | Understand the project | [00-context/vision.md](00-context/vision.md) |
 | See product requirements | [01-product/prd.md](01-product/prd.md) |
 | Read feature specs | [02-features/](02-features/) |
-| Check implementation progress | [03-logs/implementation-log.md](03-logs/implementation-log.md) |
+| Check implementation progress | [03-logs/security/implementation-logs/](03-logs/security/implementation-logs/) |
 | Learn the workflow | [04-process/dev-workflow.md](04-process/dev-workflow.md) |
 | See development plans | [../plans/MASTER-PLAN.md](../plans/MASTER-PLAN.md) |
+
+---
+
+## Current Status
+
+**Stage 3 Complete** → Ready for **Stage 4: Events & Availability Backend**
+
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | **Events** | Communication | Tests | UI | Polish | Deploy
 
 ---
 
@@ -38,7 +46,8 @@ docs/
 │   └── communication/      # Chat, threads, announcements
 │
 ├── 03-logs/                 # MEMORY (what changed)
-│   ├── implementation-log.md   # Progress tracking
+│   ├── security/              # Security audit and implementation logs
+│   ├── code-review/           # Code review logs by stage
 │   ├── decisions-log.md       # ADRs
 │   ├── bug-log.md             # Bug tracking
 │   ├── validation-log.md      # Test results
@@ -83,13 +92,15 @@ docs/
 | Availability | [availability/](02-features/availability/) | feature-spec.md |
 | File Storage | [files/](02-features/files/) | feature-spec.md |
 | Communication | [communication/](02-features/communication/) | feature-spec.md |
+| **Security** | [security/](02-features/security/) | feature-spec.md |
 
 ### 03-logs: Project Memory
 **Purpose:** Track what happened and why.
 
-| File | Description |
+| Path | Description |
 |------|-------------|
-| [implementation-log.md](03-logs/implementation-log.md) | What was built and when |
+| [security/](03-logs/security/) | Security audits and implementation logs |
+| [code-review/](03-logs/code-review/) | Code review logs by stage |
 | [decisions-log.md](03-logs/decisions-log.md) | Architecture Decision Records |
 | [bug-log.md](03-logs/bug-log.md) | Bug tracking and resolution |
 | [validation-log.md](03-logs/validation-log.md) | Test runs and checkpoint verification |
@@ -110,19 +121,19 @@ docs/
 
 The detailed stage-by-stage implementation plans are in `/plans`:
 
-| Stage | Document | Focus |
-|-------|----------|-------|
-| Master | [MASTER-PLAN.md](../plans/MASTER-PLAN.md) | Overview and success criteria |
-| 0 | [STAGE-0-RESEARCH.md](../plans/STAGE-0-RESEARCH.md) | Research & discovery |
-| 1 | [STAGE-1-FOUNDATION.md](../plans/STAGE-1-FOUNDATION.md) | Project setup & database |
-| 2 | [STAGE-2-AUTH.md](../plans/STAGE-2-AUTH.md) | Authentication |
-| 3 | [STAGE-3-BANDS.md](../plans/STAGE-3-BANDS.md) | Band management |
-| 4 | [STAGE-4-EVENTS.md](../plans/STAGE-4-EVENTS.md) | Events & availability |
-| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication |
-| 6 | [STAGE-6-TESTS.md](../plans/STAGE-6-TESTS.md) | Testing |
-| 7 | [STAGE-7-UI.md](../plans/STAGE-7-UI.md) | Functional UI |
-| 8 | [STAGE-8-POLISH.md](../plans/STAGE-8-POLISH.md) | Styling & polish |
-| 9 | [STAGE-9-DEPLOY.md](../plans/STAGE-9-DEPLOY.md) | Deployment |
+| Stage | Document | Focus | Status |
+|-------|----------|-------|--------|
+| Master | [MASTER-PLAN.md](../plans/MASTER-PLAN.md) | Overview and success criteria | |
+| 0 | [STAGE-0-RESEARCH.md](../plans/STAGE-0-RESEARCH.md) | Research & discovery | ✓ |
+| 1 | [STAGE-1-FOUNDATION.md](../plans/STAGE-1-FOUNDATION.md) | Project setup & database | ✓ |
+| 2 | [STAGE-2-AUTH.md](../plans/STAGE-2-AUTH.md) | Authentication | ✓ |
+| 3 | [STAGE-3-BANDS.md](../plans/STAGE-3-BANDS.md) | Band management | ✓ |
+| 4 | [STAGE-4-EVENTS.md](../plans/STAGE-4-EVENTS.md) | Events & availability | **Next** |
+| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication | - |
+| 6 | [STAGE-6-TESTS.md](../plans/STAGE-6-TESTS.md) | Testing | - |
+| 7 | [STAGE-7-UI.md](../plans/STAGE-7-UI.md) | Functional UI | - |
+| 8 | [STAGE-8-POLISH.md](../plans/STAGE-8-POLISH.md) | Styling & polish | - |
+| 9 | [STAGE-9-DEPLOY.md](../plans/STAGE-9-DEPLOY.md) | Deployment | - |
 
 ---
 
@@ -175,6 +186,22 @@ See [03-logs/decisions-log.md](03-logs/decisions-log.md) for full ADRs.
 | DEC-003 | Dark theme default |
 | DEC-004 | Include availability polling |
 | DEC-005 | Include file storage |
+| DEC-006 | Defense-in-depth security pattern |
+| DEC-007 | Open redirect protection |
+
+---
+
+## Security Status
+
+**Audit Complete:** 21 vulnerabilities fixed (2026-02-01)
+
+| Area | Status |
+|------|--------|
+| Server Actions | 8 functions secured with auth/authz |
+| RLS Policies | 17 policies added |
+| OAuth | Open redirect protection |
+
+See [02-features/security/](02-features/security/) for full documentation.
 
 ---
 

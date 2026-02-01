@@ -171,4 +171,80 @@ Add file storage using Supabase Storage.
 
 ---
 
+### DEC-006 - Security Remediation Pattern
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Security audit identified 21 vulnerabilities across Stages 2-5 including missing auth checks, open redirect, and incomplete RLS policies.
+
+#### Decision
+Implement defense-in-depth security with both server action validation AND RLS policies.
+
+#### Rationale
+- Server actions: First line of defense, user-friendly errors
+- RLS policies: Database-level security, blocks direct API attacks
+- Defense-in-depth: If one layer fails, the other protects
+- Consistent auth pattern across all server actions
+
+#### Security Pattern Applied
+```typescript
+export async function someAction(resourceId: string) {
+  // 1. Get authenticated user
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) throw new Error('Not authenticated')
+
+  // 2. Validate input
+  if (!resourceId) throw new Error('Invalid input')
+
+  // 3. Check authorization (membership/admin)
+  // 4. Perform operation
+}
+```
+
+#### Alternatives Considered
+- **RLS only:** User-unfriendly errors, harder to debug
+- **Server actions only:** Vulnerable to direct Supabase API calls
+- **Middleware-based auth:** Less granular control
+
+#### Consequences
+- Some code duplication between server actions and RLS
+- More secure than either approach alone
+- Clear, consistent error messages
+- All 8 server actions follow same pattern
+
+---
+
+### DEC-007 - Open Redirect Protection
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+OAuth callback accepted arbitrary `next` parameter, allowing redirect to external sites.
+
+#### Decision
+Validate redirect paths before use with strict path checking.
+
+#### Rationale
+- Prevents phishing attacks via OAuth flow
+- Simple validation function
+- Falls back to /dashboard on invalid path
+
+#### Implementation
+```typescript
+function isValidPath(path: string): boolean {
+  return path.startsWith('/') &&
+         !path.startsWith('//') &&
+         !path.includes('://') &&
+         !path.includes('\\')
+}
+```
+
+#### Consequences
+- External redirect URLs rejected
+- Users always land on valid app routes
+- Minimal performance impact
+
+---
+
 *Add new decisions at the bottom with incrementing ID*

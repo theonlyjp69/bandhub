@@ -73,17 +73,17 @@ All previously logged in security audit (SEC-001 through SEC-009):
 
 #### REV-001: Document Storage Path Structure
 **File:** `supabase/migrations/20260201000010_create_storage_bucket.sql`
-**Status:** Pending
+**Status:** ✅ RESOLVED (2026-02-01)
 
 The storage policy assumes files are stored as `{band_id}/{filename}`. This should be documented.
 
-**Recommendation:** Add comment to migration and/or create storage conventions doc.
+**Resolution:** Created `docs/04-process/storage-conventions.md`
 
 ---
 
 #### REV-002: Consider Database Indexes
 **Files:** All migration files
-**Status:** Pending (Future Optimization)
+**Status:** ⏸️ DEFERRED to Stage 8 (Performance Optimization)
 
 No indexes defined beyond primary keys. As data grows, consider adding:
 
