@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Stage:** Stage 2 Complete, Ready for Stage 3
+**Stage:** Stage 3 Complete, Ready for Stage 4
 **Last Updated:** 2026-02-01
 
 ## Project Structure
@@ -10,7 +10,10 @@
 ```
 bandhub/
 ├── actions/                 # Server actions
-│   └── auth.ts             # Sign out action
+│   ├── auth.ts             # Sign out action
+│   ├── bands.ts            # Band CRUD (create, get, list)
+│   ├── members.ts          # Member management (list, role, remove)
+│   └── invitations.ts      # Invitation system (create, accept, decline)
 ├── app/                     # Next.js App Router pages
 │   ├── auth/callback/      # OAuth callback route
 │   ├── dashboard/          # Protected dashboard page
@@ -52,9 +55,11 @@ bandhub/
 - [x] Auto-create profile on signup (database trigger)
 - [x] Login page with Google sign-in
 - [x] Sign out server action
+- [x] Band management server actions (create, get, list bands)
+- [x] Member management server actions (list, update role, remove)
+- [x] Invitation server actions (create, accept, decline)
 
 ### Not Yet Created
-- [ ] Band management server actions
 - [ ] Event/RSVP server actions
 - [ ] Communication server actions
 - [ ] Full UI components
@@ -99,7 +104,7 @@ bandhub/
 | Feature | Backend | Frontend | Tests |
 |---------|---------|----------|-------|
 | Authentication | Complete ✓ | Complete ✓ | Not Started |
-| Band Management | Schema Ready | Not Started | Not Started |
+| Band Management | Complete ✓ | Not Started | Not Started |
 | Events & RSVPs | Schema Ready | Not Started | Not Started |
 | Availability Polling | Schema Ready | Not Started | Not Started |
 | File Storage | Schema Ready | Not Started | Not Started |
@@ -122,8 +127,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 | 0 | Research & Discovery | Complete ✓ |
 | 1 | Project Foundation & Database | Complete ✓ |
 | 2 | Authentication | Complete ✓ |
-| 3 | Band Management Backend | **Next** |
-| 4 | Events & Availability Backend | Pending |
+| 3 | Band Management Backend | Complete ✓ |
+| 4 | Events & Availability Backend | **Next** |
 | 5 | Communication Backend | Pending |
 | 6 | Integration Tests | Pending |
 | 7 | Functional UI | Pending |
@@ -140,15 +145,15 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 ## Next Steps
 
-1. **Begin Stage 3:** Band Management Backend
-   - Create server actions for bands (create, update, delete)
-   - Implement invitation system (create, accept, decline)
-   - Add band member management (roles, remove members)
+1. **Begin Stage 4:** Events & Availability Backend
+   - Create event server actions (CRUD for shows, rehearsals, deadlines)
+   - Implement RSVP system (going, maybe, can't)
+   - Build availability polling (When2Meet-style)
 
-2. **Then Stage 4:** Events & Availability Backend
-   - Create event server actions
-   - Implement RSVP system
-   - Build availability polling
+2. **Then Stage 5:** Communication Backend
+   - Announcements server actions
+   - Discussion threads
+   - Real-time chat messages
 
 ---
 
