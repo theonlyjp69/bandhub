@@ -210,6 +210,28 @@ export async function uploadFileWithStorage(formData: FormData) {
     throw new Error('Missing required fields')
   }
 
+  // File size limit: 50MB (matches Supabase free tier)
+  const MAX_FILE_SIZE = 50 * 1024 * 1024
+  if (file.size > MAX_FILE_SIZE) {
+    throw new Error('File too large (max 50MB)')
+  }
+
+  // Allowed MIME types for band files
+  const ALLOWED_MIME_TYPES = [
+    'image/jpeg', 'image/png', 'image/gif', 'image/webp',
+    'audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4',
+    'video/mp4', 'video/webm',
+    'application/pdf',
+    'text/plain', 'text/csv',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  ]
+  if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+    throw new Error('File type not allowed')
+  }
+
   // Verify user is a member of this band
   const { data: member } = await supabase
     .from('band_members')
@@ -220,10 +242,22 @@ export async function uploadFileWithStorage(formData: FormData) {
 
   if (!member) throw new Error('Access denied')
 
-  // Generate unique file path: band_id/timestamp_filename
+  // Generate unique file path with secure filename sanitization
   const timestamp = Date.now()
-  const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+  // Extract only the base filename (no path components)
+  const baseName = file.name.split(/[/\\]/).pop() || 'file'
+  // Remove all dangerous characters and path traversal sequences
+  const safeName = baseName
+    .replace(/\.\./g, '_')           // Remove path traversal
+    .replace(/[^a-zA-Z0-9._-]/g, '_') // Allow only safe chars
+    .replace(/^\.+/, '_')             // Don't start with dots
+    .substring(0, 100)                // Limit filename length
   const filePath = `${bandId}/${timestamp}_${safeName}`
+
+  // Final validation: ensure path stays within band directory
+  if (filePath.includes('..') || !filePath.startsWith(`${bandId}/`)) {
+    throw new Error('Invalid filename')
+  }
 
   // Upload to Supabase Storage
   const { error: uploadError } = await supabase.storage

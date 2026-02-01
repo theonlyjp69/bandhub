@@ -343,4 +343,49 @@ export async function uploadFileWithStorage(formData: FormData) {
 
 ---
 
+### DEC-011 - Consistent Membership Checks for All Functions
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+During Stage 4 code review, we found that functions accessing "user's own data" (getUserRsvp, getUserAvailability, removeRsvp) skipped membership verification because they only return/modify the user's own records and RLS provides database-level protection.
+
+#### Decision
+ALL server action functions must verify band membership, regardless of whether they access user-specific data or not.
+
+#### Rationale
+- Maintains defense-in-depth pattern (DEC-006) consistently
+- Prevents information leakage about band/event existence
+- Makes authorization logic predictable and auditable
+- RLS is a backup, not a replacement for app-layer checks
+
+#### Implementation
+```typescript
+// ALWAYS include this pattern, even for user-specific queries:
+const { data: event } = await supabase
+  .from('events')
+  .select('band_id')
+  .eq('id', eventId)
+  .single()
+
+if (!event || !event.band_id) throw new Error('Event not found')
+
+const { data: member } = await supabase
+  .from('band_members')
+  .select('id')
+  .eq('band_id', event.band_id)
+  .eq('user_id', user.id)
+  .single()
+
+if (!member) throw new Error('Access denied')
+```
+
+#### Consequences
+- Consistent security pattern across all functions
+- Small performance overhead (2 additional queries)
+- Predictable behavior for all server actions
+- 100% security pattern compliance (22/22)
+
+---
+
 *Add new decisions at the bottom with incrementing ID*

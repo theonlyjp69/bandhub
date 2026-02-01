@@ -23,6 +23,11 @@ export async function createEvent(input: CreateEventInput) {
     throw new Error('Missing required fields')
   }
 
+  // Input length limits
+  if (input.title.length > 200) throw new Error('Title too long (max 200)')
+  if (input.description && input.description.length > 5000) throw new Error('Description too long (max 5000)')
+  if (input.location && input.location.length > 500) throw new Error('Location too long (max 500)')
+
   // Verify user is a member of this band
   const { data: member } = await supabase
     .from('band_members')

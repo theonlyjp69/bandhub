@@ -148,17 +148,35 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 ## Security Status
 
-**Audit Complete:** 21 vulnerabilities fixed
+**Audit + Remediation Complete:** 22/22 security patterns correct (100%)
 
 | Category | Status |
 |----------|--------|
 | Open Redirect | Fixed (path validation in OAuth callback) |
-| Server Actions | Fixed (8+ functions with auth/authz checks) |
-| RLS Policies | Fixed (17 policies added) |
+| Server Actions | Fixed (22 functions with auth/authz checks) |
+| RLS Policies | Fixed (18 policies - includes file DELETE for admins) |
 
-**Migration Applied:** `supabase/migrations/20260201000012_security_remediation.sql`
+**Migrations Applied:**
+- `20260201000012_security_remediation.sql` - Initial security audit fixes
+- `20260201000013_fix_file_delete_policy.sql` - File deletion RLS for admins
+- `20260201000015_fix_storage_delete_policy.sql` - Storage DELETE for admins
 
-See [security implementation log](../03-logs/security/implementation-logs/implementation-log-stage1-2-3.md) for details.
+**Stage 4 Code Review Remediation (2026-02-01):**
+- ✓ File deletion RLS policy extended for admin access
+- ✓ `getUserRsvp()` membership check added
+- ✓ `getUserAvailability()` membership check added
+- ✓ `removeRsvp()` membership check added
+
+**Stage 4 Security Audit Remediation (2026-02-01):**
+- ✓ CRITICAL: Path traversal fix in file upload
+- ✓ CRITICAL: Storage DELETE policy for admins
+- ✓ HIGH: JSONB array content validation
+- ✓ HIGH: Array bounds check in getBestTimeSlot
+- ✓ HIGH: File size limit (50MB)
+- ✓ MEDIUM: MIME type allowlist
+- ✓ MEDIUM: Input length limits
+
+See [code-review-stage4.md](../03-logs/code-review/review-logs/code-review-stage4.md) for details.
 
 ## Technical Debt
 

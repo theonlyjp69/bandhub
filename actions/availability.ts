@@ -26,6 +26,11 @@ export async function createAvailabilityPoll(input: CreatePollInput) {
     throw new Error('Missing required fields')
   }
 
+  // Input length limits
+  if (input.title.length > 200) throw new Error('Title too long (max 200)')
+  if (input.description && input.description.length > 2000) throw new Error('Description too long (max 2000)')
+  if (input.dateOptions.length > 50) throw new Error('Too many date options (max 50)')
+
   // Verify user is a member of this band
   const { data: member } = await supabase
     .from('band_members')
@@ -129,6 +134,16 @@ export async function submitAvailability(pollId: string, availableSlots: number[
   if (!user) throw new Error('Not authenticated')
   if (!pollId) throw new Error('Poll ID required')
   if (!Array.isArray(availableSlots)) throw new Error('Invalid slots')
+
+  // Validate array contents: must be non-negative integers
+  if (!availableSlots.every(slot =>
+    typeof slot === 'number' &&
+    Number.isInteger(slot) &&
+    slot >= 0 &&
+    slot < 1000  // Reasonable upper bound
+  )) {
+    throw new Error('Invalid slot values')
+  }
 
   // Verify user is a member of the band this poll belongs to
   const { data: poll } = await supabase
@@ -268,6 +283,11 @@ export async function getBestTimeSlot(pollId: string) {
   if (bestSlot === -1) return null
 
   const dateOptions = poll.date_options as unknown as DateOption[]
+
+  // Validate slot index is within bounds
+  if (!Array.isArray(dateOptions) || bestSlot >= dateOptions.length) {
+    return null  // Invalid poll data or corrupted responses
+  }
 
   return {
     slotIndex: bestSlot,

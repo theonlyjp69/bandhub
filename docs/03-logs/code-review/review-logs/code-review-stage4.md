@@ -30,10 +30,10 @@
 
 | # | Issue | Location | Status |
 |---|-------|----------|--------|
-| 1 | File deletion RLS policy mismatch - admins blocked by DB policy | files.ts + migration | **Needs Fix** |
-| 2 | Missing membership check in `getUserRsvp()` | rsvps.ts:87-103 | **Needs Fix** |
-| 3 | Missing membership check in `getUserAvailability()` | availability.ts:167-183 | **Needs Fix** |
-| 4 | Missing membership check in `removeRsvp()` | rsvps.ts:105-119 | **Needs Fix** |
+| 1 | File deletion RLS policy mismatch - admins blocked by DB policy | files.ts + migration | ✓ **Fixed** (2026-02-01) |
+| 2 | Missing membership check in `getUserRsvp()` | rsvps.ts:94-110 | ✓ **Fixed** (2026-02-01) |
+| 3 | Missing membership check in `getUserAvailability()` | availability.ts:175-191 | ✓ **Fixed** (2026-02-01) |
+| 4 | Missing membership check in `removeRsvp()` | rsvps.ts:130-146 | ✓ **Fixed** (2026-02-01) |
 
 ### Minor Issues
 
@@ -86,14 +86,14 @@ if (!isUploader && !adminMember) throw new Error('Access denied')
 | **RSVPs** | |
 | `setRsvp()` | ✓ Complete |
 | `getEventRsvps()` | ✓ Complete |
-| `getUserRsvp()` | ⚠ Missing membership check |
-| `removeRsvp()` | ⚠ Missing membership check |
+| `getUserRsvp()` | ✓ Complete (fixed) |
+| `removeRsvp()` | ✓ Complete (fixed) |
 | **Availability** | |
 | `createAvailabilityPoll()` | ✓ Complete |
 | `getBandPolls()` | ✓ Complete |
 | `getPoll()` | ✓ Complete |
 | `submitAvailability()` | ✓ Complete |
-| `getUserAvailability()` | ⚠ Missing membership check |
+| `getUserAvailability()` | ✓ Complete (fixed) |
 | `deletePoll()` | ✓ Complete |
 | `getBestTimeSlot()` | ✓ Complete |
 | **Files** | |
@@ -101,18 +101,20 @@ if (!isUploader && !adminMember) throw new Error('Access denied')
 | `uploadFileWithStorage()` | ✓ Exceeds plan |
 | `getBandFiles()` | ✓ Complete |
 | `getFileDownloadUrl()` | ✓ Complete |
-| `deleteFile()` | ⚠ RLS policy mismatch |
+| `deleteFile()` | ✓ Complete (RLS fixed) |
 | `updateFileMetadata()` | ✓ Complete |
 
 ## Assessment
 
 **Overall Quality:** High - demonstrates excellent security patterns and consistency
 
-**Verdict:** **Needs Fixes** before proceeding to Stage 5
+**Verdict:** ✓ **PASSED** - Ready for Stage 5
 
-### Required Before Stage 5:
-1. Fix file deletion RLS policy for admin access
-2. Add membership checks to `getUserRsvp()`, `getUserAvailability()`, `removeRsvp()`
+### Fixes Applied (2026-02-01):
+1. ✓ File deletion RLS policy extended for admin access (migration 20260201000013)
+2. ✓ Membership check added to `getUserRsvp()` (rsvps.ts:94-110)
+3. ✓ Membership check added to `getUserAvailability()` (availability.ts:175-191)
+4. ✓ Membership check added to `removeRsvp()` (rsvps.ts:130-146)
 
 ### Deferred:
 - `updatePoll()` function (may be intentionally omitted)
@@ -126,9 +128,9 @@ if (!isUploader && !adminMember) throw new Error('Access denied')
 | Total lines | 872 |
 | Functions reviewed | 22 |
 | Critical issues | 0 |
-| Important issues | 4 |
+| Important issues | 4 → 0 (all fixed) |
 | Minor issues | 3 |
-| Security patterns correct | 18/22 (82%) |
+| Security patterns correct | 22/22 (100%) |
 
 ---
 
