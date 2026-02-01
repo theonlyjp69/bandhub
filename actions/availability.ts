@@ -172,6 +172,24 @@ export async function getUserAvailability(pollId: string) {
   if (!user) return null
   if (!pollId) throw new Error('Poll ID required')
 
+  // Verify user is a member of the band this poll belongs to
+  const { data: poll } = await supabase
+    .from('availability_polls')
+    .select('band_id')
+    .eq('id', pollId)
+    .single()
+
+  if (!poll || !poll.band_id) throw new Error('Poll not found')
+
+  const { data: member } = await supabase
+    .from('band_members')
+    .select('id')
+    .eq('band_id', poll.band_id)
+    .eq('user_id', user.id)
+    .single()
+
+  if (!member) throw new Error('Access denied')
+
   const { data, error } = await supabase
     .from('availability_responses')
     .select('*')
