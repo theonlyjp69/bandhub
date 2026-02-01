@@ -247,4 +247,100 @@ function isValidPath(path: string): boolean {
 
 ---
 
+### DEC-008 - JSONB Type Casting Pattern
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+TypeScript strict typing with Supabase-generated types caused issues with JSONB fields (date_options, available_slots, metadata).
+
+#### Decision
+Use `as unknown as Json` for inserts and `as unknown as SpecificType[]` for reads.
+
+#### Rationale
+- Supabase types define JSONB as generic `Json` type
+- Our code uses specific interfaces (DateOption[], number[])
+- Double cast preserves type safety while satisfying compiler
+- Consistent pattern across all JSONB operations
+
+#### Implementation
+```typescript
+// Insert
+date_options: input.dateOptions as unknown as Json
+
+// Read
+const dateOptions = poll.date_options as unknown as DateOption[]
+```
+
+#### Consequences
+- Explicit type handling at JSONB boundaries
+- Runtime still needs Array.isArray() checks
+- Clear pattern for future JSONB fields
+
+---
+
+### DEC-009 - Nullable Foreign Key Guards
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Database foreign keys (band_id, event_id, etc.) are nullable in schema but should always have values for valid records. TypeScript required handling null case.
+
+#### Decision
+Add `!entity.band_id` to null guards, narrowing type for subsequent use.
+
+#### Rationale
+- Satisfies TypeScript strict null checks
+- Guards against truly orphaned records
+- Single check handles both null entity and null foreign key
+- No runtime overhead for valid data
+
+#### Implementation
+```typescript
+if (!event || !event.band_id) throw new Error('Event not found')
+// Now event.band_id is string (not string | null)
+```
+
+#### Consequences
+- Consistent null handling pattern
+- Better TypeScript inference
+- Clearer error messages
+- Minimal code overhead
+
+---
+
+### DEC-010 - FormData File Upload Pattern
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Server actions can't directly accept File objects from client. Need pattern for file uploads.
+
+#### Decision
+Provide two functions: `uploadFile()` for metadata-only and `uploadFileWithStorage()` for full FormData upload.
+
+#### Rationale
+- Server actions support FormData natively
+- Separating concerns allows flexibility
+- Client can handle upload progress if needed
+- Rollback on failure (delete storage if DB insert fails)
+
+#### Implementation
+```typescript
+export async function uploadFileWithStorage(formData: FormData) {
+  const file = formData.get('file') as File
+  // 1. Upload to Supabase Storage
+  // 2. Create database record
+  // 3. Rollback storage on DB failure
+}
+```
+
+#### Consequences
+- Flexible upload patterns
+- Atomic operations (rollback on failure)
+- Client can choose upload strategy
+- Clear separation of concerns
+
+---
+
 *Add new decisions at the bottom with incrementing ID*

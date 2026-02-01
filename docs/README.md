@@ -19,9 +19,9 @@ Welcome to the BandHub documentation. This structure follows a 5-tier hierarchy 
 
 ## Current Status
 
-**Stage 3 Complete** → Ready for **Stage 4: Events & Availability Backend**
+**Stage 4 Complete** → Ready for **Stage 5: Communication Backend**
 
-✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | **Events** | Communication | Tests | UI | Polish | Deploy
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | **Communication** | Tests | UI | Polish | Deploy
 
 ---
 
@@ -88,9 +88,9 @@ docs/
 |---------|------|-----------|
 | Authentication | [auth/](02-features/auth/) | feature-spec.md, tech-design.md |
 | Band Management | [bands/](02-features/bands/) | feature-spec.md |
-| Events & Calendar | [events/](02-features/events/) | feature-spec.md |
-| Availability | [availability/](02-features/availability/) | feature-spec.md |
-| File Storage | [files/](02-features/files/) | feature-spec.md |
+| Events & Calendar | [events/](02-features/events/) | feature-spec.md, tech-design.md |
+| Availability | [availability/](02-features/availability/) | feature-spec.md, tech-design.md |
+| File Storage | [files/](02-features/files/) | feature-spec.md, tech-design.md |
 | Communication | [communication/](02-features/communication/) | feature-spec.md |
 | **Security** | [security/](02-features/security/) | feature-spec.md |
 
@@ -99,9 +99,10 @@ docs/
 
 | Path | Description |
 |------|-------------|
+| [implementation-log-stage4.md](03-logs/implementation-log-stage4.md) | Stage 4 implementation details |
 | [security/](03-logs/security/) | Security audits and implementation logs |
 | [code-review/](03-logs/code-review/) | Code review logs by stage |
-| [decisions-log.md](03-logs/decisions-log.md) | Architecture Decision Records |
+| [decisions-log.md](03-logs/decisions-log.md) | Architecture Decision Records (DEC-001 to DEC-010) |
 | [bug-log.md](03-logs/bug-log.md) | Bug tracking and resolution |
 | [validation-log.md](03-logs/validation-log.md) | Test runs and checkpoint verification |
 | [insights.md](03-logs/insights.md) | Learnings and discoveries |
@@ -128,8 +129,8 @@ The detailed stage-by-stage implementation plans are in `/plans`:
 | 1 | [STAGE-1-FOUNDATION.md](../plans/STAGE-1-FOUNDATION.md) | Project setup & database | ✓ |
 | 2 | [STAGE-2-AUTH.md](../plans/STAGE-2-AUTH.md) | Authentication | ✓ |
 | 3 | [STAGE-3-BANDS.md](../plans/STAGE-3-BANDS.md) | Band management | ✓ |
-| 4 | [STAGE-4-EVENTS.md](../plans/STAGE-4-EVENTS.md) | Events & availability | **Next** |
-| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication | - |
+| 4 | [STAGE-4-EVENTS.md](../plans/STAGE-4-EVENTS.md) | Events & availability | ✓ |
+| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication | **Next** |
 | 6 | [STAGE-6-TESTS.md](../plans/STAGE-6-TESTS.md) | Testing | - |
 | 7 | [STAGE-7-UI.md](../plans/STAGE-7-UI.md) | Functional UI | - |
 | 8 | [STAGE-8-POLISH.md](../plans/STAGE-8-POLISH.md) | Styling & polish | - |
@@ -188,6 +189,9 @@ See [03-logs/decisions-log.md](03-logs/decisions-log.md) for full ADRs.
 | DEC-005 | Include file storage |
 | DEC-006 | Defense-in-depth security pattern |
 | DEC-007 | Open redirect protection |
+| DEC-008 | JSONB type casting pattern |
+| DEC-009 | Nullable foreign key guards |
+| DEC-010 | FormData file upload pattern |
 
 ---
 
@@ -197,7 +201,7 @@ See [03-logs/decisions-log.md](03-logs/decisions-log.md) for full ADRs.
 
 | Area | Status |
 |------|--------|
-| Server Actions | 8 functions secured with auth/authz |
+| Server Actions | 16+ functions secured with auth/authz |
 | RLS Policies | 17 policies added |
 | OAuth | Open redirect protection |
 

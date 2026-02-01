@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Stage:** Stage 3 Complete, Ready for Stage 4
+**Stage:** Stage 4 Complete, Ready for Stage 5
 **Last Updated:** 2026-02-01
 
 ## Project Structure
@@ -13,7 +13,11 @@ bandhub/
 │   ├── auth.ts             # Sign out action
 │   ├── bands.ts            # Band CRUD (create, get, list)
 │   ├── members.ts          # Member management (list, role, remove)
-│   └── invitations.ts      # Invitation system (create, accept, decline)
+│   ├── invitations.ts      # Invitation system (create, accept, decline)
+│   ├── events.ts           # Event CRUD (shows, rehearsals, deadlines)
+│   ├── rsvps.ts            # RSVP management (set, get, remove)
+│   ├── availability.ts     # Availability polling (When2Meet-style)
+│   └── files.ts            # File storage (upload, download, delete)
 ├── app/                     # Next.js App Router pages
 │   ├── auth/callback/      # OAuth callback route
 │   ├── dashboard/          # Protected dashboard page
@@ -29,7 +33,7 @@ bandhub/
 ├── plans/                   # Development stage plans
 ├── public/                  # Static assets
 ├── supabase/               # Supabase configuration
-│   └── migrations/         # Database migrations (11 files)
+│   └── migrations/         # Database migrations (12 files)
 ├── types/                   # TypeScript types
 │   └── database.ts         # Generated from Supabase schema
 └── middleware.ts           # Auth middleware
@@ -58,10 +62,13 @@ bandhub/
 - [x] Band management server actions (create, get, list bands)
 - [x] Member management server actions (list, update role, remove)
 - [x] Invitation server actions (create, accept, decline)
+- [x] Event CRUD server actions (create, update, delete, get)
+- [x] RSVP server actions (set, get, remove)
+- [x] Availability polling server actions (create poll, submit, get best slot)
+- [x] File storage server actions (upload, download URL, delete)
 
 ### Not Yet Created
-- [ ] Event/RSVP server actions
-- [ ] Communication server actions
+- [ ] Communication server actions (announcements, threads, messages)
 - [ ] Full UI components
 - [ ] Tests
 
@@ -103,11 +110,11 @@ bandhub/
 
 | Feature | Backend | Frontend | Tests |
 |---------|---------|----------|-------|
-| Authentication | Complete ✓ | Complete ✓ | Not Started |
-| Band Management | Complete ✓ | Not Started | Not Started |
-| Events & RSVPs | Schema Ready | Not Started | Not Started |
-| Availability Polling | Schema Ready | Not Started | Not Started |
-| File Storage | Schema Ready | Not Started | Not Started |
+| Authentication | Complete | Complete | Not Started |
+| Band Management | Complete | Not Started | Not Started |
+| Events & RSVPs | Complete | Not Started | Not Started |
+| Availability Polling | Complete | Not Started | Not Started |
+| File Storage | Complete | Not Started | Not Started |
 | Chat (Realtime) | Schema Ready | Not Started | Not Started |
 | Threads | Schema Ready | Not Started | Not Started |
 | Announcements | Schema Ready | Not Started | Not Started |
@@ -124,12 +131,12 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 | Stage | Name | Status |
 |-------|------|--------|
-| 0 | Research & Discovery | Complete ✓ |
-| 1 | Project Foundation & Database | Complete ✓ |
-| 2 | Authentication | Complete ✓ |
-| 3 | Band Management Backend | Complete ✓ |
-| 4 | Events & Availability Backend | **Next** |
-| 5 | Communication Backend | Pending |
+| 0 | Research & Discovery | Complete |
+| 1 | Project Foundation & Database | Complete |
+| 2 | Authentication | Complete |
+| 3 | Band Management Backend | Complete |
+| 4 | Events & Availability Backend | Complete |
+| 5 | Communication Backend | **Next** |
 | 6 | Integration Tests | Pending |
 | 7 | Functional UI | Pending |
 | 8 | Polish & Styling | Pending |
@@ -145,9 +152,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 | Category | Status |
 |----------|--------|
-| Open Redirect | ✓ Fixed (path validation in OAuth callback) |
-| Server Actions | ✓ Fixed (8 functions with auth/authz checks) |
-| RLS Policies | ✓ Fixed (17 policies added) |
+| Open Redirect | Fixed (path validation in OAuth callback) |
+| Server Actions | Fixed (8+ functions with auth/authz checks) |
+| RLS Policies | Fixed (17 policies added) |
 
 **Migration Applied:** `supabase/migrations/20260201000012_security_remediation.sql`
 
@@ -159,15 +166,14 @@ See [security implementation log](../03-logs/security/implementation-logs/implem
 
 ## Next Steps
 
-1. **Begin Stage 4:** Events & Availability Backend
-   - Create event server actions (CRUD for shows, rehearsals, deadlines)
-   - Implement RSVP system (going, maybe, can't)
-   - Build availability polling (When2Meet-style)
+1. **Begin Stage 5:** Communication Backend
+   - Announcements server actions (create, update, delete, list)
+   - Discussion threads (create, list, get)
+   - Real-time chat messages (send, list, subscribe)
 
-2. **Then Stage 5:** Communication Backend
-   - Announcements server actions
-   - Discussion threads
-   - Real-time chat messages
+2. **Then Stage 6:** Integration Tests
+   - End-to-end tests for all server actions
+   - Database integration tests
 
 ---
 

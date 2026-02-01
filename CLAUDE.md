@@ -4,16 +4,17 @@ Band coordination web app: Slack + Google Calendar + Trello for musicians. Centr
 
 ## Current Status
 
-**Stage 3 Complete** → Ready for Stage 4 (Events & Availability Backend)
+**Stage 4 Complete** → Ready for Stage 5 (Communication)
 
 | Completed | In Progress | Pending |
 |-----------|-------------|---------|
-| ✓ Research | **Events Backend** | Communication |
-| ✓ Foundation | | Tests |
-| ✓ Authentication | | UI |
-| ✓ Band Management | | Polish & Deploy |
+| ✓ Research | **Communication** | Tests |
+| ✓ Foundation | | UI |
+| ✓ Authentication | | Polish & Deploy |
+| ✓ Band Management | | |
+| ✓ Events & Availability | | |
 
-**Existing Code:** `actions/auth.ts`, `actions/bands.ts`, `actions/members.ts`, `actions/invitations.ts`
+**Existing Code:** `actions/auth.ts`, `actions/bands.ts`, `actions/members.ts`, `actions/invitations.ts`, `actions/events.ts`, `actions/rsvps.ts`, `actions/availability.ts`, `actions/files.ts`
 
 ## Tech Stack
 
@@ -130,8 +131,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 | 1 | Foundation & Database | ✓ | plans/STAGE-1-FOUNDATION.md |
 | 2 | Authentication | ✓ | plans/STAGE-2-AUTH.md |
 | 3 | Band Management | ✓ | plans/STAGE-3-BANDS.md |
-| 4 | Events & Availability | **Next** | plans/STAGE-4-EVENTS.md |
-| 5 | Communication | - | plans/STAGE-5-COMMUNICATION.md |
+| 4 | Events & Availability | ✓ | plans/STAGE-4-EVENTS.md |
+| 5 | Communication | **Next** | plans/STAGE-5-COMMUNICATION.md |
 | 6 | Integration Tests | - | plans/STAGE-6-TESTS.md |
 | 7 | Functional UI | - | plans/STAGE-7-UI.md |
 | 8 | Polish & Styling | - | plans/STAGE-8-POLISH.md |
