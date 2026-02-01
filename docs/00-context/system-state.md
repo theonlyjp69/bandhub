@@ -2,14 +2,19 @@
 
 ## Current Status
 
-**Stage:** Stage 1 Complete, Ready for Stage 2
+**Stage:** Stage 2 Complete, Ready for Stage 3
 **Last Updated:** 2026-02-01
 
 ## Project Structure
 
 ```
 bandhub/
+├── actions/                 # Server actions
+│   └── auth.ts             # Sign out action
 ├── app/                     # Next.js App Router pages
+│   ├── auth/callback/      # OAuth callback route
+│   ├── dashboard/          # Protected dashboard page
+│   └── login/              # Login page
 ├── docs/                    # Documentation (5-tier)
 │   ├── 00-context/         # Vision, assumptions, system state
 │   ├── 01-product/         # Product requirements
@@ -21,9 +26,10 @@ bandhub/
 ├── plans/                   # Development stage plans
 ├── public/                  # Static assets
 ├── supabase/               # Supabase configuration
-│   └── migrations/         # Database migrations (10 files)
-└── types/                   # TypeScript types
-    └── database.ts         # Generated from Supabase schema
+│   └── migrations/         # Database migrations (11 files)
+├── types/                   # TypeScript types
+│   └── database.ts         # Generated from Supabase schema
+└── middleware.ts           # Auth middleware
 ```
 
 ## What Exists
@@ -41,11 +47,17 @@ bandhub/
 - [x] Storage bucket configured
 - [x] TypeScript types generated
 - [x] Supabase client libraries
+- [x] Google OAuth authentication
+- [x] Auth middleware (protects /dashboard, /band routes)
+- [x] Auto-create profile on signup (database trigger)
+- [x] Login page with Google sign-in
+- [x] Sign out server action
 
 ### Not Yet Created
-- [ ] Authentication
-- [ ] Server actions
-- [ ] UI components
+- [ ] Band management server actions
+- [ ] Event/RSVP server actions
+- [ ] Communication server actions
+- [ ] Full UI components
 - [ ] Tests
 
 ## Infrastructure Status
@@ -53,6 +65,7 @@ bandhub/
 | Component | Status | Details |
 |-----------|--------|---------|
 | Supabase Project | Created | ID: styyqzgsyvqybvrmrfsg, Region: us-east-1 |
+| Google OAuth | Configured | Provider enabled in Supabase |
 | Vercel Project | Not Created | Pending Stage 9 |
 | GitHub Repository | Local Only | Git initialized, not pushed to remote |
 | Domain | Not Configured | Optional |
@@ -73,6 +86,9 @@ bandhub/
 - [x] availability_responses
 - [x] files
 
+**Triggers:**
+- [x] on_auth_user_created → handle_new_user() (auto-creates profile)
+
 **Storage Buckets:**
 - [x] band-files (private, with RLS)
 
@@ -82,7 +98,7 @@ bandhub/
 
 | Feature | Backend | Frontend | Tests |
 |---------|---------|----------|-------|
-| Authentication | Not Started | Not Started | Not Started |
+| Authentication | Complete ✓ | Complete ✓ | Not Started |
 | Band Management | Schema Ready | Not Started | Not Started |
 | Events & RSVPs | Schema Ready | Not Started | Not Started |
 | Availability Polling | Schema Ready | Not Started | Not Started |
@@ -105,8 +121,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 |-------|------|--------|
 | 0 | Research & Discovery | Complete ✓ |
 | 1 | Project Foundation & Database | Complete ✓ |
-| 2 | Authentication | **Next** |
-| 3 | Band Management Backend | Pending |
+| 2 | Authentication | Complete ✓ |
+| 3 | Band Management Backend | **Next** |
 | 4 | Events & Availability Backend | Pending |
 | 5 | Communication Backend | Pending |
 | 6 | Integration Tests | Pending |
@@ -124,15 +140,15 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 ## Next Steps
 
-1. **Begin Stage 2:** Authentication
-   - Configure Google OAuth in Supabase
-   - Create auth callback route
-   - Build auth middleware
-   - Auto-create profile on signup
+1. **Begin Stage 3:** Band Management Backend
+   - Create server actions for bands (create, update, delete)
+   - Implement invitation system (create, accept, decline)
+   - Add band member management (roles, remove members)
 
-2. **Then Stage 3:** Band Management Backend
-   - Create server actions for bands
-   - Implement invitation system
+2. **Then Stage 4:** Events & Availability Backend
+   - Create event server actions
+   - Implement RSVP system
+   - Build availability polling
 
 ---
 
