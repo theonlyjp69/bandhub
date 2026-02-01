@@ -1,5 +1,7 @@
 # Stage 9: Deploy
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. The app is polished (Stage 8). Now you deploy to production.

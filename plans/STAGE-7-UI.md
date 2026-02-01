@@ -1,5 +1,7 @@
 # Stage 7: Functional UI (No Styling)
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. Backend is complete and tested (Stage 6). Now you build the UI to make the app usable. **Focus on function, not form.** Make it work, don't make it pretty yet.

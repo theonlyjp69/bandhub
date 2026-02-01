@@ -1,5 +1,7 @@
 # Stage 4: Events, Availability & Files Backend
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. Band management works (Stage 3). Now you build the server actions for events, RSVPs, availability polling, and file storage.

@@ -1,5 +1,7 @@
 # Stage 0: Research & Discovery
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are starting a new project called **BandHub** - a band management web app. Before writing any code, you must research the landscape to make informed decisions.

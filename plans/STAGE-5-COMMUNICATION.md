@@ -1,5 +1,7 @@
 # Stage 5: Communication Backend
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. Events work (Stage 4). Now you build announcements, threads, messages, and real-time subscriptions.

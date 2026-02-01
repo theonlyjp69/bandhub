@@ -1,5 +1,7 @@
 # BandHub - Master Plan
 
+> **Quick Context:** See [CLAUDE.md](../CLAUDE.md) for project overview | [docs/README.md](../docs/README.md) for full documentation
+
 ## Project Vision
 
 **BandHub** is a web application that helps bands manage communication, events, and coordination in one unified platform. Instead of juggling multiple apps (group chats, calendars, file sharing, spreadsheets), band members have one place for everything.

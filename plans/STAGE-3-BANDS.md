@@ -1,5 +1,7 @@
 # Stage 3: Band Management Backend
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. Authentication works (Stage 2). Now you build the server actions for band management.

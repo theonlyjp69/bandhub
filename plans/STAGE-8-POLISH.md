@@ -1,5 +1,7 @@
 # Stage 8: Polish & Styling
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. The app works (Stage 7). Now you make it look good. Add shadcn/ui components, responsive design, and proper UX.

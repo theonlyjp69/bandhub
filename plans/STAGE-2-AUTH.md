@@ -1,5 +1,7 @@
 # Stage 2: Authentication
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. The database is ready (Stage 1). Now you implement authentication with Google OAuth.

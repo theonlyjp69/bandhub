@@ -1,5 +1,7 @@
 # Stage 6: Integration Tests
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. All backend server actions are complete (Stages 1-5). Now you write integration tests to verify everything works together.

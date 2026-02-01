@@ -1,5 +1,7 @@
 # Stage 1: Project Foundation & Database
 
+> **References:** [CLAUDE.md](../CLAUDE.md) | [docs/](../docs/README.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
+
 ## Context
 
 You are building **BandHub**. Research is complete (Stage 0). Now you set up the project and create all database tables.
