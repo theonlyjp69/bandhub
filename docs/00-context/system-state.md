@@ -137,7 +137,9 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 
 ## Known Issues
 
-*None*
+- Missing RLS policies for `band_members` (INSERT/UPDATE/DELETE) - see `docs/03-logs/security-audit-stage3.md`
+- Missing RLS UPDATE policy for `invitations` table
+- `getBand()` and `declineInvitation()` lack auth checks
 
 ## Technical Debt
 
