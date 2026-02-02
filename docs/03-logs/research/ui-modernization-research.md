@@ -369,3 +369,92 @@ All new variables are exposed to Tailwind via `@theme inline`:
 - ✅ Card component updated
 
 **Phase 2 Status: COMPLETE**
+
+---
+
+## Phase 3 Complete
+
+**Date:** 2026-02-02
+
+### Typography Scale Added
+
+| Class | Size | Weight | Tracking | Line Height | Use Case |
+|-------|------|--------|----------|-------------|----------|
+| `.text-display` | `clamp(2.25rem, 5vw, 3.75rem)` | 700 | -0.025em | 1.1 | Hero headlines, page titles |
+| `.text-headline` | `clamp(1.5rem, 3vw, 1.875rem)` | 700 | -0.025em | 1.2 | Section headers |
+| `.text-title` | `clamp(1.125rem, 2vw, 1.25rem)` | 600 | normal | 1.3 | Card titles, subheadings |
+| `.text-body-lg` | `1.125rem` | normal | normal | 1.6 | Large body text, lead paragraphs |
+
+### Gradient Text Utilities Added
+
+| Class | Effect | Use Case |
+|-------|--------|----------|
+| `.text-gradient-primary` | Purple gradient using `--primary-gradient-start/end` | Primary emphasis, headings |
+| `.text-gradient-subtle` | Gray gradient (0.9 → 0.7 lightness) | Secondary emphasis |
+
+### Implementation Details
+
+- All typography classes added inside `@layer utilities` for proper Tailwind cascade
+- Uses `clamp()` for fluid responsive sizing without media queries
+- Line-height values optimized for readability at each size
+- Tight letter-spacing on display/headline for visual density
+
+### Verification
+
+- ✅ `npm run build` passes with no errors
+- ✅ Typography classes exist in globals.css
+- ✅ `.text-display`, `.text-headline`, `.text-title` defined
+- ✅ `.text-gradient-primary`, `.text-gradient-subtle` defined
+- ✅ No changes to page files (classes will be applied in Phase 8)
+
+**Phase 3 Status: COMPLETE**
+
+---
+
+## Phase 4 Complete
+
+**Date:** 2026-02-02
+
+### Card Variant Classes Added
+
+| Class | Effect | Use Case |
+|-------|--------|----------|
+| `.card-glass` | Glassmorphism with 60% opacity bg, 12px blur | Overlays, featured cards |
+| `.card-gradient-border` | Gradient purple border via ::before pseudo-element | Featured/highlight cards |
+| `.card-interactive` | Hover lift + focus states + cursor pointer | Clickable cards |
+
+### Enhanced Existing Classes
+
+| Class | Before | After |
+|-------|--------|-------|
+| `.card-hover-lift` | `translateY(-2px)`, hardcoded shadow | `translateY(-4px)`, `var(--shadow-lg)` |
+
+### Implementation Details
+
+**Glassmorphism (.card-glass):**
+- Background: `oklch(0.15 0.01 285 / 60%)` - 60% opacity purple-tinted
+- Blur: `backdrop-filter: blur(12px)` with webkit prefix
+- Border: `1px solid oklch(1 0 0 / 10%)`
+
+**Gradient Border (.card-gradient-border):**
+- Uses `::before` pseudo-element with `mask-composite: exclude` technique
+- Gradient: `linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end))`
+- Border inherits parent border-radius
+
+**Interactive Card (.card-interactive):**
+- Transitions: transform, box-shadow, background (200ms ease)
+- Hover: `translateY(-2px)`, `var(--shadow-md)`, `var(--card-elevated)`
+- Focus: `outline: 2px solid var(--ring)`, `outline-offset: 2px`
+
+### Verification
+
+- ✅ `npm run build` passes with no errors
+- ✅ `npm run test:run` passes (55 tests)
+- ✅ `.card-glass` class exists
+- ✅ `.card-gradient-border` class exists
+- ✅ `.card-interactive` class exists
+- ✅ `.card-hover-lift` enhanced with shadow variable
+- ❌ No changes to Card component (as specified)
+- ❌ No changes to page files (reserved for Phase 8)
+
+**Phase 4 Status: COMPLETE**

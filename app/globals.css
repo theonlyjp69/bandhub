@@ -266,11 +266,59 @@ button:not(:disabled):active,
 
 /* Card hover lift */
 .card-hover-lift {
-  @apply transition-all duration-200;
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 .card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* UI Modernization - Phase 4: Card Variants */
+
+/* Glassmorphism card */
+.card-glass {
+  background: oklch(0.15 0.01 285 / 60%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid oklch(1 0 0 / 10%);
+}
+
+/* Gradient border card */
+.card-gradient-border {
+  position: relative;
+  background: var(--card);
+  border: none;
+}
+
+.card-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Interactive card (combines hover + focus) */
+.card-interactive {
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  cursor: pointer;
+}
+
+.card-interactive:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px oklch(0 0 0 / 20%);
+  box-shadow: var(--shadow-md);
+  background: var(--card-elevated);
+}
+
+.card-interactive:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Focus ring animation */
