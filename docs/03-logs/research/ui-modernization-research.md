@@ -323,3 +323,49 @@ All new variables are exposed to Tailwind via `@theme inline`:
 - ✅ Visual verification: Cards visibly "pop" from background
 
 **Phase 1 Status: COMPLETE**
+
+---
+
+## Phase 2 Complete
+
+**Date:** 2026-02-02
+
+### Shadow Scale Added
+
+| Variable | Value | Use Case |
+|----------|-------|----------|
+| `--shadow-xs` | `0 1px 2px oklch(0 0 0 / 20%)` | Subtle depth |
+| `--shadow-sm` | `0 2px 4px ... 0 1px 2px ...` | Default cards |
+| `--shadow-md` | `0 4px 8px ... 0 2px 4px ...` | Card component |
+| `--shadow-lg` | `0 8px 16px ... 0 4px 8px ...` | Elevated cards |
+| `--shadow-xl` | `0 12px 24px ... 0 6px 12px ...` | Modals, popovers |
+
+### Glow Effects Added
+
+| Variable | Value | Use Case |
+|----------|-------|----------|
+| `--shadow-primary-glow` | `0 0 20px oklch(0.585 0.233 288 / 30%)` | Accent glow |
+| `--shadow-primary-glow-lg` | `0 0 40px oklch(0.585 0.233 288 / 40%)` | Large glow |
+
+### Utility Classes Added
+
+**Elevation utilities:**
+- `.elevation-1` through `.elevation-4`
+- `.glow-primary`, `.glow-primary-lg`
+- `.card-elevated` (combines elevated background + shadow-lg)
+
+### Component Changes
+
+| Component | Change |
+|-----------|--------|
+| `Card` | `shadow-sm` → `shadow-md` |
+
+### Verification
+
+- ✅ `npm run build` passes with no errors
+- ✅ `npm run test:run` passes (55 tests)
+- ✅ Shadow variables added to `:root` section
+- ✅ Elevation utility classes added
+- ✅ Card component updated
+
+**Phase 2 Status: COMPLETE**
