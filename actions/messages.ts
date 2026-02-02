@@ -7,7 +7,12 @@ export async function sendMessage(bandId: string, content: string, threadId?: st
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId || !content) throw new Error('Missing required fields')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
+  if (!content || typeof content !== 'string') throw new Error('Invalid content')
+  if (threadId && typeof threadId !== 'string') throw new Error('Invalid thread ID')
+
+  // Input length limits
+  if (content.length > 5000) throw new Error('Content too long (max 5000)')
 
   // Verify user is a member of this band
   const { data: member } = await supabase
@@ -55,7 +60,9 @@ export async function getMessages(bandId: string, threadId?: string, limit = 50)
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId) throw new Error('Band ID required')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
+  if (threadId && typeof threadId !== 'string') throw new Error('Invalid thread ID')
+  if (typeof limit !== 'number' || limit < 1 || limit > 500) throw new Error('Invalid limit (must be 1-500)')
 
   // Verify user is a member of this band
   const { data: member } = await supabase
@@ -94,7 +101,7 @@ export async function deleteMessage(messageId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!messageId) throw new Error('Message ID required')
+  if (!messageId || typeof messageId !== 'string') throw new Error('Invalid message ID')
 
   // Get message to verify access
   const { data: message } = await supabase

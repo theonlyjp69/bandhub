@@ -7,7 +7,13 @@ export async function createAnnouncement(bandId: string, title: string, content:
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId || !content) throw new Error('Missing required fields')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
+  if (!content || typeof content !== 'string') throw new Error('Invalid content')
+  if (title && typeof title !== 'string') throw new Error('Invalid title')
+
+  // Input length limits
+  if (title && title.length > 200) throw new Error('Title too long (max 200)')
+  if (content.length > 5000) throw new Error('Content too long (max 5000)')
 
   // Verify user is an admin of this band
   const { data: adminMember } = await supabase
@@ -43,7 +49,7 @@ export async function getBandAnnouncements(bandId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId) throw new Error('Band ID required')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
 
   // Verify user is a member of this band
   const { data: member } = await supabase
@@ -73,7 +79,7 @@ export async function deleteAnnouncement(announcementId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!announcementId) throw new Error('Announcement ID required')
+  if (!announcementId || typeof announcementId !== 'string') throw new Error('Invalid announcement ID')
 
   // Get announcement to verify access
   const { data: announcement } = await supabase

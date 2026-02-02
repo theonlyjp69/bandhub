@@ -88,7 +88,8 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [bandId, threadId, supabase])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bandId, threadId])
 
   return messages
 }

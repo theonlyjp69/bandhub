@@ -7,7 +7,11 @@ export async function createThread(bandId: string, title: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId || !title) throw new Error('Missing required fields')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
+  if (!title || typeof title !== 'string') throw new Error('Invalid title')
+
+  // Input length limits
+  if (title.length > 200) throw new Error('Title too long (max 200)')
 
   // Verify user is a member of this band
   const { data: member } = await supabase
@@ -41,7 +45,7 @@ export async function getBandThreads(bandId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!bandId) throw new Error('Band ID required')
+  if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
 
   // Verify user is a member of this band
   const { data: member } = await supabase
@@ -72,7 +76,7 @@ export async function getThread(threadId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!threadId) throw new Error('Thread ID required')
+  if (!threadId || typeof threadId !== 'string') throw new Error('Invalid thread ID')
 
   // Get thread first
   const { data: thread, error } = await supabase
@@ -105,7 +109,7 @@ export async function deleteThread(threadId: string) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
-  if (!threadId) throw new Error('Thread ID required')
+  if (!threadId || typeof threadId !== 'string') throw new Error('Invalid thread ID')
 
   // Get thread to verify access
   const { data: thread } = await supabase
