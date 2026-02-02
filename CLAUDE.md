@@ -14,7 +14,7 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 |-------|------------|
 | Frontend | Next.js 15 (App Router), Tailwind, shadcn/ui |
 | Backend | Supabase (auth, database, realtime, storage) |
-| Database | PostgreSQL + RLS (16 migrations) |
+| Database | PostgreSQL + RLS (18 migrations) |
 | Testing | Vitest + Playwright |
 | Hosting | Vercel |
 
@@ -200,11 +200,45 @@ All stages have been code reviewed. See `docs/03-logs/code-review/review-logs/`:
 
 **Unused dependency:** `react-big-calendar` - consider removing in future cleanup
 
+## UI Modernization
+
+**Phase 0 Research: Complete** (2026-02-02)
+
+Full visual overhaul researched and documented. See [ui-modernization-research.md](docs/03-logs/research/ui-modernization-research.md) for details.
+
+**Documentation Sources:**
+- shadcn/ui theming: ui.shadcn.com/docs/theming (oklch color system)
+- Tailwind CSS: tailwindcss.com/docs/animation, colors
+- Dribbble: CRM Dashboard, Crypto App, Travel App designs
+
+**Key Changes Planned:**
+| Area | Current | Planned |
+|------|---------|---------|
+| Contrast | 4% (card vs bg) | 10%+ difference |
+| Shadows | shadow-sm only | Full elevation scale (xs-xl) |
+| Colors | Purple only | Purple + Cyan accents |
+| Typography | Standard Tailwind | Display/Headline/Title hierarchy |
+| Cards | Flat appearance | Elevated with gradients & glass effects |
+
+**Phases:**
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 0 | Research Documentation | Complete |
+| 1 | Color System | Complete |
+| 2 | Shadow System | Complete |
+| 3 | Typography | Complete |
+| 4 | Card Variants | Complete |
+| 5 | Navigation & Layout | Complete |
+| 6-7 | Empty States & Microinteractions | Pending |
+| 8 | Full Page Overhaul | Pending |
+| 9 | Final Testing & Docs | Pending |
+
 ## Quick Links
 
 - **Master Plan:** plans/MASTER-PLAN.md
 - **PRD:** docs/01-product/prd.md
 - **System State:** docs/00-context/system-state.md
-- **Stage 8 Log:** docs/03-logs/implimentation-logs/implementation-log-stage8.md
+- **Stage 8 Log:** docs/03-logs/implementation-logs/implementation-log-stage8.md
 - **UI/UX Guidelines:** docs/03-logs/research/ui-ux-guidelines.md
 - **Research Synthesis:** docs/03-logs/research/research-synthesis.md
+- **UI Modernization Research:** docs/03-logs/research/ui-modernization-research.md

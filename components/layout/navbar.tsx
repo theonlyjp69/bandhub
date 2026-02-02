@@ -38,7 +38,7 @@ export function Navbar({ user, profile }: NavbarProps) {
   const initials = displayName.slice(0, 2).toUpperCase()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 navbar-gradient-border">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         {/* Mobile menu */}
         <Sheet>

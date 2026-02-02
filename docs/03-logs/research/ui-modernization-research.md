@@ -458,3 +458,54 @@ All new variables are exposed to Tailwind via `@theme inline`:
 - ❌ No changes to page files (reserved for Phase 8)
 
 **Phase 4 Status: COMPLETE**
+
+---
+
+## Phase 5 Complete
+
+**Date:** 2026-02-02
+
+### Navigation Utility Classes Added
+
+| Class | Effect | Use Case |
+|-------|--------|----------|
+| `.navbar-gradient-border` | Gradient purple line at bottom via ::after | Desktop navbar accent |
+| `.bg-gradient-subtle` | Vertical gradient from bg to slightly darker | Page backgrounds |
+
+*Note: Mobile nav active indicator uses inline Tailwind shadow `shadow-[0_0_8px_var(--primary)]` instead of CSS class for simplicity.*
+
+### Implementation Details
+
+**Navbar Gradient Border (.navbar-gradient-border):**
+- Position: relative with `::after` pseudo-element at bottom
+- Gradient: `linear-gradient(90deg, transparent 0%, primary-start 20%, primary-end 80%, transparent 100%)`
+- Height: 1px for subtle accent line
+- Applied to: `components/layout/navbar.tsx` header element
+
+**Mobile Nav Active Indicator Enhancement:**
+- Original: Simple `bg-primary` dot
+- Enhanced: Added glow shadow `shadow-[0_0_8px_var(--primary)]`
+- Applied to: `components/layout/mobile-nav.tsx` active indicator span
+
+**Background Gradient (.bg-gradient-subtle):**
+- Gradient: vertical from `var(--background)` to `oklch(0.10 0.01 285)`
+- Ready for use on page layouts when needed
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `app/globals.css` | Added Phase 5 navigation utility classes |
+| `components/layout/navbar.tsx` | Added `navbar-gradient-border` class to header |
+| `components/layout/mobile-nav.tsx` | Added glow shadow to active indicator |
+
+### Verification
+
+- ✅ `npm run build` passes with no errors
+- ✅ `npm run test:run` passes (55 tests)
+- ✅ `.navbar-gradient-border` class exists in globals.css
+- ✅ `.bg-gradient-subtle` class exists in globals.css
+- ✅ Navbar has `navbar-gradient-border` class applied
+- ✅ Mobile nav active indicator has inline glow shadow
+
+**Phase 5 Status: COMPLETE**

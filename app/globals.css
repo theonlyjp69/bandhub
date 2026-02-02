@@ -401,3 +401,34 @@ a {
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }
+
+/* UI Modernization - Phase 5: Navigation & Layout */
+
+/* Navbar gradient accent */
+.navbar-gradient-border {
+  position: relative;
+}
+
+.navbar-gradient-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--primary-gradient-start) 20%,
+    var(--primary-gradient-end) 80%,
+    transparent 100%
+  );
+}
+
+/* Subtle background gradient for pages */
+.bg-gradient-subtle {
+  background: linear-gradient(
+    180deg,
+    var(--background) 0%,
+    oklch(0.10 0.01 285) 100%
+  );
+}
