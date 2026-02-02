@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Stage:** Stage 4 Complete, Ready for Stage 5
+**Stage:** Stage 5 Complete, Ready for Stage 6
 **Last Updated:** 2026-02-01
 
 ## Project Structure
@@ -17,7 +17,10 @@ bandhub/
 │   ├── events.ts           # Event CRUD (shows, rehearsals, deadlines)
 │   ├── rsvps.ts            # RSVP management (set, get, remove)
 │   ├── availability.ts     # Availability polling (When2Meet-style)
-│   └── files.ts            # File storage (upload, download, delete)
+│   ├── files.ts            # File storage (upload, download, delete)
+│   ├── announcements.ts    # Admin announcements (create, list, delete)
+│   ├── threads.ts          # Discussion threads (create, list, get, delete)
+│   └── messages.ts         # Chat messages (send, list, delete)
 ├── app/                     # Next.js App Router pages
 │   ├── auth/callback/      # OAuth callback route
 │   ├── dashboard/          # Protected dashboard page
@@ -28,12 +31,14 @@ bandhub/
 │   ├── 02-features/        # Feature specifications
 │   ├── 03-logs/            # Implementation logs
 │   └── 04-process/         # Development workflow
+├── hooks/                   # React hooks
+│   └── use-realtime-messages.ts  # Real-time message subscription
 ├── lib/                     # Utilities
 │   └── supabase/           # Supabase client (browser + server)
 ├── plans/                   # Development stage plans
 ├── public/                  # Static assets
 ├── supabase/               # Supabase configuration
-│   └── migrations/         # Database migrations (12 files)
+│   └── migrations/         # Database migrations (14 files)
 ├── types/                   # TypeScript types
 │   └── database.ts         # Generated from Supabase schema
 └── middleware.ts           # Auth middleware
@@ -66,9 +71,12 @@ bandhub/
 - [x] RSVP server actions (set, get, remove)
 - [x] Availability polling server actions (create poll, submit, get best slot)
 - [x] File storage server actions (upload, download URL, delete)
+- [x] Announcements server actions (create, list, delete)
+- [x] Threads server actions (create, list, get, delete)
+- [x] Messages server actions (send, list, delete)
+- [x] Real-time messages hook
 
 ### Not Yet Created
-- [ ] Communication server actions (announcements, threads, messages)
 - [ ] Full UI components
 - [ ] Tests
 
@@ -106,6 +114,8 @@ bandhub/
 
 **RLS Policies:** All tables have Row Level Security enabled
 
+**Realtime:** Messages table enabled for postgres_changes
+
 ## Feature Implementation Status
 
 | Feature | Backend | Frontend | Tests |
@@ -115,9 +125,9 @@ bandhub/
 | Events & RSVPs | Complete | Not Started | Not Started |
 | Availability Polling | Complete | Not Started | Not Started |
 | File Storage | Complete | Not Started | Not Started |
-| Chat (Realtime) | Schema Ready | Not Started | Not Started |
-| Threads | Schema Ready | Not Started | Not Started |
-| Announcements | Schema Ready | Not Started | Not Started |
+| Chat (Realtime) | Complete | Not Started | Not Started |
+| Threads | Complete | Not Started | Not Started |
+| Announcements | Complete | Not Started | Not Started |
 
 ## Environment Variables
 
@@ -136,29 +146,30 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 | 2 | Authentication | Complete |
 | 3 | Band Management Backend | Complete |
 | 4 | Events & Availability Backend | Complete |
-| 5 | Communication Backend | **Next** |
-| 6 | Integration Tests | Pending |
+| 5 | Communication Backend | Complete |
+| 6 | Integration Tests | **Next** |
 | 7 | Functional UI | Pending |
 | 8 | Polish & Styling | Pending |
 | 9 | Deploy | Pending |
 
 ## Known Issues
 
-*None - all security issues from audit have been resolved (2026-02-01)*
+*None - all security issues from audits have been resolved (2026-02-01)*
 
 ## Security Status
 
-**Audit + Remediation Complete:** 22/22 security patterns correct (100%)
+**All Stages Audited:** 33/33 server action functions secured (100%)
 
 | Category | Status |
 |----------|--------|
 | Open Redirect | Fixed (path validation in OAuth callback) |
-| Server Actions | Fixed (22 functions with auth/authz checks) |
-| RLS Policies | Fixed (18 policies - includes file DELETE for admins) |
+| Server Actions | Fixed (33 functions with auth/authz + input validation) |
+| RLS Policies | Fixed (21 policies - includes communication DELETE) |
 
 **Migrations Applied:**
 - `20260201000012_security_remediation.sql` - Initial security audit fixes
 - `20260201000013_fix_file_delete_policy.sql` - File deletion RLS for admins
+- `20260201000014_communication_realtime_and_delete_policies.sql` - Realtime + DELETE for communication
 - `20260201000015_fix_storage_delete_policy.sql` - Storage DELETE for admins
 
 **Stage 4 Code Review Remediation (2026-02-01):**
@@ -176,7 +187,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 - ✓ MEDIUM: MIME type allowlist
 - ✓ MEDIUM: Input length limits
 
-See [code-review-stage4.md](../03-logs/code-review/review-logs/code-review-stage4.md) for details.
+**Stage 5 Code Review Remediation (2026-02-01):**
+- ✓ Input length validation (title: 200, content: 5000)
+- ✓ Type guards on all string parameters
+- ✓ Limit parameter validation (1-500)
+- ✓ useEffect dependency array fix
+
+See [code-review-stage5.md](../03-logs/code-review/review-logs/code-review-stage5.md) for details.
 
 ## Technical Debt
 
@@ -184,14 +201,14 @@ See [code-review-stage4.md](../03-logs/code-review/review-logs/code-review-stage
 
 ## Next Steps
 
-1. **Begin Stage 5:** Communication Backend
-   - Announcements server actions (create, update, delete, list)
-   - Discussion threads (create, list, get)
-   - Real-time chat messages (send, list, subscribe)
-
-2. **Then Stage 6:** Integration Tests
+1. **Begin Stage 6:** Integration Tests
    - End-to-end tests for all server actions
    - Database integration tests
+
+2. **Then Stage 7:** Functional UI
+   - Band dashboard
+   - Event calendar
+   - Chat interface
 
 ---
 
