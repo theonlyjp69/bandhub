@@ -38,6 +38,7 @@ npm run test:e2e:ui  # E2E tests with UI
 actions/     # 11 server action files
 hooks/       # React hooks (realtime)
 app/         # Next.js pages (20 routes + loading/error states)
+  ├── page.tsx           # Root redirect (auth → /dashboard, no auth → /login)
   ├── (app)/             # Protected routes (auth required)
   │   ├── layout.tsx     # Header, nav, sign out
   │   ├── error.tsx      # Error boundary

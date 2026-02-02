@@ -22,6 +22,7 @@ bandhub/
 │   ├── threads.ts          # Discussion threads (create, list, get, delete)
 │   └── messages.ts         # Chat messages (send, list, delete)
 ├── app/                     # Next.js App Router pages (20 routes)
+│   ├── page.tsx            # Root redirect (auth → /dashboard, no auth → /login)
 │   ├── (app)/              # Protected routes (auth required)
 │   │   ├── layout.tsx      # Header, nav, sign out
 │   │   ├── dashboard/      # Band list, invitations
@@ -216,6 +217,13 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 ## Known Issues
 
 *None - all security issues from audits have been resolved (2026-02-01)*
+
+## Bug Fixes
+
+### Root Page Showing Default Next.js Template (2026-02-02)
+**Issue:** Deployed site at `bandhub-flax.vercel.app` showed default Next.js "To get started, edit page.tsx" template instead of BandHub app.
+**Root Cause:** `app/page.tsx` was never updated from the `create-next-app` boilerplate.
+**Fix:** Replaced with auth-aware redirect that sends authenticated users to `/dashboard` and unauthenticated users to `/login`.
 
 ## Security Status
 
