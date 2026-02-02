@@ -502,6 +502,79 @@ a {
   }
 }
 
+/* UI Modernization - Phase 7: Microinteractions & Polish */
+
+/* Stagger animation for lists */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: stagger-in 0.3s ease-out forwards;
+}
+
+/* Stagger delays via CSS nth-child */
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+.stagger-item:nth-child(7) { animation-delay: 300ms; }
+.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(n+9) { animation-delay: 400ms; }
+
+/* Button gradient animation */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  background-size: 200% 200%;
+  transition: background-position 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background-position: 100% 100%;
+}
+
+/* Scale in animation */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out forwards;
+}
+
+/* Enhanced focus ring */
+.focus-ring-enhanced {
+  transition: box-shadow 0.15s ease, outline 0.15s ease;
+}
+
+.focus-ring-enhanced:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px oklch(0.585 0.233 288 / 20%);
+}
+
+/* Smooth color transitions for all interactive elements */
+.transition-colors-smooth {
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
 /* Accessibility: Respect reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
   .skeleton-modern::after {
@@ -520,5 +593,20 @@ a {
 
   .badge-pulse {
     animation: none;
+  }
+
+  .stagger-item {
+    animation: none;
+    opacity: 1;
+  }
+
+  .btn-gradient {
+    transition: none;
+  }
+
+  .animate-scale-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
