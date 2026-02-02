@@ -39,3 +39,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Claude Code settings
+.claude/
+
+# Supabase temp files
+supabase/.temp/
+
+# Playwright test results
+/test-results/
+/playwright-report/

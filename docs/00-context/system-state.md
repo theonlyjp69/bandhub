@@ -2,7 +2,7 @@
 
 ## Current Status
 
-**Stage:** Stage 5 Complete, Ready for Stage 6
+**Stage:** Stage 6 Complete → Ready for Stage 7 (UI Implementation)
 **Last Updated:** 2026-02-01
 
 ## Project Structure
@@ -38,7 +38,15 @@ bandhub/
 ├── plans/                   # Development stage plans
 ├── public/                  # Static assets
 ├── supabase/               # Supabase configuration
-│   └── migrations/         # Database migrations (14 files)
+│   └── migrations/         # Database migrations (16 files)
+├── tests/                   # Test suites (Stage 6)
+│   ├── setup.ts            # Test configuration
+│   ├── helpers.ts          # Test utilities
+│   ├── auth.test.ts        # Auth flow tests
+│   ├── bands.test.ts       # Band management tests
+│   ├── events.test.ts      # Event flow tests
+│   ├── communication.test.ts # Communication tests
+│   └── e2e/                # Playwright E2E tests
 ├── types/                   # TypeScript types
 │   └── database.ts         # Generated from Supabase schema
 └── middleware.ts           # Auth middleware
@@ -76,9 +84,20 @@ bandhub/
 - [x] Messages server actions (send, list, delete)
 - [x] Real-time messages hook
 
+### Stage 6 Complete
+- [x] Test infrastructure (Vitest 2.1.9, Playwright)
+- [x] Test helpers and utilities
+- [x] Auth flow tests (8 tests passing)
+- [x] Band management tests (12 tests passing)
+- [x] Events flow tests (15 tests passing)
+- [x] Communication tests (20 tests passing)
+- [x] E2E test scaffolding (11 tests)
+- [x] Test users created and configured
+- [x] RLS policy fixes (4 additional migrations)
+- [x] All 56 Vitest tests passing
+
 ### Not Yet Created
-- [ ] Full UI components
-- [ ] Tests
+- [ ] Full UI components (Stage 7)
 
 ## Infrastructure Status
 
@@ -120,14 +139,14 @@ bandhub/
 
 | Feature | Backend | Frontend | Tests |
 |---------|---------|----------|-------|
-| Authentication | Complete | Complete | Not Started |
-| Band Management | Complete | Not Started | Not Started |
-| Events & RSVPs | Complete | Not Started | Not Started |
-| Availability Polling | Complete | Not Started | Not Started |
-| File Storage | Complete | Not Started | Not Started |
-| Chat (Realtime) | Complete | Not Started | Not Started |
-| Threads | Complete | Not Started | Not Started |
-| Announcements | Complete | Not Started | Not Started |
+| Authentication | Complete | Complete | ✅ 8 tests passing |
+| Band Management | Complete | Not Started | ✅ 12 tests passing |
+| Events & RSVPs | Complete | Not Started | ✅ 15 tests passing |
+| Availability Polling | Complete | Not Started | Included in events |
+| File Storage | Complete | Not Started | Included in bands |
+| Chat (Realtime) | Complete | Not Started | ✅ 20 tests passing |
+| Threads | Complete | Not Started | Included in communication |
+| Announcements | Complete | Not Started | Included in communication |
 
 ## Environment Variables
 
@@ -147,10 +166,25 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 | 3 | Band Management Backend | Complete |
 | 4 | Events & Availability Backend | Complete |
 | 5 | Communication Backend | Complete |
-| 6 | Integration Tests | **Next** |
-| 7 | Functional UI | Pending |
+| 6 | Integration Tests | **Complete** |
+| 7 | Functional UI | **Next** |
 | 8 | Polish & Styling | Pending |
 | 9 | Deploy | Pending |
+
+## Stage 6 Test Status
+
+| Test Suite | Total | Status |
+|------------|-------|--------|
+| auth.test.ts | 8 | ✅ All passing |
+| bands.test.ts | 12 | ✅ All passing |
+| events.test.ts | 15 | ✅ All passing |
+| communication.test.ts | 20 | ✅ All passing |
+| simple.test.ts | 1 | ✅ Passing |
+| **Vitest Total** | **56** | **✅ All passing** |
+| navigation.spec.ts | 3 | E2E scaffolded |
+| full-flow.spec.ts | 8 | E2E scaffolded |
+
+**Run tests:** `npm run test:run`
 
 ## Known Issues
 
@@ -171,6 +205,11 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=<configured>
 - `20260201000013_fix_file_delete_policy.sql` - File deletion RLS for admins
 - `20260201000014_communication_realtime_and_delete_policies.sql` - Realtime + DELETE for communication
 - `20260201000015_fix_storage_delete_policy.sql` - Storage DELETE for admins
+- `20260201000016_fix_band_members_recursion.sql` - Fix RLS infinite recursion on band_members
+- `20260201000021_fix_all_rls_policies.sql` - Bands/band_members full CRUD policies
+- `20260201000022_fix_remaining_rls.sql` - Events UPDATE/DELETE, helper functions
+- `20260201000023_fix_invitations_select_policy.sql` - Invitations SELECT via SECURITY DEFINER
+- `20260201000024_add_invitations_unique_constraint.sql` - Prevent duplicate pending invitations
 
 **Stage 4 Code Review Remediation (2026-02-01):**
 - ✓ File deletion RLS policy extended for admin access
@@ -201,14 +240,21 @@ See [code-review-stage5.md](../03-logs/code-review/review-logs/code-review-stage
 
 ## Next Steps
 
-1. **Begin Stage 6:** Integration Tests
-   - End-to-end tests for all server actions
-   - Database integration tests
+1. **Stage 7: Functional UI** (Next)
+   - Band dashboard with member management
+   - Event calendar with RSVP interface
+   - Chat interface with real-time messages
+   - Announcements and threads
+   - File upload/download UI
 
-2. **Then Stage 7:** Functional UI
-   - Band dashboard
-   - Event calendar
-   - Chat interface
+2. **Stage 8: Polish & Styling**
+   - Dark theme refinement
+   - Mobile responsiveness
+   - Loading states and error handling
+
+3. **Stage 9: Deploy**
+   - Vercel deployment
+   - Production environment setup
 
 ---
 

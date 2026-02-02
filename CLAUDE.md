@@ -4,9 +4,9 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 
 ## Status
 
-**Stage 5 Complete** → Ready for **Stage 6: Integration Tests**
+**Stage 6 Complete** → Ready for **Stage 7: UI Implementation**
 
-✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | **Tests** | UI | Deploy
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | **UI** | Deploy
 
 ## Tech Stack
 
@@ -14,7 +14,8 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 |-------|------------|
 | Frontend | Next.js 15 (App Router), Tailwind, shadcn/ui |
 | Backend | Supabase (auth, database, realtime, storage) |
-| Database | PostgreSQL + RLS (11 migrations) |
+| Database | PostgreSQL + RLS (16 migrations) |
+| Testing | Vitest + Playwright |
 | Hosting | Vercel |
 
 **Design:** Dark theme, purple accent (#8b5cf6), mobile-first
@@ -25,7 +26,10 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 npm run dev          # Dev server
 npm run build        # Build
 npm run lint         # Lint
-npm run test         # Run tests (Stage 6)
+npm run test         # Run tests (watch mode)
+npm run test:run     # Run tests once
+npm run test:e2e     # E2E tests (requires dev server)
+npm run test:e2e:ui  # E2E tests with UI
 ```
 
 ## Structure
@@ -36,7 +40,17 @@ hooks/       # React hooks (realtime)
 app/         # Next.js pages
 components/  # shadcn/ui components
 lib/         # Supabase clients
-supabase/    # 11 migrations
+supabase/    # 16 migrations
+tests/       # Test suites (Stage 6)
+  ├── setup.ts           # Test configuration
+  ├── helpers.ts         # Test utilities
+  ├── auth.test.ts       # Auth tests (8)
+  ├── bands.test.ts      # Band tests (12)
+  ├── events.test.ts     # Event tests (15)
+  ├── communication.test.ts  # Communication tests (20)
+  └── e2e/               # Playwright E2E tests
+      ├── navigation.spec.ts  # Navigation tests (3)
+      └── full-flow.spec.ts   # Full flow tests (8)
 docs/        # 5-tier documentation
 plans/       # Stage 0-9 plans
 ```
@@ -107,13 +121,29 @@ export async function action(id: string) {
 | docs/03-logs/ | Implementation, security audits, code reviews |
 | docs/04-process/ | Workflow, definition of done |
 
+## Tests (Stage 6 Complete)
+
+| File | Tests | Status |
+|------|-------|--------|
+| auth.test.ts | 8 | ✅ All passing |
+| bands.test.ts | 12 | ✅ All passing |
+| events.test.ts | 15 | ✅ All passing |
+| communication.test.ts | 20 | ✅ All passing |
+| simple.test.ts | 1 | ✅ Passing |
+| **Total Vitest** | **56** | **✅ All passing** |
+| navigation.spec.ts | 3 | E2E scaffolded |
+| full-flow.spec.ts | 8 | E2E scaffolded |
+
+**Run tests:** `npm run test:run`
+
 ## Plans
 
 | Stage | Focus | Status |
 |-------|-------|--------|
 | 0-5 | Research → Communication | ✓ Complete |
-| 6 | Integration Tests | **Next** |
-| 7-9 | UI → Deploy | Pending |
+| 6 | Integration Tests | ✓ Complete |
+| 7 | UI Implementation | **Next** |
+| 8-9 | Polish → Deploy | Pending |
 
 See `plans/MASTER-PLAN.md` for details.
 

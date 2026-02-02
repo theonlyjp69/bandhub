@@ -482,4 +482,173 @@ if (typeof limit !== 'number' || limit < 1 || limit > 500) {
 
 ---
 
+### DEC-014 - RLS Infinite Recursion Fix with SECURITY DEFINER
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+During Stage 6 testing, RLS policy on `band_members` table caused infinite recursion error. The policy checked if user was a band member by querying `band_members`, which triggered the same policy check, creating an infinite loop.
+
+Original policy:
+```sql
+CREATE POLICY "Members can view band members" ON band_members
+FOR SELECT USING (
+  band_id IN (SELECT band_id FROM band_members WHERE user_id = auth.uid())
+);
+```
+
+#### Decision
+Create a `SECURITY DEFINER` function to perform the membership check, bypassing RLS during the check itself.
+
+#### Rationale
+- `SECURITY DEFINER` functions execute with the privileges of the function owner
+- This allows the function to query `band_members` without triggering RLS
+- Common pattern for breaking RLS recursion in PostgreSQL
+- Function is marked `STABLE` for query optimizer efficiency
+
+#### Implementation
+```sql
+-- Function that bypasses RLS
+CREATE OR REPLACE FUNCTION is_band_member(p_band_id UUID, p_user_id UUID)
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+STABLE
+SET search_path = public
+AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM band_members
+    WHERE band_id = p_band_id AND user_id = p_user_id
+  );
+$$;
+
+-- Policy uses function instead of subquery
+CREATE POLICY "Members can view band members"
+  ON band_members FOR SELECT
+  USING (is_band_member(band_id, auth.uid()));
+```
+
+#### Alternatives Considered
+- **Materialized view:** More complex, overkill for this use case
+- **Application-level only:** Would remove database-level security
+- **Separate roles table:** Unnecessary schema change
+
+#### Consequences
+- RLS recursion eliminated
+- Function executes with elevated privileges (security consideration)
+- `SET search_path = public` prevents search path attacks
+- Pattern can be reused for other recursive RLS scenarios
+
+---
+
+### DEC-015 - Test Infrastructure with Vitest and Playwright
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Stage 6 required comprehensive integration tests for all 33 server actions before building UI. Needed both unit/integration tests and E2E browser tests.
+
+#### Decision
+Use Vitest for unit/integration tests and Playwright for E2E tests.
+
+#### Rationale
+- **Vitest:** Fast, Vite-native, excellent TypeScript support, compatible with Testing Library
+- **Playwright:** Cross-browser E2E, good dev experience, official Microsoft support
+- Both work well with Supabase's JavaScript client
+- Tests run against real Supabase database (not mocked)
+
+#### Implementation
+- `vitest.config.ts` - Node environment, path aliases, 30s timeout
+- `playwright.config.ts` - Chromium, 60s timeout, requires dev server
+- `tests/setup.ts` - Supabase client factory
+- `tests/helpers.ts` - Auth helpers, test data factories
+- Test pattern: `test.skipIf(!process.env.TEST_USER_EMAIL)` for auth-dependent tests
+
+#### Test Structure
+| Suite | Tests | Purpose |
+|-------|-------|---------|
+| auth.test.ts | 8 | Auth flow validation |
+| bands.test.ts | 12 | Band CRUD, invitations |
+| events.test.ts | 15 | Events, RSVPs |
+| communication.test.ts | 20 | Announcements, threads, messages |
+| e2e/navigation.spec.ts | 3 | Page navigation |
+| e2e/full-flow.spec.ts | 8 | Complete user journeys |
+
+#### Consequences
+- Tests require real Supabase project
+- Some tests skip without TEST_USER_* credentials
+- E2E tests require running dev server
+- 55 Vitest tests + 11 Playwright tests total
+
+---
+
+### DEC-016 - Comprehensive RLS Policy Fixes for Testing
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+During Stage 6 integration testing with authenticated test users, multiple RLS policy gaps were discovered that prevented the test suite from passing.
+
+#### Issues Found
+1. **Band creation flow:** INSERT succeeded but SELECT failed (user not yet a member)
+2. **Band members:** Missing INSERT/UPDATE/DELETE policies
+3. **Events:** Missing UPDATE/DELETE policies
+4. **Invitations:** SELECT policy accessed `auth.users` directly, causing permission error
+
+#### Decision
+Apply 4 additional migrations to fix all RLS gaps using SECURITY DEFINER functions to safely access auth.users.
+
+#### Implementation
+```sql
+-- Helper functions (SECURITY DEFINER bypasses RLS)
+CREATE FUNCTION is_band_admin(p_band_id UUID, p_user_id UUID)
+CREATE FUNCTION get_user_email(p_user_id UUID)
+
+-- Bands: Allow creators to see their bands immediately after insert
+CREATE POLICY "Members or creators can view bands"
+  USING (created_by = auth.uid() OR id IN (SELECT ...))
+
+-- Invitations: Use helper function instead of direct auth.users access
+CREATE POLICY "Users can view invitations sent to their email"
+  USING (email = get_user_email(auth.uid()) OR ...)
+```
+
+#### Migrations Applied
+| # | Name | Purpose |
+|---|------|---------|
+| 21 | fix_all_rls_policies | Bands + band_members CRUD |
+| 22 | fix_remaining_rls | Events UPDATE/DELETE, helper functions |
+| 23 | fix_invitations_select_policy | Invitations SELECT via helper |
+| 24 | add_invitations_unique_constraint | Prevent duplicate pending invitations |
+
+#### Consequences
+- All 56 Vitest tests now pass
+- RLS coverage complete for all CRUD operations
+- SECURITY DEFINER functions handle auth.users access safely
+- Unique partial index prevents duplicate pending invitations
+
+---
+
+### DEC-017 - Vitest Version Downgrade
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Vitest 4.0.18 (latest) caused "No test suite found" errors on Windows, preventing any tests from running.
+
+#### Decision
+Downgrade to Vitest 2.1.9 which works reliably on Windows.
+
+#### Rationale
+- Vitest 4.x is very new and has known Windows issues (GitHub issues #7465, #2962)
+- Vitest 2.1.9 is stable and well-tested
+- Removed @vitejs/plugin-react from config (not needed for server-side tests)
+
+#### Consequences
+- Tests run successfully on Windows
+- CJS deprecation warning appears but doesn't affect functionality
+- May upgrade to Vitest 4.x when Windows issues are resolved
+
+---
+
 *Add new decisions at the bottom with incrementing ID*
