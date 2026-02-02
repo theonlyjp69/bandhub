@@ -388,4 +388,98 @@ if (!member) throw new Error('Access denied')
 
 ---
 
+### DEC-012 - Real-time Subscription Pattern
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Stage 5 required real-time messaging. Needed a pattern for subscribing to Supabase postgres_changes that properly handles React component lifecycle.
+
+#### Decision
+Create custom hook `useRealtimeMessages` that manages subscription lifecycle with proper cleanup.
+
+#### Rationale
+- Encapsulates subscription logic in reusable hook
+- Handles INSERT and DELETE events
+- Cleans up channel on unmount (prevents memory leaks)
+- Client-side filtering for null thread_id (Supabase realtime doesn't support is.null filter)
+- Supabase client is singleton, excluded from useEffect deps
+
+#### Implementation
+```typescript
+export function useRealtimeMessages(bandId: string, threadId?: string) {
+  const [messages, setMessages] = useState<Message[]>([])
+  const supabase = createClient()
+
+  useEffect(() => {
+    // Initial fetch
+    // Subscribe to INSERT/DELETE events
+    // Filter client-side for main chat
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bandId, threadId])  // Exclude supabase (singleton)
+
+  return messages
+}
+```
+
+#### Consequences
+- Clean API for consuming components
+- Proper resource cleanup
+- Real-time updates without polling
+- Requires Supabase realtime to be enabled on messages table
+
+---
+
+### DEC-013 - Input Validation Consistency
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Stage 5 code review found that communication server actions lacked the input validation pattern established in Stage 4 security hardening (type guards, length limits).
+
+#### Decision
+All server actions must include both type guards AND length limits on user-controlled string inputs.
+
+#### Rationale
+- Defense-in-depth: prevents both type coercion attacks and DoS via large payloads
+- Consistent pattern makes security audits easier
+- User-friendly error messages for invalid input
+- Database protection even if schema validation is bypassed
+
+#### Implementation
+```typescript
+// Type guards
+if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
+if (!content || typeof content !== 'string') throw new Error('Invalid content')
+
+// Length limits
+if (title.length > 200) throw new Error('Title too long (max 200)')
+if (content.length > 5000) throw new Error('Content too long (max 5000)')
+
+// Numeric limits for pagination
+if (typeof limit !== 'number' || limit < 1 || limit > 500) {
+  throw new Error('Invalid limit (must be 1-500)')
+}
+```
+
+#### Standard Limits
+| Field | Max Length |
+|-------|------------|
+| title | 200 |
+| content/description | 5000 |
+| location | 500 |
+| limit parameter | 1-500 |
+
+#### Consequences
+- All 33 server actions now follow same validation pattern
+- Predictable error messages
+- Small performance overhead for validation
+- 100% input validation compliance
+
+---
+
 *Add new decisions at the bottom with incrementing ID*
