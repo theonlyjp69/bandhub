@@ -42,14 +42,14 @@ export default function CreateBandPage() {
         Back to Dashboard
       </Link>
 
-      <Card>
+      <Card className="elevation-2 animate-fade-in">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-2">
             <div className="rounded-full bg-primary/10 p-3">
               <Music className="h-6 w-6 text-primary" />
             </div>
           </div>
-          <CardTitle>Create New Band</CardTitle>
+          <CardTitle className="text-headline">Create New Band</CardTitle>
           <CardDescription>
             Set up your band and start collaborating with your members
           </CardDescription>
@@ -72,6 +72,7 @@ export default function CreateBandPage() {
                 required
                 maxLength={100}
                 placeholder="Enter band name"
+                className="focus-ring-enhanced"
               />
             </div>
 
@@ -84,13 +85,14 @@ export default function CreateBandPage() {
                 maxLength={500}
                 rows={3}
                 placeholder="Describe your band (optional)"
+                className="focus-ring-enhanced"
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading || !name.trim()}
-              className="w-full"
+              className="w-full btn-gradient"
             >
               {loading ? 'Creating...' : 'Create Band'}
             </Button>

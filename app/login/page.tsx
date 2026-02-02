@@ -26,14 +26,14 @@ function LoginContent() {
       {/* Background gradient */}
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),transparent)]" />
 
-      <Card className="w-full max-w-sm border-border/50 bg-card/50 backdrop-blur">
+      <Card className="w-full max-w-sm border-border/50 bg-card/50 backdrop-blur elevation-3 animate-scale-in">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-2">
             <div className="rounded-full bg-primary/10 p-3">
               <Music className="h-8 w-8 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">BandHub</CardTitle>
+          <CardTitle className="text-headline text-gradient-primary">BandHub</CardTitle>
           <CardDescription className="text-muted-foreground">
             Your band&apos;s home base
           </CardDescription>
@@ -48,7 +48,7 @@ function LoginContent() {
           <Button
             onClick={handleLogin}
             variant="outline"
-            className="w-full h-11 gap-3 border-border hover:bg-accent hover:text-accent-foreground"
+            className="w-full h-11 gap-3 border-border hover:bg-accent hover:text-accent-foreground focus-ring-enhanced"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -88,14 +88,14 @@ function LoginSkeleton() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background p-4">
       <div className="absolute inset-0 -z-10 h-full w-full bg-background bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),transparent)]" />
-      <Card className="w-full max-w-sm border-border/50 bg-card/50 backdrop-blur">
+      <Card className="w-full max-w-sm border-border/50 bg-card/50 backdrop-blur elevation-3">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-2">
             <div className="rounded-full bg-primary/10 p-3">
               <Music className="h-8 w-8 text-primary" />
             </div>
           </div>
-          <CardTitle className="text-2xl font-bold">BandHub</CardTitle>
+          <CardTitle className="text-headline text-gradient-primary">BandHub</CardTitle>
           <CardDescription className="text-muted-foreground">
             Loading...
           </CardDescription>
