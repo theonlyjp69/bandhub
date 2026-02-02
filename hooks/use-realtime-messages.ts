@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database'
 
@@ -11,6 +11,17 @@ type Message = Database['public']['Tables']['messages']['Row'] & {
 export function useRealtimeMessages(bandId: string, threadId?: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const supabase = useMemo(() => createClient(), [])
+
+  // Optimistic add - for immediate UI feedback when user sends a message
+  const addMessage = useCallback((message: Message) => {
+    setMessages((prev) => {
+      // Avoid duplicates (in case realtime also delivers it)
+      if (prev.some((m) => m.id === message.id)) {
+        return prev
+      }
+      return [...prev, message]
+    })
+  }, [])
 
   useEffect(() => {
     // Initial fetch
@@ -67,7 +78,13 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
             .single()
 
           if (data) {
-            setMessages((prev) => [...prev, data as Message])
+            setMessages((prev) => {
+              // Avoid duplicates (optimistic update may have already added it)
+              if (prev.some((m) => m.id === data.id)) {
+                return prev
+              }
+              return [...prev, data as Message]
+            })
           }
         }
       )
@@ -91,5 +108,5 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bandId, threadId])
 
-  return messages
+  return { messages, addMessage }
 }

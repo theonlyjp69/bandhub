@@ -78,3 +78,33 @@ Exit code: 0
 [x] Tests pass (55/55)
 [x] Build succeeds
 [ ] Manual E2E verification (user to confirm)
+
+---
+
+## Follow-up Fix (2026-02-02)
+
+### Issue
+User reported: "When I send a message, it disappears after I click send. Nothing updates in the chat until I refresh the page."
+
+### Root Cause
+The original fix (memoizing the Supabase client) wasn't sufficient. The real issue was that:
+1. The chat relied entirely on realtime subscriptions to show messages
+2. Realtime subscriptions may not work reliably in all cases (filters, auth, timing)
+3. No optimistic UI update was implemented
+
+### Fix Applied
+Added optimistic updates:
+
+1. **Hook changes** (`hooks/use-realtime-messages.ts`):
+   - Now returns `{ messages, addMessage }` instead of just `messages`
+   - `addMessage` function adds message immediately with deduplication
+   - Realtime callback also checks for duplicates
+
+2. **ChatRoom changes** (`app/(app)/band/[id]/chat/chat-room.tsx`):
+   - Calls `addMessage(message)` immediately after `sendMessage()` succeeds
+   - Message appears instantly without waiting for realtime
+
+### Result
+- User's own messages now appear immediately after sending
+- Realtime still handles messages from other users (if working)
+- Deduplication prevents double messages

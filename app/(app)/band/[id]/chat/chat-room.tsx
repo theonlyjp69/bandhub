@@ -15,7 +15,7 @@ type Props = {
 }
 
 export function ChatRoom({ bandId, threadId }: Props) {
-  const messages = useRealtimeMessages(bandId, threadId)
+  const { messages, addMessage } = useRealtimeMessages(bandId, threadId)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
@@ -33,7 +33,8 @@ export function ChatRoom({ bandId, threadId }: Props) {
     setError('')
 
     try {
-      await sendMessage(bandId, input.trim(), threadId)
+      const message = await sendMessage(bandId, input.trim(), threadId)
+      addMessage(message) // Optimistic update - show immediately
       setInput('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send message')
