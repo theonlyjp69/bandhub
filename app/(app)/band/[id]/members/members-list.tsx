@@ -52,7 +52,7 @@ export function MembersList({ bandId, members, isAdmin, currentUserId }: Props) 
 
     try {
       await createInvitation(bandId, email)
-      setSuccess(`Invitation sent to ${email}`)
+      setSuccess(`Invitation created for ${email}. They can accept it after signing up.`)
       setEmail('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send invitation')

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database'
 
@@ -10,7 +10,7 @@ type Message = Database['public']['Tables']['messages']['Row'] & {
 
 export function useRealtimeMessages(bandId: string, threadId?: string) {
   const [messages, setMessages] = useState<Message[]>([])
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
     // Initial fetch
