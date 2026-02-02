@@ -1,11 +1,11 @@
 # Implementation Log - Stage 6: Integration Tests
 
 **Date:** 2026-02-01
-**Status:** In Progress (Infrastructure Complete)
+**Status:** ✅ Complete
 
 ## Overview
 
-Stage 6 implements comprehensive integration tests for all BandHub server actions and user flows. Test infrastructure is complete; awaiting test user setup.
+Stage 6 implements comprehensive integration tests for all BandHub server actions and user flows. All 56 Vitest tests pass with authenticated test users.
 
 ## Tasks Completed
 
@@ -46,12 +46,12 @@ npx playwright install chromium
 | unauthenticated user cannot create band | RLS blocks | Pass |
 | unauthenticated user cannot read messages | RLS blocks | Pass |
 | unauthenticated user cannot read band_members | RLS blocks | Pass |
-| authenticated user has valid session | Session check | Skip* |
-| authenticated user has profile | Profile exists | Skip* |
-| sign out clears session | Session cleared | Skip* |
-| sign out requires auth | Auth check | Skip* |
+| authenticated user has valid session | Session check | Pass |
+| authenticated user has profile | Profile exists | Pass |
+| sign out clears session | Session cleared | Pass |
+| sign out requires auth | Auth check | Pass |
 
-*Requires TEST_USER_* credentials
+All tests now pass with configured test credentials.
 
 ### Task 6.3: Band Management Tests
 
@@ -61,16 +61,16 @@ npx playwright install chromium
 |------|-------------|--------|
 | unauthenticated user cannot create band | RLS blocks | Pass |
 | unauthenticated user cannot view bands | RLS returns empty | Pass |
-| create band makes user admin | Creator → admin | Skip* |
-| can view band after creating | Band visible | Skip* |
-| can view band members | Members visible | Skip* |
-| admin can create invitation | Invitation works | Skip* |
-| cannot create duplicate pending invitation | Unique constraint | Skip* |
-| member can view band | Access allowed | Skip* |
-| member can view band members | Access allowed | Skip* |
-| non-admin cannot update roles via RLS | RLS blocks | Skip* |
-| user cannot see bands they are not a member of | RLS isolation | Skip* |
-| user cannot see members of bands they are not in | RLS isolation | Skip* |
+| create band makes user admin | Creator → admin | Pass |
+| can view band after creating | Band visible | Pass |
+| can view band members | Members visible | Pass |
+| admin can create invitation | Invitation works | Pass |
+| cannot create duplicate pending invitation | Unique constraint | Pass |
+| member can view band | Access allowed | Pass |
+| member can view band members | Access allowed | Pass |
+| non-admin cannot update roles via RLS | RLS blocks | Pass |
+| user cannot see bands they are not a member of | RLS isolation | Pass |
+| user cannot see members of bands they are not in | RLS isolation | Pass |
 
 ### Task 6.4: Events Flow Tests
 
@@ -80,19 +80,19 @@ npx playwright install chromium
 |------|-------------|--------|
 | unauthenticated user cannot view events | RLS blocks | Pass |
 | unauthenticated user cannot create events | RLS blocks | Pass |
-| create event with all fields | Full event | Skip* |
-| get event with details | Event details | Skip* |
-| update event | Event update | Skip* |
-| get band events | List events | Skip* |
-| delete event | Event deletion | Skip* |
-| create RSVP | RSVP creation | Skip* |
-| RSVP upsert works | RSVP update | Skip* |
-| get event RSVPs | RSVP list | Skip* |
-| delete RSVP | RSVP deletion | Skip* |
-| create rehearsal event | Rehearsal type | Skip* |
-| create deadline event | Deadline type | Skip* |
-| create other event type | Other type | Skip* |
-| deleting event cascades RSVPs | Cascade delete | Skip* |
+| create event with all fields | Full event | Pass |
+| get event with details | Event details | Pass |
+| update event | Event update | Pass |
+| get band events | List events | Pass |
+| delete event | Event deletion | Pass |
+| create RSVP | RSVP creation | Pass |
+| RSVP upsert works | RSVP update | Pass |
+| get event RSVPs | RSVP list | Pass |
+| delete RSVP | RSVP deletion | Pass |
+| create rehearsal event | Rehearsal type | Pass |
+| create deadline event | Deadline type | Pass |
+| create other event type | Other type | Pass |
+| deleting event cascades RSVPs | Cascade delete | Pass |
 
 ### Task 6.5: Communication Flow Tests
 
@@ -104,22 +104,22 @@ npx playwright install chromium
 | unauthenticated user cannot view threads | RLS blocks | Pass |
 | unauthenticated user cannot view messages | RLS blocks | Pass |
 | unauthenticated user cannot create announcement | RLS blocks | Pass |
-| admin can create announcement | Admin-only | Skip* |
-| member cannot create announcement | RLS blocks | Skip* |
-| member can view announcements | Access allowed | Skip* |
-| admin can delete announcement | Deletion works | Skip* |
-| member can create thread | Thread creation | Skip* |
-| can get band threads | Thread list | Skip* |
-| can get single thread | Thread details | Skip* |
-| can delete thread | Thread deletion | Skip* |
-| can send message to main chat | Main chat | Skip* |
-| can send message to thread | Thread message | Skip* |
-| messages are separate by thread | Isolation | Skip* |
-| can get messages with profile info | Join query | Skip* |
-| can delete own message | Self-delete | Skip* |
-| member can view messages | Access allowed | Skip* |
-| admin can delete member message | Admin delete | Skip* |
-| deleting thread cascades messages | Cascade delete | Skip* |
+| admin can create announcement | Admin-only | Pass |
+| member cannot create announcement | RLS blocks | Pass |
+| member can view announcements | Access allowed | Pass |
+| admin can delete announcement | Deletion works | Pass |
+| member can create thread | Thread creation | Pass |
+| can get band threads | Thread list | Pass |
+| can get single thread | Thread details | Pass |
+| can delete thread | Thread deletion | Pass |
+| can send message to main chat | Main chat | Pass |
+| can send message to thread | Thread message | Pass |
+| messages are separate by thread | Isolation | Pass |
+| can get messages with profile info | Join query | Pass |
+| can delete own message | Self-delete | Pass |
+| member can view messages | Access allowed | Pass |
+| admin can delete member message | Admin delete | Pass |
+| deleting thread cascades messages | Cascade delete | Pass |
 
 ### Task 6.6: E2E Tests (Playwright)
 
@@ -185,38 +185,51 @@ CREATE POLICY "Members can view band members"
 ## Test Results Summary
 
 ```
-✓ 12 tests pass (unauthenticated access tests)
-↓ 43 tests skipped (waiting for TEST_USER_* credentials)
+✓ All 56 tests passing
 ```
 
 **All Test Suites:**
 ```
-✓ tests/auth.test.ts (8 tests | 4 skipped)
-✓ tests/bands.test.ts (12 tests | 10 skipped)
-✓ tests/events.test.ts (15 tests | 13 skipped)
-✓ tests/communication.test.ts (20 tests | 16 skipped)
+✓ tests/auth.test.ts (8 tests)
+✓ tests/bands.test.ts (12 tests)
+✓ tests/events.test.ts (15 tests)
+✓ tests/communication.test.ts (20 tests)
+✓ tests/simple.test.ts (1 test)
 
-Test Files: 4 passed (4)
-Tests: 12 passed | 43 skipped (55)
+Test Files: 5 passed (5)
+Tests: 56 passed (56)
 ```
 
-## Blocking Issue
+## RLS Policy Fixes Applied
 
-**Test users need to be created in Supabase Dashboard.**
+During testing with authenticated users, multiple RLS policy gaps were discovered and fixed:
 
-### Steps to Complete:
+### Migration 21: fix_all_rls_policies
+- Bands INSERT: `created_by = auth.uid()`
+- Bands SELECT: Allow creators to view immediately after insert
+- Band members INSERT: Creators can add themselves, admins can add others
+- Band members UPDATE/DELETE: Admin-only operations
 
-1. Go to Supabase Dashboard → Authentication → Users → Add User
-2. Create `test1@bandhub.test` with password
-3. Create `test2@bandhub.test` with password
-4. Add credentials to `.env.local`:
-   ```env
-   TEST_USER_1_EMAIL=test1@bandhub.test
-   TEST_USER_1_PASSWORD=your-password-1
-   TEST_USER_2_EMAIL=test2@bandhub.test
-   TEST_USER_2_PASSWORD=your-password-2
-   ```
-5. Run `npm run test:run` - all 55 tests should pass
+### Migration 22: fix_remaining_rls
+- Events UPDATE/DELETE: Admin-only policies
+- Helper function: `is_band_admin(band_id, user_id)` SECURITY DEFINER
+- Helper function: `get_user_email(user_id)` SECURITY DEFINER
+
+### Migration 23: fix_invitations_select_policy
+- Fixed "permission denied for table users" error
+- Invitations SELECT uses `get_user_email()` instead of direct auth.users access
+
+### Migration 24: add_invitations_unique_constraint
+- Partial unique index on (band_id, email) WHERE status = 'pending'
+- Prevents duplicate pending invitations
+
+## Vitest Version Issue
+
+**Problem:** Vitest 4.0.18 caused "No test suite found" errors on Windows.
+
+**Solution:** Downgraded to Vitest 2.1.9 and removed @vitejs/plugin-react (not needed for server-side tests).
+
+See DEC-017 in decisions-log.md for details.
 
 ## Files Created/Modified
 
@@ -238,10 +251,31 @@ Tests: 12 passed | 43 skipped (55)
 - `package.json` - Added test scripts and dependencies
 - `package-lock.json` - Updated dependencies
 
-## Next Steps
+## Completion Summary
 
-1. Create test users in Supabase (user action)
-2. Run full test suite with credentials
-3. Verify all 55 tests pass
-4. Run E2E tests with dev server
-5. Proceed to Stage 7: Functional UI
+### Test Users Created
+- `test1@bandhub.test` - Admin user for tests
+- `test2@bandhub.test` - Member user for permission tests
+
+### Migrations Applied
+| Migration | Purpose |
+|-----------|---------|
+| 20260201000016 | Fix band_members RLS recursion |
+| 20260201000021 | Bands/band_members full CRUD policies |
+| 20260201000022 | Events UPDATE/DELETE, helper functions |
+| 20260201000023 | Invitations SELECT via SECURITY DEFINER |
+| 20260201000024 | Unique constraint on pending invitations |
+
+### Final Test Results
+- **56 Vitest tests**: All passing
+- **11 E2E tests**: Scaffolded for Stage 7
+
+### Run Tests
+```bash
+npm run test:run    # 56 tests pass
+npm run test:e2e    # E2E (requires dev server)
+```
+
+## Next Stage
+
+**Stage 7: Functional UI** - Build the user interface components.
