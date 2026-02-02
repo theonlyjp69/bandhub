@@ -1,5 +1,7 @@
 # Security Remediation Plan
 
+> **Historical Document** - Security issues documented here were resolved during Stages 3-5 (2026-02-01). Retained for audit trail.
+
 > **References:** [CLAUDE.md](../CLAUDE.md) | [docs/03-logs/security-audit-stage3.md](../docs/03-logs/security-audit-stage3.md) | [MASTER-PLAN.md](./MASTER-PLAN.md)
 
 ## Context

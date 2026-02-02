@@ -264,7 +264,7 @@ const ALLOWED_MIME_TYPES = [
 
 ### Plan Reference
 
-See [2026-02-01-security-remediation-stage4.md](../../plans/2026-02-01-security-remediation-stage4.md) for full plan.
+See [SECURITY-REMEDIATION.md](../../plans/SECURITY-REMEDIATION.md) for full plan.
 
 ---
 

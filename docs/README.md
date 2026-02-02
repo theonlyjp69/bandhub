@@ -11,7 +11,7 @@ Welcome to the BandHub documentation. This structure follows a 5-tier hierarchy 
 | Understand the project | [00-context/vision.md](00-context/vision.md) |
 | See product requirements | [01-product/prd.md](01-product/prd.md) |
 | Read feature specs | [02-features/](02-features/) |
-| Check implementation progress | [03-logs/security/implementation-logs/](03-logs/security/implementation-logs/) |
+| Check implementation progress | [03-logs/implementation-logs/](03-logs/implementation-logs/) |
 | Learn the workflow | [04-process/dev-workflow.md](04-process/dev-workflow.md) |
 | See development plans | [../plans/MASTER-PLAN.md](../plans/MASTER-PLAN.md) |
 
@@ -19,9 +19,9 @@ Welcome to the BandHub documentation. This structure follows a 5-tier hierarchy 
 
 ## Current Status
 
-**Stage 4 Complete** → Ready for **Stage 5: Communication Backend**
+**Stage 8 Complete** → Ready for **Stage 9: Deploy**
 
-✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | **Communication** | Tests | UI | Polish | Deploy
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | ✓ UI | ✓ Polish | **Deploy**
 
 ---
 
@@ -94,12 +94,14 @@ docs/
 | Communication | [communication/](02-features/communication/) | feature-spec.md |
 | **Security** | [security/](02-features/security/) | feature-spec.md |
 
+> **Note:** tech-design.md files exist only for features requiring detailed technical design (auth, events, availability, files). Other features follow the same patterns documented in those files.
+
 ### 03-logs: Project Memory
 **Purpose:** Track what happened and why.
 
 | Path | Description |
 |------|-------------|
-| [implementation-log-stage4.md](03-logs/implementation-log-stage4.md) | Stage 4 implementation details |
+| [implementation-logs/](03-logs/implementation-logs/) | Implementation logs by stage |
 | [security/](03-logs/security/) | Security audits and implementation logs |
 | [code-review/](03-logs/code-review/) | Code review logs by stage |
 | [decisions-log.md](03-logs/decisions-log.md) | Architecture Decision Records (DEC-001 to DEC-010) |
@@ -130,11 +132,11 @@ The detailed stage-by-stage implementation plans are in `/plans`:
 | 2 | [STAGE-2-AUTH.md](../plans/STAGE-2-AUTH.md) | Authentication | ✓ |
 | 3 | [STAGE-3-BANDS.md](../plans/STAGE-3-BANDS.md) | Band management | ✓ |
 | 4 | [STAGE-4-EVENTS.md](../plans/STAGE-4-EVENTS.md) | Events & availability | ✓ |
-| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication | **Next** |
-| 6 | [STAGE-6-TESTS.md](../plans/STAGE-6-TESTS.md) | Testing | - |
-| 7 | [STAGE-7-UI.md](../plans/STAGE-7-UI.md) | Functional UI | - |
-| 8 | [STAGE-8-POLISH.md](../plans/STAGE-8-POLISH.md) | Styling & polish | - |
-| 9 | [STAGE-9-DEPLOY.md](../plans/STAGE-9-DEPLOY.md) | Deployment | - |
+| 5 | [STAGE-5-COMMUNICATION.md](../plans/STAGE-5-COMMUNICATION.md) | Communication | ✓ |
+| 6 | [STAGE-6-TESTS.md](../plans/STAGE-6-TESTS.md) | Testing | ✓ |
+| 7 | [STAGE-7-UI.md](../plans/STAGE-7-UI.md) | Functional UI | ✓ |
+| 8 | [STAGE-8-POLISH.md](../plans/STAGE-8-POLISH.md) | Styling & polish | ✓ |
+| 9 | [STAGE-9-DEPLOY.md](../plans/STAGE-9-DEPLOY.md) | Deployment | **Next** |
 
 ---
 
@@ -155,7 +157,7 @@ The detailed stage-by-stage implementation plans are in `/plans`:
 2. Each feature has specs and technical design
 
 ### Tracking progress?
-1. Update [03-logs/implementation-log.md](03-logs/implementation-log.md)
+1. Update logs in [03-logs/implementation-logs/](03-logs/implementation-logs/)
 2. Log decisions in [03-logs/decisions-log.md](03-logs/decisions-log.md)
 3. Update [00-context/system-state.md](00-context/system-state.md) at checkpoints
 
@@ -209,4 +211,4 @@ See [02-features/security/](02-features/security/) for full documentation.
 
 ---
 
-*Last updated: 2026-02-01*
+*Last updated: 2026-02-02*
