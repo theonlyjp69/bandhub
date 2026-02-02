@@ -4,9 +4,9 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 
 ## Status
 
-**Stage 6 Complete** → Ready for **Stage 7: UI Implementation**
+**Stage 7 Complete** → Ready for **Stage 8: Polish**
 
-✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | **UI** | Deploy
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | ✓ UI | **Polish** | Deploy
 
 ## Tech Stack
 
@@ -37,20 +37,31 @@ npm run test:e2e:ui  # E2E tests with UI
 ```
 actions/     # 11 server action files
 hooks/       # React hooks (realtime)
-app/         # Next.js pages
+app/         # Next.js pages (20 routes)
+  ├── (app)/             # Protected routes (auth required)
+  │   ├── layout.tsx     # Header, nav, sign out
+  │   ├── dashboard/     # Band list, invitations
+  │   ├── create-band/   # Create band form
+  │   ├── invitations/   # Accept/decline invitations
+  │   └── band/[id]/     # Band pages
+  │       ├── page.tsx           # Band home
+  │       ├── members/           # Member list, invite
+  │       ├── calendar/          # Event list
+  │       ├── events/new/        # Create event
+  │       ├── events/[eventId]/  # Event details, RSVP
+  │       ├── announcements/     # Announcements
+  │       ├── chat/              # Real-time chat
+  │       ├── threads/           # Discussion threads
+  │       ├── threads/[threadId]/ # Thread messages
+  │       ├── availability/      # Availability polls
+  │       ├── availability/new/  # Create poll
+  │       ├── availability/[pollId]/ # Poll voting
+  │       └── files/             # File upload/download
+  └── login/             # Google OAuth login
 components/  # shadcn/ui components
 lib/         # Supabase clients
 supabase/    # 16 migrations
-tests/       # Test suites (Stage 6)
-  ├── setup.ts           # Test configuration
-  ├── helpers.ts         # Test utilities
-  ├── auth.test.ts       # Auth tests (8)
-  ├── bands.test.ts      # Band tests (12)
-  ├── events.test.ts     # Event tests (15)
-  ├── communication.test.ts  # Communication tests (20)
-  └── e2e/               # Playwright E2E tests
-      ├── navigation.spec.ts  # Navigation tests (3)
-      └── full-flow.spec.ts   # Full flow tests (8)
+tests/       # Test suites (55 tests)
 docs/        # 5-tier documentation
 plans/       # Stage 0-9 plans
 ```
@@ -121,7 +132,7 @@ export async function action(id: string) {
 | docs/03-logs/ | Implementation, security audits, code reviews |
 | docs/04-process/ | Workflow, definition of done |
 
-## Tests (Stage 6 Complete)
+## Tests
 
 | File | Tests | Status |
 |------|-------|--------|
@@ -129,8 +140,7 @@ export async function action(id: string) {
 | bands.test.ts | 12 | ✅ All passing |
 | events.test.ts | 15 | ✅ All passing |
 | communication.test.ts | 20 | ✅ All passing |
-| simple.test.ts | 1 | ✅ Passing |
-| **Total Vitest** | **56** | **✅ All passing** |
+| **Total Vitest** | **55** | **✅ All passing** |
 | navigation.spec.ts | 3 | E2E scaffolded |
 | full-flow.spec.ts | 8 | E2E scaffolded |
 
@@ -142,8 +152,9 @@ export async function action(id: string) {
 |-------|-------|--------|
 | 0-5 | Research → Communication | ✓ Complete |
 | 6 | Integration Tests | ✓ Complete |
-| 7 | UI Implementation | **Next** |
-| 8-9 | Polish → Deploy | Pending |
+| 7 | UI Implementation | ✓ Complete |
+| 8 | Polish | **Next** |
+| 9 | Deploy | Pending |
 
 See `plans/MASTER-PLAN.md` for details.
 
@@ -159,4 +170,4 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 - **Master Plan:** plans/MASTER-PLAN.md
 - **PRD:** docs/01-product/prd.md
 - **System State:** docs/00-context/system-state.md
-- **Stage 6 Plan:** plans/STAGE-6-TESTS.md
+- **Stage 7 Plan:** plans/STAGE-7-UI.md
