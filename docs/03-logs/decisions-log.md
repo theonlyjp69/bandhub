@@ -651,4 +651,180 @@ Downgrade to Vitest 2.1.9 which works reliably on Windows.
 
 ---
 
+### DEC-018 - Server/Client Component Split
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Stage 7 UI implementation required deciding how to split React components between Server Components (for data fetching) and Client Components (for interactivity).
+
+#### Decision
+Use Server Components as page wrappers for data fetching, passing data to Client Components for interactive features.
+
+#### Rationale
+- Server Components reduce client bundle size
+- Data fetching happens at request time (no loading states for initial data)
+- Client Components handle forms, buttons, real-time updates
+- Clear separation of concerns
+
+#### Implementation
+```
+page.tsx (Server Component)
+├── getData() calls
+└── <InteractiveComponent data={data} /> (Client Component)
+```
+
+#### Examples
+| Page | Server Component | Client Component |
+|------|------------------|------------------|
+| Files | `files/page.tsx` | `files-list.tsx` |
+| Members | `members/page.tsx` | `members-list.tsx` |
+| Chat | `chat/page.tsx` | `chat-room.tsx` |
+
+#### Consequences
+- Must pass all needed data as props
+- Can't use hooks in Server Components
+- Clear boundaries for data/interactivity
+
+---
+
+### DEC-019 - Route Group for Protected Pages
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Needed to protect all authenticated routes while maintaining clean URL structure (no `/app` prefix in URLs).
+
+#### Decision
+Use Next.js route group `(app)` to wrap protected routes with a shared layout that performs auth checks.
+
+#### Rationale
+- Route groups don't affect URL structure
+- Single layout handles auth redirect for all protected routes
+- Shared header/navigation without duplication
+- Follows Next.js 15 App Router conventions
+
+#### Implementation
+```
+app/
+├── (app)/                    # Protected routes
+│   ├── layout.tsx            # Auth check, redirect to /login if needed
+│   ├── dashboard/page.tsx    # URL: /dashboard
+│   └── band/[id]/...         # URL: /band/123
+└── login/page.tsx            # Public
+```
+
+#### Layout Auth Pattern
+```typescript
+// app/(app)/layout.tsx
+const { data: { user } } = await supabase.auth.getUser()
+if (!user) {
+  redirect('/login')
+}
+```
+
+#### Consequences
+- All child routes automatically protected
+- Single point of auth logic
+- Clean URLs without /app prefix
+- Header/navigation rendered once
+
+---
+
+### DEC-020 - ChatRoom Component Reuse
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Both main chat and thread messages need real-time messaging with identical UI patterns.
+
+#### Decision
+Create single `ChatRoom` component that accepts optional `threadId` prop, reused for both contexts.
+
+#### Rationale
+- DRY principle: identical messaging logic
+- `useRealtimeMessages` hook already supports optional threadId
+- Consistent UX across chat and threads
+- Single place to fix bugs or add features
+
+#### Implementation
+```typescript
+// chat-room.tsx
+type Props = {
+  bandId: string
+  threadId?: string  // Optional - null for main chat
+}
+
+export function ChatRoom({ bandId, threadId }: Props) {
+  const messages = useRealtimeMessages(bandId, threadId)
+  // ... same UI for both contexts
+}
+
+// Usage in main chat
+<ChatRoom bandId={id} />
+
+// Usage in thread
+<ChatRoom bandId={id} threadId={threadId} />
+```
+
+#### Consequences
+- One component handles two use cases
+- Must handle subtle differences (e.g., back link destination)
+- Easy to maintain and enhance
+
+---
+
+### DEC-021 - Form State Pattern with useActionState
+**Date:** 2026-02-01
+**Status:** Accepted
+
+#### Context
+Forms throughout Stage 7 UI needed consistent handling of loading states, errors, and success feedback.
+
+#### Decision
+Use `useState` for form state with try/catch pattern around server actions.
+
+#### Rationale
+- Simple pattern that works with Next.js Server Actions
+- Consistent error display across all forms
+- Loading state prevents double submission
+- Easy to understand and maintain
+
+#### Implementation
+```typescript
+const [error, setError] = useState('')
+const [loading, setLoading] = useState(false)
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setError('')
+  setLoading(true)
+
+  try {
+    await serverAction(formData)
+    router.refresh()  // or redirect
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Something went wrong')
+  } finally {
+    setLoading(false)
+  }
+}
+```
+
+#### UI Pattern
+```tsx
+{error && <div className="error">{error}</div>}
+<button disabled={loading}>
+  {loading ? 'Submitting...' : 'Submit'}
+</button>
+```
+
+#### Consequences
+- Consistent UX across all forms
+- No external state library needed
+- Errors from server actions display cleanly
+- Forms disable during submission
+
+---
+
 *Add new decisions at the bottom with incrementing ID*

@@ -165,9 +165,15 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 ```
 
+## Code Reviews
+
+All stages have been code reviewed. See `docs/03-logs/code-review/review-logs/`:
+- Stages 1-5: Security patterns, input validation, RLS policies
+- **Stage 7:** UI implementation - 24 files, 20 routes, PASSED
+
 ## Quick Links
 
 - **Master Plan:** plans/MASTER-PLAN.md
 - **PRD:** docs/01-product/prd.md
 - **System State:** docs/00-context/system-state.md
-- **Stage 7 Plan:** plans/STAGE-7-UI.md
+- **Stage 7 Review:** docs/03-logs/code-review/review-logs/code-review-stage7.md
