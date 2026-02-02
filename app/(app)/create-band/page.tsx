@@ -4,6 +4,12 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createBand } from '@/actions/bands'
 import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { ArrowLeft, Music } from 'lucide-react'
 
 export default function CreateBandPage() {
   const router = useRouter()
@@ -27,61 +33,70 @@ export default function CreateBandPage() {
   }
 
   return (
-    <div className="max-w-lg">
-      <div className="mb-6">
-        <Link href="/dashboard" className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Dashboard
-        </Link>
-      </div>
+    <div className="max-w-lg mx-auto">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
 
-      <h1 className="text-2xl font-bold text-white mb-6">Create New Band</h1>
+      <Card>
+        <CardHeader className="text-center">
+          <div className="flex justify-center mb-2">
+            <div className="rounded-full bg-primary/10 p-3">
+              <Music className="h-6 w-6 text-primary" />
+            </div>
+          </div>
+          <CardTitle>Create New Band</CardTitle>
+          <CardDescription>
+            Set up your band and start collaborating with your members
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="mb-4 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
+              {error}
+            </div>
+          )}
 
-      {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
-          {error}
-        </div>
-      )}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Band Name *</Label>
+              <Input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                maxLength={100}
+                placeholder="Enter band name"
+              />
+            </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-1">
-            Band Name *
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            maxLength={100}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            placeholder="Enter band name"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={500}
+                rows={3}
+                placeholder="Describe your band (optional)"
+              />
+            </div>
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-zinc-300 mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={500}
-            rows={3}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500 resize-none"
-            placeholder="Describe your band (optional)"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading || !name.trim()}
-          className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 disabled:cursor-not-allowed text-white rounded-lg"
-        >
-          {loading ? 'Creating...' : 'Create Band'}
-        </button>
-      </form>
+            <Button
+              type="submit"
+              disabled={loading || !name.trim()}
+              className="w-full"
+            >
+              {loading ? 'Creating...' : 'Create Band'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

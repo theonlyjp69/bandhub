@@ -3,6 +3,11 @@
 import { useState, useRef, useEffect } from 'react'
 import { useRealtimeMessages } from '@/hooks/use-realtime-messages'
 import { sendMessage } from '@/actions/messages'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { MessageSquare, Send } from 'lucide-react'
 
 type Props = {
   bandId: string
@@ -45,64 +50,66 @@ export function ChatRoom({ bandId, threadId }: Props) {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <Card className="flex flex-col flex-1 overflow-hidden">
+      <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 ? (
-          <div className="text-center text-zinc-500 py-8">
-            No messages yet. Start the conversation!
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <MessageSquare className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground">No messages yet. Start the conversation!</p>
           </div>
         ) : (
           messages.map((message) => (
             <div key={message.id} className="flex gap-3">
-              <div className="w-8 h-8 bg-zinc-700 rounded-full flex-shrink-0 flex items-center justify-center text-zinc-300 text-sm">
-                {message.profiles?.display_name?.[0]?.toUpperCase() || '?'}
-              </div>
+              <Avatar className="h-8 w-8">
+                <AvatarImage src={message.profiles?.avatar_url || undefined} />
+                <AvatarFallback className="text-xs">
+                  {message.profiles?.display_name?.[0]?.toUpperCase() || '?'}
+                </AvatarFallback>
+              </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="font-medium text-white">
+                  <span className="font-medium">
                     {message.profiles?.display_name || 'Unknown'}
                   </span>
-                  <span className="text-xs text-zinc-500">
+                  <span className="text-xs text-muted-foreground">
                     {message.created_at && new Date(message.created_at).toLocaleTimeString('en-US', {
                       hour: 'numeric',
                       minute: '2-digit'
                     })}
                   </span>
                 </div>
-                <p className="text-zinc-300 whitespace-pre-wrap break-words">{message.content}</p>
+                <p className="text-muted-foreground whitespace-pre-wrap break-words">{message.content}</p>
               </div>
             </div>
           ))
         )}
         <div ref={messagesEndRef} />
-      </div>
+      </CardContent>
 
       {error && (
-        <div className="px-4 py-2 bg-red-900/50 text-red-300 text-sm">
+        <div className="px-4 py-2 text-sm text-destructive bg-destructive/10 border-t border-destructive/20">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSend} className="p-4 border-t border-zinc-800">
+      <form onSubmit={handleSend} className="p-4 border-t">
         <div className="flex gap-2">
-          <input
+          <Input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             maxLength={5000}
-            className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
+            className="flex-1"
           />
-          <button
-            type="submit"
-            disabled={!input.trim() || sending}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 disabled:cursor-not-allowed text-white rounded-lg"
-          >
-            {sending ? '...' : 'Send'}
-          </button>
+          <Button type="submit" disabled={!input.trim() || sending}>
+            <Send className="h-4 w-4" />
+          </Button>
         </div>
       </form>
-    </div>
+    </Card>
   )
 }

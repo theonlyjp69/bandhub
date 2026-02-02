@@ -4,6 +4,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createThread } from '@/actions/threads'
 import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { MessageCircle, MessagesSquare, Plus } from 'lucide-react'
 
 type Thread = {
   id: string
@@ -42,64 +46,77 @@ export function ThreadsList({ bandId, threads }: Props) {
   }
 
   return (
-    <div>
-      <div className="mb-6 p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
-        <h2 className="text-lg font-medium text-white mb-4">Start a New Thread</h2>
-        <form onSubmit={handleCreate} className="flex gap-2">
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Thread title..."
-            maxLength={200}
-            className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-          />
-          <button
-            type="submit"
-            disabled={loading || !title.trim()}
-            className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 text-white rounded-lg"
-          >
-            {loading ? 'Creating...' : 'Create'}
-          </button>
-        </form>
-        {error && (
-          <p className="mt-2 text-red-400 text-sm">{error}</p>
-        )}
-      </div>
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="pb-4">
+          <CardTitle className="text-lg">Start a New Thread</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleCreate} className="flex gap-2">
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Thread title..."
+              maxLength={200}
+              className="flex-1"
+            />
+            <Button type="submit" disabled={loading || !title.trim()}>
+              <Plus className="mr-2 h-4 w-4" />
+              {loading ? 'Creating...' : 'Create'}
+            </Button>
+          </form>
+          {error && (
+            <p className="mt-2 text-destructive text-sm">{error}</p>
+          )}
+        </CardContent>
+      </Card>
 
       {threads.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-zinc-500">No threads yet. Start a discussion!</p>
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <MessagesSquare className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-medium mb-2">No threads yet</h3>
+            <p className="text-muted-foreground text-center">
+              Start a discussion with your band above.
+            </p>
+          </CardContent>
+        </Card>
       ) : (
-        <ul className="space-y-3">
+        <div className="space-y-3">
           {threads.map((thread) => {
             const messageCount = thread.messages?.[0]?.count || 0
             return (
-              <li key={thread.id}>
-                <Link
-                  href={`/band/${bandId}/threads/${thread.id}`}
-                  className="block p-4 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-zinc-700"
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-white font-medium">{thread.title}</h3>
-                      <p className="text-zinc-500 text-sm mt-1">
-                        Started by {thread.profiles?.display_name || 'Unknown'}
-                        {thread.created_at && (
-                          <> &middot; {new Date(thread.created_at).toLocaleDateString()}</>
-                        )}
-                      </p>
+              <Link key={thread.id} href={`/band/${bandId}/threads/${thread.id}`}>
+                <Card className="hover:border-primary/50 transition-colors">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-start gap-3">
+                        <div className="rounded-full bg-primary/10 p-2 mt-0.5">
+                          <MessageCircle className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <h3 className="font-medium">{thread.title}</h3>
+                          <p className="text-muted-foreground text-sm mt-1">
+                            Started by {thread.profiles?.display_name || 'Unknown'}
+                            {thread.created_at && (
+                              <> · {new Date(thread.created_at).toLocaleDateString()}</>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-muted-foreground text-sm">
+                        {messageCount} {messageCount === 1 ? 'reply' : 'replies'}
+                      </span>
                     </div>
-                    <span className="text-zinc-400 text-sm">
-                      {messageCount} {messageCount === 1 ? 'reply' : 'replies'}
-                    </span>
-                  </div>
-                </Link>
-              </li>
+                  </CardContent>
+                </Card>
+              </Link>
             )
           })}
-        </ul>
+        </div>
       )}
     </div>
   )

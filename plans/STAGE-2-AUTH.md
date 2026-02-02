@@ -9,7 +9,7 @@ You are building **BandHub**. The database is ready (Stage 1). Now you implement
 **Prerequisites:** Stage 1 complete, all tables created.
 
 **Research References:**
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - Supabase SSR auth helpers (@supabase/ssr)
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - Supabase SSR auth helpers (@supabase/ssr)
 
 ---
 

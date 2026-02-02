@@ -49,7 +49,7 @@ Research competitors, best practices, and open source resources. Document findin
 - What are their strengths/weaknesses?
 - What gaps can we fill?
 
-**Output:** `C:\Users\jpcoo\docs\research\competitor-analysis.md`
+**Output:** `docs/03-logs/research/competitor-analysis.md`
 
 ---
 
@@ -62,7 +62,7 @@ Research competitors, best practices, and open source resources. Document findin
 - Board vs list vs timeline views
 - What works for small teams?
 
-**Output:** `C:\Users\jpcoo\docs\research\task-management-patterns.md`
+**Output:** `docs/03-logs/research/task-management-patterns.md`
 
 ---
 
@@ -76,7 +76,7 @@ Research competitors, best practices, and open source resources. Document findin
 - Availability polling approaches
 - Recurring events
 
-**Output:** `C:\Users\jpcoo\docs\research\event-management-patterns.md`
+**Output:** `docs/03-logs/research/event-management-patterns.md`
 
 ---
 
@@ -93,7 +93,7 @@ Research competitors, best practices, and open source resources. Document findin
 - Navigation patterns
 - Dark mode approach
 
-**Output:** `C:\Users\jpcoo\docs\research\ui-ux-guidelines.md`
+**Output:** `docs/03-logs/research/ui-ux-guidelines.md`
 
 ---
 
@@ -107,7 +107,7 @@ Research competitors, best practices, and open source resources. Document findin
 - Presence indicators
 - Message formatting
 
-**Output:** `C:\Users\jpcoo\docs\research\communication-patterns.md`
+**Output:** `docs/03-logs/research/communication-patterns.md`
 
 ---
 
@@ -132,7 +132,7 @@ npm search @supabase
 - NPM packages to add
 - License compatibility
 
-**Output:** `C:\Users\jpcoo\docs\research\github-resources.md`
+**Output:** `docs/03-logs/research/github-resources.md`
 
 ---
 
@@ -155,7 +155,7 @@ Before proceeding, verify:
 
 **Use agent:** `market-researcher`
 
-Create `C:\Users\jpcoo\docs\research\research-synthesis.md` answering:
+Create `docs/03-logs/research/research-synthesis.md` answering:
 
 1. **New features to add?** What did competitors have that we should include?
 2. **Features to remove?** What's unnecessary for MVP?
@@ -181,7 +181,7 @@ Present your recommendations to the user using `AskUserQuestion`:
 
 ## When Complete
 
-1. All 6 research documents exist in `C:\Users\jpcoo\docs\research\`
+1. All 6 research documents exist in `docs/03-logs/research/`
 2. `research-synthesis.md` summarizes recommendations
 3. User has approved the recommendations
 4. Update the master plan if features changed

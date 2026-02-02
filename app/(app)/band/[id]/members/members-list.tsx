@@ -4,6 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createInvitation } from '@/actions/invitations'
 import { removeMember, updateMemberRole } from '@/actions/members'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { UserPlus, Trash2, Shield, User } from 'lucide-react'
 
 type Member = {
   id: string
@@ -78,86 +91,111 @@ export function MembersList({ bandId, members, isAdmin, currentUserId }: Props) 
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       {isAdmin && (
-        <div className="mb-6 p-4 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <h2 className="text-lg font-medium text-white mb-4">Invite New Member</h2>
-          <form onSubmit={handleInvite} className="flex gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email address"
-              required
-              className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            />
-            <button
-              type="submit"
-              disabled={inviteLoading}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 text-white rounded-lg"
-            >
-              {inviteLoading ? 'Sending...' : 'Invite'}
-            </button>
-          </form>
-        </div>
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base flex items-center gap-2">
+              <UserPlus className="h-4 w-4" />
+              Invite New Member
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleInvite} className="flex gap-2">
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter email address"
+                required
+                className="flex-1"
+              />
+              <Button type="submit" disabled={inviteLoading}>
+                {inviteLoading ? 'Sending...' : 'Invite'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )}
 
       {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
+        <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
           {error}
         </div>
       )}
 
       {success && (
-        <div className="mb-4 p-3 bg-green-900/50 border border-green-700 rounded-lg text-green-300 text-sm">
+        <div className="p-3 text-sm text-green-400 bg-green-500/10 rounded-md border border-green-500/20">
           {success}
         </div>
       )}
 
-      <ul className="space-y-2">
+      <div className="space-y-2">
         {members.map((member) => (
-          <li
-            key={member.id}
-            className="flex items-center justify-between p-4 bg-zinc-900 border border-zinc-800 rounded-lg"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-zinc-700 rounded-full flex items-center justify-center text-zinc-300">
-                {member.profiles?.display_name?.[0]?.toUpperCase() || '?'}
+          <Card key={member.id}>
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <Avatar>
+                  <AvatarImage src={member.profiles?.avatar_url || undefined} />
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    {member.profiles?.display_name?.[0]?.toUpperCase() || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium">
+                      {member.profiles?.display_name || 'Unknown'}
+                    </span>
+                    {member.user_id === currentUserId && (
+                      <Badge variant="outline" className="text-xs">you</Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                    {member.role === 'admin' ? (
+                      <>
+                        <Shield className="h-3 w-3" />
+                        Admin
+                      </>
+                    ) : (
+                      <>
+                        <User className="h-3 w-3" />
+                        Member
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-white font-medium">
-                  {member.profiles?.display_name || 'Unknown'}
-                  {member.user_id === currentUserId && (
-                    <span className="text-zinc-500 text-sm ml-2">(you)</span>
-                  )}
-                </p>
-                <p className="text-zinc-400 text-sm capitalize">{member.role}</p>
-              </div>
-            </div>
 
-            {isAdmin && member.user_id !== currentUserId && (
-              <div className="flex items-center gap-2">
-                <select
-                  value={member.role || 'member'}
-                  onChange={(e) => handleRoleChange(member.id, e.target.value as 'admin' | 'member')}
-                  disabled={processingId === member.id}
-                  className="px-2 py-1 bg-zinc-800 border border-zinc-700 rounded text-zinc-300 text-sm"
-                >
-                  <option value="member">Member</option>
-                  <option value="admin">Admin</option>
-                </select>
-                <button
-                  onClick={() => handleRemove(member.id)}
-                  disabled={processingId === member.id}
-                  className="px-3 py-1 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded text-sm"
-                >
-                  Remove
-                </button>
-              </div>
-            )}
-          </li>
+              {isAdmin && member.user_id !== currentUserId && (
+                <div className="flex items-center gap-2">
+                  <Select
+                    value={member.role || 'member'}
+                    onValueChange={(value) => handleRoleChange(member.id, value as 'admin' | 'member')}
+                    disabled={processingId === member.id}
+                  >
+                    <SelectTrigger className="w-[110px] h-8">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="member">Member</SelectItem>
+                      <SelectItem value="admin">Admin</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => handleRemove(member.id)}
+                    disabled={processingId === member.id}
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }

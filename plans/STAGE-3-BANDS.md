@@ -9,8 +9,8 @@ You are building **BandHub**. Authentication works (Stage 2). Now you build the 
 **Prerequisites:** Stage 2 complete, auth working.
 
 **Research References:**
-- [Task Management Patterns](C:\Users\jpcoo\docs\research\task-management-patterns.md) - Role-based permissions patterns
-- [Competitor Analysis](C:\Users\jpcoo\docs\research\competitor-analysis.md) - Band member management approaches
+- [Task Management Patterns](docs/03-logs/research/task-management-patterns.md) - Role-based permissions patterns
+- [Competitor Analysis](docs/03-logs/research/competitor-analysis.md) - Band member management approaches
 
 ---
 

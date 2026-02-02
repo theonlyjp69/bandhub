@@ -9,9 +9,9 @@ You are building **BandHub**. Backend is complete and tested (Stage 6). Now you 
 **Prerequisites:** Stage 6 complete, all tests passing.
 
 **Research References:**
-- [Task Management Patterns](C:\Users\jpcoo\docs\research\task-management-patterns.md) - View patterns (list, board, etc.)
-- [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md) - Calendar and RSVP UI patterns
-- [Communication Patterns](C:\Users\jpcoo\docs\research\communication-patterns.md) - Chat and thread UI patterns
+- [Task Management Patterns](docs/03-logs/research/task-management-patterns.md) - View patterns (list, board, etc.)
+- [Event Management Patterns](docs/03-logs/research/event-management-patterns.md) - Calendar and RSVP UI patterns
+- [Communication Patterns](docs/03-logs/research/communication-patterns.md) - Chat and thread UI patterns
 
 ---
 
@@ -281,7 +281,7 @@ Shows:
 
 ## Task 7.11: Availability Polling UI *(New - from research)*
 
-See [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md) for When2Meet-style UI patterns.
+See [Event Management Patterns](docs/03-logs/research/event-management-patterns.md) for When2Meet-style UI patterns.
 
 **Create:** `app/(app)/band/[id]/availability/page.tsx`
 

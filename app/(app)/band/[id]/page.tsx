@@ -3,6 +3,23 @@ import { getUpcomingEvents } from '@/actions/events'
 import { getBandAnnouncements } from '@/actions/announcements'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import {
+  ArrowLeft,
+  Calendar,
+  MessageSquare,
+  MessageCircle,
+  Megaphone,
+  Users,
+  FolderOpen,
+  Clock,
+  Plus,
+  MapPin,
+  ArrowRight
+} from 'lucide-react'
+import { MobileNav } from '@/components/layout/mobile-nav'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -26,67 +43,89 @@ export default async function BandPage({ params }: Props) {
   const recentAnnouncements = announcements.slice(0, 2)
 
   const navLinks = [
-    { href: `/band/${id}/calendar`, label: 'Calendar' },
-    { href: `/band/${id}/chat`, label: 'Chat' },
-    { href: `/band/${id}/threads`, label: 'Threads' },
-    { href: `/band/${id}/announcements`, label: 'Announcements' },
-    { href: `/band/${id}/members`, label: 'Members' },
-    { href: `/band/${id}/files`, label: 'Files' },
-    { href: `/band/${id}/availability`, label: 'Availability' },
+    { href: `/band/${id}/calendar`, label: 'Calendar', icon: Calendar },
+    { href: `/band/${id}/chat`, label: 'Chat', icon: MessageSquare },
+    { href: `/band/${id}/threads`, label: 'Threads', icon: MessageCircle },
+    { href: `/band/${id}/announcements`, label: 'Announcements', icon: Megaphone },
+    { href: `/band/${id}/members`, label: 'Members', icon: Users },
+    { href: `/band/${id}/files`, label: 'Files', icon: FolderOpen },
+    { href: `/band/${id}/availability`, label: 'Availability', icon: Clock },
   ]
 
-  return (
-    <div>
-      <div className="mb-6">
-        <Link href="/dashboard" className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Dashboard
-        </Link>
-      </div>
+  const getEventTypeClass = (type: string | null) => {
+    switch (type) {
+      case 'show': return 'event-show'
+      case 'rehearsal': return 'event-rehearsal'
+      case 'deadline': return 'event-deadline'
+      default: return 'event-other'
+    }
+  }
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">{band.name}</h1>
+  return (
+    <div className="space-y-6">
+      {/* Back link */}
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
+
+      {/* Band header */}
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">{band.name}</h1>
         {band.description && (
-          <p className="text-zinc-400 mt-2">{band.description}</p>
+          <p className="text-muted-foreground mt-2">{band.description}</p>
         )}
       </div>
 
-      <nav className="flex flex-wrap gap-2 mb-8 p-4 bg-zinc-900 rounded-lg">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="px-4 py-2 text-zinc-300 hover:text-white hover:bg-zinc-800 rounded-lg transition-colors"
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
+      {/* Quick navigation */}
+      <Card>
+        <CardContent className="p-4">
+          <nav className="flex flex-wrap gap-2">
+            {navLinks.map((link) => (
+              <Button key={link.href} variant="ghost" asChild className="h-auto py-2">
+                <Link href={link.href} className="flex items-center gap-2">
+                  <link.icon className="h-4 w-4" />
+                  {link.label}
+                </Link>
+              </Button>
+            ))}
+          </nav>
+        </CardContent>
+      </Card>
 
+      {/* Content grid */}
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Upcoming Events</h2>
-            <Link href={`/band/${id}/calendar`} className="text-purple-400 hover:text-purple-300 text-sm">
-              View all
-            </Link>
-          </div>
-          {upcomingEvents.length === 0 ? (
-            <p className="text-zinc-500 text-sm">No upcoming events</p>
-          ) : (
-            <ul className="space-y-3">
-              {upcomingEvents.map((event) => (
-                <li key={event.id}>
-                  <Link
-                    href={`/band/${id}/events/${event.id}`}
-                    className="block p-3 bg-zinc-800 hover:bg-zinc-700 rounded-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-white font-medium">{event.title}</span>
-                      <span className="text-xs px-2 py-1 bg-zinc-700 text-zinc-300 rounded">
+        {/* Upcoming Events */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">Upcoming Events</CardTitle>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href={`/band/${id}/calendar`} className="text-primary">
+                  View all
+                  <ArrowRight className="ml-1 h-3 w-3" />
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {upcomingEvents.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No upcoming events</p>
+            ) : (
+              upcomingEvents.map((event) => (
+                <Link key={event.id} href={`/band/${id}/events/${event.id}`}>
+                  <div className="p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="font-medium">{event.title}</span>
+                      <Badge variant="outline" className={getEventTypeClass(event.event_type)}>
                         {event.event_type}
-                      </span>
+                      </Badge>
                     </div>
-                    <div className="text-zinc-400 text-sm mt-1">
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <Calendar className="h-3 w-3" />
                       {new Date(event.start_time).toLocaleDateString('en-US', {
                         weekday: 'short',
                         month: 'short',
@@ -96,50 +135,61 @@ export default async function BandPage({ params }: Props) {
                       })}
                     </div>
                     {event.location && (
-                      <div className="text-zinc-500 text-sm">{event.location}</div>
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                        <MapPin className="h-3 w-3" />
+                        {event.location}
+                      </div>
                     )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-          <Link
-            href={`/band/${id}/events/new`}
-            className="block mt-4 text-center py-2 border border-zinc-700 text-zinc-400 hover:text-white hover:border-zinc-600 rounded-lg"
-          >
-            + Create Event
-          </Link>
-        </div>
+                  </div>
+                </Link>
+              ))
+            )}
+            <Button variant="outline" className="w-full" asChild>
+              <Link href={`/band/${id}/events/new`}>
+                <Plus className="mr-2 h-4 w-4" />
+                Create Event
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
 
-        <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-white">Announcements</h2>
-            <Link href={`/band/${id}/announcements`} className="text-purple-400 hover:text-purple-300 text-sm">
-              View all
-            </Link>
-          </div>
-          {recentAnnouncements.length === 0 ? (
-            <p className="text-zinc-500 text-sm">No announcements yet</p>
-          ) : (
-            <ul className="space-y-3">
-              {recentAnnouncements.map((announcement) => (
-                <li key={announcement.id} className="p-3 bg-zinc-800 rounded-lg">
+        {/* Announcements */}
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">Announcements</CardTitle>
+              <Button variant="ghost" size="sm" asChild>
+                <Link href={`/band/${id}/announcements`} className="text-primary">
+                  View all
+                  <ArrowRight className="ml-1 h-3 w-3" />
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {recentAnnouncements.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-4 text-center">No announcements yet</p>
+            ) : (
+              recentAnnouncements.map((announcement) => (
+                <div key={announcement.id} className="p-3 rounded-lg bg-accent/50">
                   {announcement.title && (
-                    <h3 className="text-white font-medium">{announcement.title}</h3>
+                    <h3 className="font-medium">{announcement.title}</h3>
                   )}
-                  <p className="text-zinc-400 text-sm mt-1 line-clamp-2">
+                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                     {announcement.content}
                   </p>
-                  <div className="text-zinc-500 text-xs mt-2">
-                    {announcement.profiles?.display_name} &middot;{' '}
-                    {announcement.created_at && new Date(announcement.created_at).toLocaleDateString()}
+                  <div className="text-xs text-muted-foreground mt-2">
+                    {announcement.profiles?.display_name} · {announcement.created_at && new Date(announcement.created_at).toLocaleDateString()}
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                </div>
+              ))
+            )}
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Mobile navigation */}
+      <MobileNav bandId={id} />
     </div>
   )
 }

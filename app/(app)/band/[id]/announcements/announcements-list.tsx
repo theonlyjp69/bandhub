@@ -3,6 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createAnnouncement, deleteAnnouncement } from '@/actions/announcements'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Megaphone, Trash2 } from 'lucide-react'
 
 type Announcement = {
   id: string
@@ -63,100 +70,113 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
   }
 
   return (
-    <div>
+    <div className="space-y-6">
       {isAdmin && (
-        <div className="mb-8 p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <h2 className="text-lg font-medium text-white mb-4">Create Announcement</h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="title" className="block text-sm text-zinc-400 mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                maxLength={200}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                placeholder="Announcement title (optional)"
-              />
-            </div>
-            <div>
-              <label htmlFor="content" className="block text-sm text-zinc-400 mb-1">
-                Content *
-              </label>
-              <textarea
-                id="content"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                required
-                maxLength={5000}
-                rows={4}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500 resize-none"
-                placeholder="Write your announcement..."
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading || !content.trim()}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 text-white rounded-lg"
-            >
-              {loading ? 'Posting...' : 'Post Announcement'}
-            </button>
-          </form>
-        </div>
+        <Card>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg">Create Announcement</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  maxLength={200}
+                  placeholder="Announcement title (optional)"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="content">Content *</Label>
+                <Textarea
+                  id="content"
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  required
+                  maxLength={5000}
+                  rows={4}
+                  placeholder="Write your announcement..."
+                />
+              </div>
+              <Button type="submit" disabled={loading || !content.trim()}>
+                {loading ? 'Posting...' : 'Post Announcement'}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
       )}
 
       {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
+        <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
           {error}
         </div>
       )}
 
       {announcements.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-zinc-500">No announcements yet.</p>
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <Megaphone className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-medium mb-2">No announcements yet</h3>
+            <p className="text-muted-foreground text-center">
+              {isAdmin ? 'Create your first announcement above.' : 'Check back later for updates.'}
+            </p>
+          </CardContent>
+        </Card>
       ) : (
-        <ul className="space-y-4">
+        <div className="space-y-4">
           {announcements.map((announcement) => (
-            <li
-              key={announcement.id}
-              className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1">
-                  {announcement.title && (
-                    <h3 className="text-lg font-medium text-white mb-2">{announcement.title}</h3>
-                  )}
-                  <p className="text-zinc-300 whitespace-pre-wrap">{announcement.content}</p>
-                  <div className="mt-4 text-zinc-500 text-sm">
-                    Posted by {announcement.profiles?.display_name || 'Unknown'}
-                    {announcement.created_at && (
-                      <> &middot; {new Date(announcement.created_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                      })}</>
-                    )}
+            <Card key={announcement.id}>
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage src={announcement.profiles?.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {announcement.profiles?.display_name?.[0]?.toUpperCase() || '?'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        {announcement.title && (
+                          <h3 className="text-lg font-medium mb-1">{announcement.title}</h3>
+                        )}
+                        <p className="text-muted-foreground text-sm">
+                          {announcement.profiles?.display_name || 'Unknown'}
+                          {announcement.created_at && (
+                            <> · {new Date(announcement.created_at).toLocaleDateString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: 'numeric',
+                              minute: '2-digit'
+                            })}</>
+                          )}
+                        </p>
+                      </div>
+                      {(isAdmin || announcement.created_by === currentUserId) && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDelete(announcement.id)}
+                          disabled={deletingId === announcement.id}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    <p className="mt-3 whitespace-pre-wrap">{announcement.content}</p>
                   </div>
                 </div>
-                {(isAdmin || announcement.created_by === currentUserId) && (
-                  <button
-                    onClick={() => handleDelete(announcement.id)}
-                    disabled={deletingId === announcement.id}
-                    className="text-zinc-500 hover:text-red-400 text-sm"
-                  >
-                    {deletingId === announcement.id ? 'Deleting...' : 'Delete'}
-                  </button>
-                )}
-              </div>
-            </li>
+              </CardContent>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )

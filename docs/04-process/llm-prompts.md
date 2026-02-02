@@ -44,7 +44,7 @@ Search for band management apps and document:
 3. Strengths/weaknesses
 4. Gaps we can fill
 
-Reference: C:\Users\jpcoo\docs\research\competitor-analysis.md
+Reference: docs/03-logs/research/competitor-analysis.md
 ```
 
 ### Stage 1: Foundation

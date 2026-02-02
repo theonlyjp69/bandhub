@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { getUserInvitations, acceptInvitation, declineInvitation } from '@/actions/invitations'
 import Link from 'next/link'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft, Mail, Music, Check, X } from 'lucide-react'
 
 type Invitation = {
   id: string
@@ -26,7 +29,7 @@ export default function InvitationsPage() {
     try {
       const data = await getUserInvitations()
       setInvitations(data as Invitation[])
-    } catch (err) {
+    } catch {
       setError('Failed to load invitations')
     } finally {
       setLoading(false)
@@ -61,65 +64,101 @@ export default function InvitationsPage() {
   }
 
   if (loading) {
-    return <div className="text-zinc-400">Loading invitations...</div>
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-muted-foreground">Loading invitations...</div>
+      </div>
+    )
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link href="/dashboard" className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Dashboard
-        </Link>
+    <div className="max-w-2xl mx-auto">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
+
+      <div className="flex items-center gap-3 mb-6">
+        <div className="rounded-full bg-primary/10 p-2">
+          <Mail className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Pending Invitations</h1>
+          <p className="text-muted-foreground text-sm">
+            {invitations.length === 0
+              ? 'No pending invitations'
+              : `${invitations.length} invitation${invitations.length !== 1 ? 's' : ''} waiting`}
+          </p>
+        </div>
       </div>
 
-      <h1 className="text-2xl font-bold text-white mb-6">Pending Invitations</h1>
-
       {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
+        <div className="mb-4 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
           {error}
         </div>
       )}
 
       {invitations.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-zinc-400">No pending invitations.</p>
-        </div>
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <Mail className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-medium mb-2">No pending invitations</h3>
+            <p className="text-muted-foreground text-center mb-4">
+              When someone invites you to join their band, it will appear here.
+            </p>
+            <Button asChild variant="outline">
+              <Link href="/dashboard">
+                Return to Dashboard
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
-        <ul className="space-y-4">
+        <div className="space-y-3">
           {invitations.map((invitation) => (
-            <li
-              key={invitation.id}
-              className="p-4 bg-zinc-900 border border-zinc-800 rounded-lg"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-medium text-white">
-                    {invitation.bands?.name || 'Unknown Band'}
-                  </h2>
-                  <p className="text-zinc-400 text-sm">
-                    Invited by {invitation.profiles?.display_name || 'Unknown'}
-                  </p>
+            <Card key={invitation.id} className="hover:border-primary/50 transition-colors">
+              <CardContent className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-full bg-primary/10 p-2">
+                    <Music className="h-4 w-4 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="font-medium">
+                      {invitation.bands?.name || 'Unknown Band'}
+                    </h2>
+                    <p className="text-muted-foreground text-sm">
+                      Invited by {invitation.profiles?.display_name || 'Unknown'}
+                    </p>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button
+                  <Button
                     onClick={() => handleAccept(invitation.id)}
                     disabled={processingId === invitation.id}
-                    className="px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 text-white text-sm rounded-lg"
+                    size="sm"
                   >
+                    <Check className="mr-1 h-4 w-4" />
                     {processingId === invitation.id ? 'Processing...' : 'Accept'}
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => handleDecline(invitation.id)}
                     disabled={processingId === invitation.id}
-                    className="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 disabled:bg-zinc-700/50 text-white text-sm rounded-lg"
+                    variant="outline"
+                    size="sm"
                   >
+                    <X className="mr-1 h-4 w-4" />
                     Decline
-                  </button>
+                  </Button>
                 </div>
-              </div>
-            </li>
+              </CardContent>
+            </Card>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )

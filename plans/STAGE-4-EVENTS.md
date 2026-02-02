@@ -9,8 +9,8 @@ You are building **BandHub**. Band management works (Stage 3). Now you build the
 **Prerequisites:** Stage 3 complete, bands/members/invitations working.
 
 **Research References:**
-- [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md) - Calendar and RSVP patterns
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - react-big-calendar, Supabase Storage
+- [Event Management Patterns](docs/03-logs/research/event-management-patterns.md) - Calendar and RSVP patterns
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - react-big-calendar, Supabase Storage
 
 ---
 
@@ -280,7 +280,7 @@ export async function removeRsvp(eventId: string) {
 
 ## Task 4.3: Availability Polling Server Actions *(New - from research)*
 
-See [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md) for When2Meet-style polling patterns.
+See [Event Management Patterns](docs/03-logs/research/event-management-patterns.md) for When2Meet-style polling patterns.
 
 **Create:** `actions/availability.ts`
 

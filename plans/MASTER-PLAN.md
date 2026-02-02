@@ -8,7 +8,7 @@
 
 **Think:** Slack + Google Calendar + Trello, but built specifically for bands.
 
-**Competitive Position:** Simple, modern band coordination tool. Not as complex as BandHelper or Back On Stage, but purpose-built for bands unlike Discord or group texts. See [Competitor Analysis](C:\Users\jpcoo\docs\research\competitor-analysis.md).
+**Competitive Position:** Simple, modern band coordination tool. Not as complex as BandHelper or Back On Stage, but purpose-built for bands unlike Discord or group texts. See [Competitor Analysis](docs/03-logs/research/competitor-analysis.md).
 
 ---
 
@@ -37,14 +37,14 @@
 - Calendar view (month/week) using react-big-calendar
 - List view of upcoming events
 - RSVP system: Going / Maybe / Can't Make It
-- See [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md)
+- See [Event Management Patterns](docs/03-logs/research/event-management-patterns.md)
 
 ### 3. Communication
 - Announcements (admin posts, members react/comment)
 - Real-time group chat (Supabase Realtime)
 - Topic-based discussion threads
 - Unread indicators
-- See [Communication Patterns](C:\Users\jpcoo\docs\research\communication-patterns.md)
+- See [Communication Patterns](docs/03-logs/research/communication-patterns.md)
 
 ### 4. Availability Polling *(Added from research)*
 - When2Meet-style grid for scheduling rehearsals
@@ -82,7 +82,7 @@
 | Calendar | react-big-calendar + shadcn/ui calendar |
 | Hosting | Vercel (free tier) |
 
-See [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) for package details.
+See [GitHub Resources](docs/03-logs/research/github-resources.md) for package details.
 
 ---
 
@@ -93,7 +93,7 @@ See [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) for pac
 - **UI Library:** shadcn/ui components
 - **Responsive:** Mobile-first, card-based layouts
 
-See [UI/UX Guidelines](C:\Users\jpcoo\docs\research\ui-ux-guidelines.md) for full design system.
+See [UI/UX Guidelines](docs/03-logs/research/ui-ux-guidelines.md) for full design system.
 
 ---
 
@@ -146,14 +146,14 @@ The project is complete when:
 
 ## Key Resources
 
-**Research Output:** `C:\Users\jpcoo\docs\research\` (Stage 0 Complete)
-- [Competitor Analysis](C:\Users\jpcoo\docs\research\competitor-analysis.md)
-- [Task Management Patterns](C:\Users\jpcoo\docs\research\task-management-patterns.md)
-- [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md)
-- [UI/UX Guidelines](C:\Users\jpcoo\docs\research\ui-ux-guidelines.md)
-- [Communication Patterns](C:\Users\jpcoo\docs\research\communication-patterns.md)
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md)
-- [Research Synthesis](C:\Users\jpcoo\docs\research\research-synthesis.md)
+**Research Output:** `docs/03-logs/research/` (Stage 0 Complete)
+- [Competitor Analysis](docs/03-logs/research/competitor-analysis.md)
+- [Task Management Patterns](docs/03-logs/research/task-management-patterns.md)
+- [Event Management Patterns](docs/03-logs/research/event-management-patterns.md)
+- [UI/UX Guidelines](docs/03-logs/research/ui-ux-guidelines.md)
+- [Communication Patterns](docs/03-logs/research/communication-patterns.md)
+- [GitHub Resources](docs/03-logs/research/github-resources.md)
+- [Research Synthesis](docs/03-logs/research/research-synthesis.md)
 
 **Database Migrations:** `supabase/migrations/`
 **Server Actions:** `actions/`

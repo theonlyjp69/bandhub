@@ -31,8 +31,8 @@ You are building **BandHub**. All backend server actions are complete (Stages 1-
 **Prerequisites:** Stages 1-5 complete, all server actions working.
 
 **Research References:**
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - Testing setup (Vitest, Playwright)
-- [Communication Patterns](C:\Users\jpcoo\docs\research\communication-patterns.md) - Real-time testing patterns
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - Testing setup (Vitest, Playwright)
+- [Communication Patterns](docs/03-logs/research/communication-patterns.md) - Real-time testing patterns
 
 ---
 

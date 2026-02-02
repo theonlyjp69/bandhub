@@ -9,9 +9,9 @@ You are building **BandHub**. The app works (Stage 7). Now you make it look good
 **Prerequisites:** Stage 7 complete, all features working.
 
 **Research References:**
-- [UI/UX Guidelines](C:\Users\jpcoo\docs\research\ui-ux-guidelines.md) - Design system and color palette
-- [Task Management Patterns](C:\Users\jpcoo\docs\research\task-management-patterns.md) - Linear design patterns
-- [Research Synthesis](C:\Users\jpcoo\docs\research\research-synthesis.md) - Approved design direction
+- [UI/UX Guidelines](../docs/03-logs/research/ui-ux-guidelines.md) - Design system and color palette
+- [Task Management Patterns](../docs/03-logs/research/task-management-patterns.md) - Linear design patterns
+- [Research Synthesis](../docs/03-logs/research/research-synthesis.md) - Approved design direction
 
 ---
 
@@ -88,7 +88,7 @@ npx shadcn@latest add separator
 
 **Update:** `app/globals.css`
 
-Apply the color palette from [UI/UX Guidelines](C:\Users\jpcoo\docs\research\ui-ux-guidelines.md):
+Apply the color palette from [UI/UX Guidelines](../docs/03-logs/research/ui-ux-guidelines.md):
 
 ```css
 @layer base {

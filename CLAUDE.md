@@ -4,9 +4,9 @@ Band coordination app: Slack + Google Calendar + Trello for musicians.
 
 ## Status
 
-**Stage 7 Complete** → Ready for **Stage 8: Polish**
+**Stage 8 Complete** → Ready for **Stage 9: Deploy**
 
-✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | ✓ UI | **Polish** | Deploy
+✓ Research | ✓ Foundation | ✓ Auth | ✓ Bands | ✓ Events | ✓ Communication | ✓ Tests | ✓ UI | ✓ Polish | **Deploy**
 
 ## Tech Stack
 
@@ -37,14 +37,16 @@ npm run test:e2e:ui  # E2E tests with UI
 ```
 actions/     # 11 server action files
 hooks/       # React hooks (realtime)
-app/         # Next.js pages (20 routes)
+app/         # Next.js pages (20 routes + loading/error states)
   ├── (app)/             # Protected routes (auth required)
   │   ├── layout.tsx     # Header, nav, sign out
-  │   ├── dashboard/     # Band list, invitations
+  │   ├── error.tsx      # Error boundary
+  │   ├── dashboard/     # Band list, invitations (+ loading.tsx)
   │   ├── create-band/   # Create band form
   │   ├── invitations/   # Accept/decline invitations
-  │   └── band/[id]/     # Band pages
+  │   └── band/[id]/     # Band pages (each with loading.tsx)
   │       ├── page.tsx           # Band home
+  │       ├── error.tsx          # Band error boundary
   │       ├── members/           # Member list, invite
   │       ├── calendar/          # Event list
   │       ├── events/new/        # Create event
@@ -57,6 +59,8 @@ app/         # Next.js pages (20 routes)
   │       ├── availability/new/  # Create poll
   │       ├── availability/[pollId]/ # Poll voting
   │       └── files/             # File upload/download
+  ├── not-found.tsx      # 404 page
+  ├── global-error.tsx   # Global error boundary
   └── login/             # Google OAuth login
 components/  # shadcn/ui components
 lib/         # Supabase clients
@@ -130,6 +134,7 @@ export async function action(id: string) {
 | docs/01-product/prd.md | Requirements |
 | docs/02-features/ | Feature specs |
 | docs/03-logs/ | Implementation, security audits, code reviews |
+| docs/03-logs/research/ | UI/UX guidelines, design patterns, research synthesis |
 | docs/04-process/ | Workflow, definition of done |
 
 ## Tests
@@ -153,8 +158,8 @@ export async function action(id: string) {
 | 0-5 | Research → Communication | ✓ Complete |
 | 6 | Integration Tests | ✓ Complete |
 | 7 | UI Implementation | ✓ Complete |
-| 8 | Polish | **Next** |
-| 9 | Deploy | Pending |
+| 8 | Polish | ✓ Complete |
+| 9 | Deploy | **Next** |
 
 See `plans/MASTER-PLAN.md` for details.
 
@@ -169,11 +174,36 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
 All stages have been code reviewed. See `docs/03-logs/code-review/review-logs/`:
 - Stages 1-5: Security patterns, input validation, RLS policies
-- **Stage 7:** UI implementation - 24 files, 20 routes, PASSED
+- Stage 7: UI implementation - 24 files, 20 routes, PASSED
+- **Stage 8:** Polish - shadcn/ui styling, loading/error states, microinteractions
+
+## Stage 8 Polish Summary
+
+| Feature | Files |
+|---------|-------|
+| shadcn/ui styling | All 20 routes restyled (19 components) |
+| Loading states | 14 loading.tsx files with Skeleton components |
+| Error states | 4 error boundary files (app, band, not-found, global) |
+| Microinteractions | Button press, card hover, focus rings, animations |
+| Responsive design | Mobile hamburger menu, bottom nav, responsive grids |
+
+**Code Review:** PASSED (92% plan compliance, 0 critical/important issues)
+
+## Design Decisions
+
+| Decision | Rationale |
+|----------|-----------|
+| Card-based navigation (no sidebar) | Band switching is frequent; card nav makes context explicit; better mobile UX |
+| List view instead of calendar grid | More mobile-friendly for musicians checking "what's next" |
+| Bottom nav on mobile | Better thumb accessibility than hamburger-only navigation |
+
+**Unused dependency:** `react-big-calendar` - consider removing in future cleanup
 
 ## Quick Links
 
 - **Master Plan:** plans/MASTER-PLAN.md
 - **PRD:** docs/01-product/prd.md
 - **System State:** docs/00-context/system-state.md
-- **Stage 7 Review:** docs/03-logs/code-review/review-logs/code-review-stage7.md
+- **Stage 8 Log:** docs/03-logs/implimentation-logs/implementation-log-stage8.md
+- **UI/UX Guidelines:** docs/03-logs/research/ui-ux-guidelines.md
+- **Research Synthesis:** docs/03-logs/research/research-synthesis.md

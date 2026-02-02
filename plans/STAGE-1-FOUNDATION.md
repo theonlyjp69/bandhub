@@ -9,8 +9,8 @@ You are building **BandHub**. Research is complete (Stage 0). Now you set up the
 **Prerequisites:** Stage 0 complete, user approved research synthesis.
 
 **Research References:**
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - Tech stack and packages
-- [Research Synthesis](C:\Users\jpcoo\docs\research\research-synthesis.md) - Approved decisions
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - Tech stack and packages
+- [Research Synthesis](docs/03-logs/research/research-synthesis.md) - Approved decisions
 
 ---
 
@@ -382,7 +382,7 @@ CREATE POLICY "Band members can send messages"
 
 ## Task 1.10: Create Availability Polling Tables *(New - from research)*
 
-See [Event Management Patterns](C:\Users\jpcoo\docs\research\event-management-patterns.md) for When2Meet-style polling research.
+See [Event Management Patterns](docs/03-logs/research/event-management-patterns.md) for When2Meet-style polling research.
 
 ```sql
 -- Migration: create_availability_polling
@@ -436,7 +436,7 @@ CREATE POLICY "Users can manage own responses"
 
 ## Task 1.11: Create Files Table and Storage *(New - from research)*
 
-See [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) for Supabase Storage setup.
+See [GitHub Resources](docs/03-logs/research/github-resources.md) for Supabase Storage setup.
 
 ```sql
 -- Migration: create_files

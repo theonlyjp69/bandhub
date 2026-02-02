@@ -4,6 +4,12 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createAvailabilityPoll } from '@/actions/availability'
 import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { ArrowLeft, Clock, Plus, X } from 'lucide-react'
 
 type DateOption = {
   date: string
@@ -45,7 +51,6 @@ export default function NewPollPage() {
     e.preventDefault()
     setError('')
 
-    // Validate at least one complete date option
     const validOptions = dateOptions.filter(opt => opt.date && opt.start_time && opt.end_time)
     if (validOptions.length === 0) {
       setError('Please add at least one complete time option')
@@ -71,129 +76,132 @@ export default function NewPollPage() {
   }
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
-        <Link href={`/band/${bandId}/availability`} className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Polls
-        </Link>
-      </div>
+    <div className="max-w-2xl mx-auto">
+      <Link
+        href={`/band/${bandId}/availability`}
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Polls
+      </Link>
 
-      <h1 className="text-2xl font-bold text-white mb-6">Create Availability Poll</h1>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-1">
-            Poll Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            maxLength={200}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            placeholder="e.g., Best time for next rehearsal?"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-zinc-300 mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={2000}
-            rows={2}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500 resize-none"
-            placeholder="Optional description..."
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-zinc-300 mb-3">
-            Time Options *
-          </label>
-          <div className="space-y-3">
-            {dateOptions.map((option, index) => (
-              <div key={index} className="flex gap-2 items-end">
-                <div className="flex-1">
-                  <label className="block text-xs text-zinc-500 mb-1">Date</label>
-                  <input
-                    type="date"
-                    value={option.date}
-                    onChange={(e) => updateDateOption(index, 'date', e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-                <div className="w-28">
-                  <label className="block text-xs text-zinc-500 mb-1">Start</label>
-                  <input
-                    type="time"
-                    value={option.start_time}
-                    onChange={(e) => updateDateOption(index, 'start_time', e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-                <div className="w-28">
-                  <label className="block text-xs text-zinc-500 mb-1">End</label>
-                  <input
-                    type="time"
-                    value={option.end_time}
-                    onChange={(e) => updateDateOption(index, 'end_time', e.target.value)}
-                    className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                  />
-                </div>
-                {dateOptions.length > 1 && (
-                  <button
-                    type="button"
-                    onClick={() => removeDateOption(index)}
-                    className="px-3 py-2 text-zinc-500 hover:text-red-400"
-                  >
-                    &times;
-                  </button>
-                )}
-              </div>
-            ))}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-primary/10 p-2">
+              <Clock className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <CardTitle>Create Availability Poll</CardTitle>
+              <CardDescription>Find the best time for your band</CardDescription>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={addDateOption}
-            className="mt-3 text-sm text-purple-400 hover:text-purple-300"
-          >
-            + Add another time option
-          </button>
-        </div>
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="mb-4 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
+              {error}
+            </div>
+          )}
 
-        <div>
-          <label htmlFor="closesAt" className="block text-sm font-medium text-zinc-300 mb-1">
-            Closes At (optional)
-          </label>
-          <input
-            type="datetime-local"
-            id="closesAt"
-            value={closesAt}
-            onChange={(e) => setClosesAt(e.target.value)}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Poll Title *</Label>
+              <Input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                maxLength={200}
+                placeholder="e.g., Best time for next rehearsal?"
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={loading || !title.trim()}
-          className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 disabled:cursor-not-allowed text-white rounded-lg"
-        >
-          {loading ? 'Creating...' : 'Create Poll'}
-        </button>
-      </form>
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={2000}
+                rows={2}
+                placeholder="Optional description..."
+              />
+            </div>
+
+            <div className="space-y-3">
+              <Label>Time Options *</Label>
+              {dateOptions.map((option, index) => (
+                <div key={index} className="flex gap-2 items-end">
+                  <div className="flex-1">
+                    <Label className="text-xs text-muted-foreground">Date</Label>
+                    <Input
+                      type="date"
+                      value={option.date}
+                      onChange={(e) => updateDateOption(index, 'date', e.target.value)}
+                    />
+                  </div>
+                  <div className="w-28">
+                    <Label className="text-xs text-muted-foreground">Start</Label>
+                    <Input
+                      type="time"
+                      value={option.start_time}
+                      onChange={(e) => updateDateOption(index, 'start_time', e.target.value)}
+                    />
+                  </div>
+                  <div className="w-28">
+                    <Label className="text-xs text-muted-foreground">End</Label>
+                    <Input
+                      type="time"
+                      value={option.end_time}
+                      onChange={(e) => updateDateOption(index, 'end_time', e.target.value)}
+                    />
+                  </div>
+                  {dateOptions.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeDateOption(index)}
+                      className="h-10 w-10 text-muted-foreground hover:text-destructive"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={addDateOption}
+                className="text-primary"
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add another time option
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="closesAt">Closes At (optional)</Label>
+              <Input
+                type="datetime-local"
+                id="closesAt"
+                value={closesAt}
+                onChange={(e) => setClosesAt(e.target.value)}
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading || !title.trim()}
+              className="w-full"
+            >
+              {loading ? 'Creating...' : 'Create Poll'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

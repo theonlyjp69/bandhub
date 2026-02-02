@@ -1,6 +1,10 @@
 import { getUserBands } from '@/actions/bands'
 import { getUserInvitations } from '@/actions/invitations'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Plus, Music, Mail, Users, ArrowRight } from 'lucide-react'
 
 export default async function DashboardPage() {
   const [bands, invitations] = await Promise.all([
@@ -9,54 +13,97 @@ export default async function DashboardPage() {
   ])
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-2xl font-bold text-white">My Bands</h1>
-        <Link
-          href="/create-band"
-          className="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white rounded-lg"
-        >
-          Create New Band
-        </Link>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">My Bands</h1>
+          <p className="text-muted-foreground">
+            Manage your bands and collaborations
+          </p>
+        </div>
+        <Button asChild>
+          <Link href="/create-band">
+            <Plus className="mr-2 h-4 w-4" />
+            Create Band
+          </Link>
+        </Button>
       </div>
 
+      {/* Invitations alert */}
       {invitations.length > 0 && (
-        <Link
-          href="/invitations"
-          className="block mb-6 p-4 bg-purple-900/30 border border-purple-700 rounded-lg hover:bg-purple-900/50"
-        >
-          <span className="text-purple-300">
-            You have {invitations.length} pending invitation{invitations.length !== 1 ? 's' : ''}
-          </span>
+        <Link href="/invitations">
+          <Card className="border-primary/50 bg-primary/5 hover:bg-primary/10 transition-colors cursor-pointer">
+            <CardContent className="flex items-center justify-between p-4">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-primary/20 p-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <p className="font-medium">Pending Invitations</p>
+                  <p className="text-sm text-muted-foreground">
+                    You have {invitations.length} invitation{invitations.length !== 1 ? 's' : ''} waiting
+                  </p>
+                </div>
+              </div>
+              <Badge variant="secondary" className="bg-primary/20 text-primary hover:bg-primary/30">
+                {invitations.length}
+              </Badge>
+            </CardContent>
+          </Card>
         </Link>
       )}
 
+      {/* Bands grid */}
       {bands.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-zinc-400 mb-4">You are not a member of any bands yet.</p>
-          <Link
-            href="/create-band"
-            className="text-purple-400 hover:text-purple-300"
-          >
-            Create your first band
-          </Link>
-        </div>
-      ) : (
-        <ul className="space-y-4">
-          {bands.map((band) => (
-            <li key={band.id}>
-              <Link
-                href={`/band/${band.id}`}
-                className="block p-4 bg-zinc-900 border border-zinc-800 rounded-lg hover:border-zinc-700"
-              >
-                <h2 className="text-lg font-medium text-white">{band.name}</h2>
-                {band.description && (
-                  <p className="text-zinc-400 text-sm mt-1">{band.description}</p>
-                )}
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <Music className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-medium mb-2">No bands yet</h3>
+            <p className="text-muted-foreground text-center mb-4">
+              Get started by creating your first band or accepting an invitation.
+            </p>
+            <Button asChild>
+              <Link href="/create-band">
+                <Plus className="mr-2 h-4 w-4" />
+                Create your first band
               </Link>
-            </li>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {bands.map((band) => (
+            <Link key={band.id} href={`/band/${band.id}`}>
+              <Card className="h-full hover:border-primary/50 hover:bg-accent/50 transition-all cursor-pointer group">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="rounded-full bg-primary/10 p-2">
+                      <Music className="h-4 w-4 text-primary" />
+                    </div>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  <CardTitle className="text-lg mt-3">{band.name}</CardTitle>
+                  {band.description && (
+                    <CardDescription className="line-clamp-2">
+                      {band.description}
+                    </CardDescription>
+                  )}
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Users className="h-3.5 w-3.5" />
+                    <span>
+                      {band.band_members?.length || 1} member{(band.band_members?.length || 1) !== 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   )

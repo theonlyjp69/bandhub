@@ -9,8 +9,8 @@ You are building **BandHub**. Events work (Stage 4). Now you build announcements
 **Prerequisites:** Stage 4 complete.
 
 **Research References:**
-- [Communication Patterns](C:\Users\jpcoo\docs\research\communication-patterns.md) - Slack/Discord thread patterns, notification strategies
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - Supabase Realtime implementation examples
+- [Communication Patterns](docs/03-logs/research/communication-patterns.md) - Slack/Discord thread patterns, notification strategies
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - Supabase Realtime implementation examples
 
 ---
 

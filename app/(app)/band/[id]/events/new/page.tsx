@@ -4,6 +4,19 @@ import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { createEvent } from '@/actions/events'
 import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { ArrowLeft, CalendarPlus } from 'lucide-react'
 
 export default function NewEventPage() {
   const router = useRouter()
@@ -57,181 +70,171 @@ export default function NewEventPage() {
   }
 
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
-        <Link href={`/band/${bandId}/calendar`} className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Calendar
-        </Link>
-      </div>
+    <div className="max-w-2xl mx-auto">
+      <Link
+        href={`/band/${bandId}/calendar`}
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Calendar
+      </Link>
 
-      <h1 className="text-2xl font-bold text-white mb-6">Create Event</h1>
-
-      {error && (
-        <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-lg text-red-300 text-sm">
-          {error}
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-zinc-300 mb-1">
-            Event Title *
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            maxLength={200}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            placeholder="e.g., Band Practice, Summer Gig"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="eventType" className="block text-sm font-medium text-zinc-300 mb-1">
-            Event Type *
-          </label>
-          <select
-            id="eventType"
-            value={eventType}
-            onChange={(e) => setEventType(e.target.value as typeof eventType)}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-          >
-            <option value="rehearsal">Rehearsal</option>
-            <option value="show">Show / Gig</option>
-            <option value="deadline">Deadline</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="startDate" className="block text-sm font-medium text-zinc-300 mb-1">
-              Start Date *
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              required
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="startTime" className="block text-sm font-medium text-zinc-300 mb-1">
-              Start Time *
-            </label>
-            <input
-              type="time"
-              id="startTime"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              required
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label htmlFor="endDate" className="block text-sm font-medium text-zinc-300 mb-1">
-              End Date
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="endTime" className="block text-sm font-medium text-zinc-300 mb-1">
-              End Time
-            </label>
-            <input
-              type="time"
-              id="endTime"
-              value={endTime}
-              onChange={(e) => setEndTime(e.target.value)}
-              className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label htmlFor="location" className="block text-sm font-medium text-zinc-300 mb-1">
-            Location
-          </label>
-          <input
-            type="text"
-            id="location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-            maxLength={500}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-            placeholder="e.g., Practice space, venue address"
-          />
-        </div>
-
-        {eventType === 'show' && (
-          <div className="p-4 bg-zinc-900/50 border border-zinc-800 rounded-lg space-y-4">
-            <h3 className="text-sm font-medium text-zinc-300">Show Details</h3>
-            <div>
-              <label htmlFor="venue" className="block text-sm text-zinc-400 mb-1">
-                Venue Name
-              </label>
-              <input
-                type="text"
-                id="venue"
-                value={venue}
-                onChange={(e) => setVenue(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                placeholder="e.g., The Blue Note"
-              />
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <div className="rounded-full bg-primary/10 p-2">
+              <CalendarPlus className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <label htmlFor="pay" className="block text-sm text-zinc-400 mb-1">
-                Pay / Compensation
-              </label>
-              <input
-                type="text"
-                id="pay"
-                value={pay}
-                onChange={(e) => setPay(e.target.value)}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500"
-                placeholder="e.g., $500, Door split"
-              />
+              <CardTitle>Create Event</CardTitle>
+              <CardDescription>Add a new event to the calendar</CardDescription>
             </div>
           </div>
-        )}
+        </CardHeader>
+        <CardContent>
+          {error && (
+            <div className="mb-4 p-3 text-sm text-destructive bg-destructive/10 rounded-md border border-destructive/20">
+              {error}
+            </div>
+          )}
 
-        <div>
-          <label htmlFor="description" className="block text-sm font-medium text-zinc-300 mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            maxLength={5000}
-            rows={4}
-            className="w-full px-3 py-2 bg-zinc-900 border border-zinc-700 rounded-lg text-white focus:outline-none focus:border-purple-500 resize-none"
-            placeholder="Add any additional details..."
-          />
-        </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="title">Event Title *</Label>
+              <Input
+                type="text"
+                id="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                maxLength={200}
+                placeholder="e.g., Band Practice, Summer Gig"
+              />
+            </div>
 
-        <button
-          type="submit"
-          disabled={loading || !title.trim() || !startDate || !startTime}
-          className="w-full px-4 py-2 bg-purple-600 hover:bg-purple-500 disabled:bg-purple-600/50 disabled:cursor-not-allowed text-white rounded-lg"
-        >
-          {loading ? 'Creating...' : 'Create Event'}
-        </button>
-      </form>
+            <div className="space-y-2">
+              <Label htmlFor="eventType">Event Type *</Label>
+              <Select value={eventType} onValueChange={(v) => setEventType(v as typeof eventType)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rehearsal">Rehearsal</SelectItem>
+                  <SelectItem value="show">Show / Gig</SelectItem>
+                  <SelectItem value="deadline">Deadline</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="startDate">Start Date *</Label>
+                <Input
+                  type="date"
+                  id="startDate"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="startTime">Start Time *</Label>
+                <Input
+                  type="time"
+                  id="startTime"
+                  value={startTime}
+                  onChange={(e) => setStartTime(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="endDate">End Date</Label>
+                <Input
+                  type="date"
+                  id="endDate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="endTime">End Time</Label>
+                <Input
+                  type="time"
+                  id="endTime"
+                  value={endTime}
+                  onChange={(e) => setEndTime(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                type="text"
+                id="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                maxLength={500}
+                placeholder="e.g., Practice space, venue address"
+              />
+            </div>
+
+            {eventType === 'show' && (
+              <Card className="bg-accent/30">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm">Show Details</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="venue">Venue Name</Label>
+                    <Input
+                      type="text"
+                      id="venue"
+                      value={venue}
+                      onChange={(e) => setVenue(e.target.value)}
+                      placeholder="e.g., The Blue Note"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pay">Pay / Compensation</Label>
+                    <Input
+                      type="text"
+                      id="pay"
+                      value={pay}
+                      onChange={(e) => setPay(e.target.value)}
+                      placeholder="e.g., $500, Door split"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={5000}
+                rows={4}
+                placeholder="Add any additional details..."
+              />
+            </div>
+
+            <Button
+              type="submit"
+              disabled={loading || !title.trim() || !startDate || !startTime}
+              className="w-full"
+            >
+              {loading ? 'Creating...' : 'Create Event'}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   )
 }

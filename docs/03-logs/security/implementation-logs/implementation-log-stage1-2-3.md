@@ -159,13 +159,13 @@ profiles, bands, band_members, invitations, events, event_rsvps, announcements, 
 - Research synthesis with recommendations
 
 #### Files Changed
-- C:\Users\jpcoo\docs\research\competitor-analysis.md
-- C:\Users\jpcoo\docs\research\task-management-patterns.md
-- C:\Users\jpcoo\docs\research\event-management-patterns.md
-- C:\Users\jpcoo\docs\research\ui-ux-guidelines.md
-- C:\Users\jpcoo\docs\research\communication-patterns.md
-- C:\Users\jpcoo\docs\research\github-resources.md
-- C:\Users\jpcoo\docs\research\research-synthesis.md
+- docs/03-logs/research/competitor-analysis.md
+- docs/03-logs/research/task-management-patterns.md
+- docs/03-logs/research/event-management-patterns.md
+- docs/03-logs/research/ui-ux-guidelines.md
+- docs/03-logs/research/communication-patterns.md
+- docs/03-logs/research/github-resources.md
+- docs/03-logs/research/research-synthesis.md
 
 #### Notes
 - Added Availability Polling feature based on research

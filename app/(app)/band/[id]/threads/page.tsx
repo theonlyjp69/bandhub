@@ -2,6 +2,7 @@ import { getBand } from '@/actions/bands'
 import { getBandThreads } from '@/actions/threads'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowLeft, MessageCircle } from 'lucide-react'
 import { ThreadsList } from './threads-list'
 
 type Props = {
@@ -23,14 +24,26 @@ export default async function ThreadsPage({ params }: Props) {
   }
 
   return (
-    <div>
-      <div className="mb-6">
-        <Link href={`/band/${id}`} className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to {band.name}
-        </Link>
-      </div>
+    <div className="space-y-6">
+      <Link
+        href={`/band/${id}`}
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to {band.name}
+      </Link>
 
-      <h1 className="text-2xl font-bold text-white mb-6">Discussion Threads</h1>
+      <div className="flex items-center gap-3">
+        <div className="rounded-full bg-primary/10 p-2">
+          <MessageCircle className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Discussion Threads</h1>
+          <p className="text-muted-foreground text-sm">
+            {threads.length} thread{threads.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+      </div>
 
       <ThreadsList bandId={id} threads={threads} />
     </div>

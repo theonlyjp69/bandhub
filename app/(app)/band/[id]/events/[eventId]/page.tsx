@@ -2,6 +2,10 @@ import { getEvent } from '@/actions/events'
 import { getUserRsvp } from '@/actions/rsvps'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { ArrowLeft, Calendar, MapPin, Building2, DollarSign, User, Check, HelpCircle, X } from 'lucide-react'
 import { RsvpButtons } from './rsvp-buttons'
 
 type Props = {
@@ -29,31 +33,41 @@ export default async function EventPage({ params }: Props) {
 
   const metadata = event.metadata as Record<string, unknown> | null
 
+  const getEventTypeClass = (type: string | null) => {
+    switch (type) {
+      case 'show': return 'event-show'
+      case 'rehearsal': return 'event-rehearsal'
+      case 'deadline': return 'event-deadline'
+      default: return 'event-other'
+    }
+  }
+
   return (
-    <div className="max-w-2xl">
-      <div className="mb-6">
-        <Link href={`/band/${bandId}/calendar`} className="text-zinc-400 hover:text-white text-sm">
-          &larr; Back to Calendar
-        </Link>
+    <div className="max-w-2xl mx-auto space-y-6">
+      <Link
+        href={`/band/${bandId}/calendar`}
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Calendar
+      </Link>
+
+      <div>
+        <Badge variant="outline" className={`mb-3 ${getEventTypeClass(event.event_type)}`}>
+          {event.event_type?.replace('_', ' ')}
+        </Badge>
+        <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
       </div>
 
-      <div className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-xs px-2 py-1 bg-purple-900/50 text-purple-300 rounded capitalize">
-            {event.event_type?.replace('_', ' ')}
-          </span>
-        </div>
-        <h1 className="text-3xl font-bold text-white">{event.title}</h1>
-      </div>
-
-      <div className="space-y-6">
-        <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-4">Details</h2>
-
-          <dl className="space-y-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">Details</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-start gap-3">
+            <Calendar className="h-5 w-5 text-muted-foreground mt-0.5" />
             <div>
-              <dt className="text-zinc-500 text-sm">When</dt>
-              <dd className="text-white">
+              <p className="font-medium">
                 {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', {
                   weekday: 'long',
                   month: 'long',
@@ -62,98 +76,117 @@ export default async function EventPage({ params }: Props) {
                   hour: 'numeric',
                   minute: '2-digit'
                 })}
-                {event.end_time && (
-                  <span className="text-zinc-400">
-                    {' '}&ndash;{' '}
-                    {new Date(event.end_time).toLocaleTimeString('en-US', {
-                      hour: 'numeric',
-                      minute: '2-digit'
-                    })}
-                  </span>
-                )}
-              </dd>
+              </p>
+              {event.end_time && (
+                <p className="text-sm text-muted-foreground">
+                  Until {new Date(event.end_time).toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit'
+                  })}
+                </p>
+              )}
             </div>
+          </div>
 
-            {event.location && (
-              <div>
-                <dt className="text-zinc-500 text-sm">Location</dt>
-                <dd className="text-white">{event.location}</dd>
-              </div>
-            )}
-
-            {metadata && typeof metadata.venue === 'string' && (
-              <div>
-                <dt className="text-zinc-500 text-sm">Venue</dt>
-                <dd className="text-white">{metadata.venue}</dd>
-              </div>
-            )}
-
-            {metadata && typeof metadata.pay === 'string' && (
-              <div>
-                <dt className="text-zinc-500 text-sm">Pay</dt>
-                <dd className="text-white">{metadata.pay}</dd>
-              </div>
-            )}
-
-            {event.description && (
-              <div>
-                <dt className="text-zinc-500 text-sm">Description</dt>
-                <dd className="text-white whitespace-pre-wrap">{event.description}</dd>
-              </div>
-            )}
-
-            <div>
-              <dt className="text-zinc-500 text-sm">Created by</dt>
-              <dd className="text-white">{event.profiles?.display_name || 'Unknown'}</dd>
+          {event.location && (
+            <div className="flex items-start gap-3">
+              <MapPin className="h-5 w-5 text-muted-foreground mt-0.5" />
+              <p>{event.location}</p>
             </div>
-          </dl>
-        </div>
+          )}
 
-        <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-4">Your RSVP</h2>
+          {metadata && typeof metadata.venue === 'string' && (
+            <div className="flex items-start gap-3">
+              <Building2 className="h-5 w-5 text-muted-foreground mt-0.5" />
+              <p>{metadata.venue}</p>
+            </div>
+          )}
+
+          {metadata && typeof metadata.pay === 'string' && (
+            <div className="flex items-start gap-3">
+              <DollarSign className="h-5 w-5 text-muted-foreground mt-0.5" />
+              <p>{metadata.pay}</p>
+            </div>
+          )}
+
+          {event.description && (
+            <div className="pt-2 border-t">
+              <p className="whitespace-pre-wrap text-muted-foreground">{event.description}</p>
+            </div>
+          )}
+
+          <div className="flex items-center gap-3 pt-2 border-t">
+            <User className="h-5 w-5 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">
+              Created by {event.profiles?.display_name || 'Unknown'}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">Your RSVP</CardTitle>
+        </CardHeader>
+        <CardContent>
           <RsvpButtons eventId={eventId} currentStatus={(userRsvp?.status as 'going' | 'maybe' | 'not_going') || null} />
-        </div>
+        </CardContent>
+      </Card>
 
-        <div className="p-6 bg-zinc-900 border border-zinc-800 rounded-lg">
-          <h2 className="text-sm font-medium text-zinc-400 uppercase tracking-wide mb-4">
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">
             Responses ({rsvps.length})
-          </h2>
-
-          <div className="flex gap-6 mb-6 text-sm">
-            <div>
-              <span className="text-green-400 font-medium">{goingCount}</span>
-              <span className="text-zinc-500 ml-1">Going</span>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-6 mb-4">
+            <div className="flex items-center gap-2">
+              <div className="rsvp-going px-2 py-1 rounded-md text-sm font-medium">{goingCount}</div>
+              <span className="text-muted-foreground text-sm">Going</span>
             </div>
-            <div>
-              <span className="text-yellow-400 font-medium">{maybeCount}</span>
-              <span className="text-zinc-500 ml-1">Maybe</span>
+            <div className="flex items-center gap-2">
+              <div className="rsvp-maybe px-2 py-1 rounded-md text-sm font-medium">{maybeCount}</div>
+              <span className="text-muted-foreground text-sm">Maybe</span>
             </div>
-            <div>
-              <span className="text-red-400 font-medium">{notGoingCount}</span>
-              <span className="text-zinc-500 ml-1">Can&apos;t Make It</span>
+            <div className="flex items-center gap-2">
+              <div className="rsvp-not-going px-2 py-1 rounded-md text-sm font-medium">{notGoingCount}</div>
+              <span className="text-muted-foreground text-sm">Can&apos;t Make It</span>
             </div>
           </div>
 
           {rsvps.length === 0 ? (
-            <p className="text-zinc-500 text-sm">No responses yet</p>
+            <p className="text-muted-foreground text-sm">No responses yet</p>
           ) : (
-            <ul className="space-y-2">
+            <div className="space-y-2">
               {rsvps.map((rsvp: { user_id: string | null; status: string | null; profiles: { display_name: string | null } | null }) => (
-                <li key={rsvp.user_id} className="flex items-center justify-between py-2 border-b border-zinc-800 last:border-0">
-                  <span className="text-white">{rsvp.profiles?.display_name || 'Unknown'}</span>
-                  <span className={`text-sm capitalize ${
+                <div key={rsvp.user_id} className="flex items-center justify-between py-2 border-b last:border-0">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                        {rsvp.profiles?.display_name?.[0]?.toUpperCase() || '?'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{rsvp.profiles?.display_name || 'Unknown'}</span>
+                  </div>
+                  <div className={`flex items-center gap-1 text-sm ${
                     rsvp.status === 'going' ? 'text-green-400' :
                     rsvp.status === 'maybe' ? 'text-yellow-400' :
                     'text-red-400'
                   }`}>
-                    {rsvp.status === 'not_going' ? "Can't Make It" : rsvp.status}
-                  </span>
-                </li>
+                    {rsvp.status === 'going' && <Check className="h-4 w-4" />}
+                    {rsvp.status === 'maybe' && <HelpCircle className="h-4 w-4" />}
+                    {rsvp.status === 'not_going' && <X className="h-4 w-4" />}
+                    <span className="capitalize">
+                      {rsvp.status === 'not_going' ? "Can't Make It" : rsvp.status}
+                    </span>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

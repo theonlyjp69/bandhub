@@ -9,8 +9,8 @@ You are building **BandHub**. The app is polished (Stage 8). Now you deploy to p
 **Prerequisites:** Stage 8 complete, app looks good and works well.
 
 **Research References:**
-- [GitHub Resources](C:\Users\jpcoo\docs\research\github-resources.md) - Vercel deployment patterns
-- [Research Synthesis](C:\Users\jpcoo\docs\research\research-synthesis.md) - Approved tech stack decisions
+- [GitHub Resources](docs/03-logs/research/github-resources.md) - Vercel deployment patterns
+- [Research Synthesis](docs/03-logs/research/research-synthesis.md) - Approved tech stack decisions
 
 ---
 
