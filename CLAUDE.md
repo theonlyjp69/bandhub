@@ -229,7 +229,8 @@ Full visual overhaul researched and documented. See [ui-modernization-research.m
 | 3 | Typography | Complete |
 | 4 | Card Variants | Complete |
 | 5 | Navigation & Layout | Complete |
-| 6-7 | Empty States & Microinteractions | Pending |
+| 6 | Empty States & Loading | Complete |
+| 7 | Microinteractions | Pending |
 | 8 | Full Page Overhaul | Pending |
 | 9 | Final Testing & Docs | Pending |
 

@@ -509,3 +509,81 @@ All new variables are exposed to Tailwind via `@theme inline`:
 - ✅ Mobile nav active indicator has inline glow shadow
 
 **Phase 5 Status: COMPLETE**
+
+---
+
+## Phase 6 Complete
+
+**Date:** 2026-02-02
+
+### Empty State & Loading Animation Utilities Added
+
+| Class | Effect | Use Case |
+|-------|--------|----------|
+| `.skeleton-modern` | Shimmer animation using surface CSS variables | Enhanced loading skeletons |
+| `.empty-state` | Centered flex column with generous padding | Empty state containers |
+| `.empty-state-icon` | Gradient bg (purple→cyan) with 5rem circle | Icon wrapper for empty states |
+| `.empty-state-ring` | Pulsing ring animation around icon | Decorative animation |
+
+### Implementation Details
+
+**Modern Skeleton (.skeleton-modern):**
+- Background: `var(--surface-1)` - uses design system variable
+- Shimmer: Gradient using `var(--surface-3)` for highlight
+- Animation: 1.5s ease-in-out infinite (matches existing skeleton-shimmer)
+- Uses `::after` pseudo-element for shimmer overlay
+
+**Empty State Container (.empty-state):**
+- Layout: `flex-col`, `items-center`, `justify-center`
+- Padding: `4rem 2rem` for comfortable spacing
+- Text alignment: centered
+
+**Empty State Icon (.empty-state-icon):**
+- Size: 5rem × 5rem circle
+- Background: Gradient from purple (20%) to cyan (20%)
+- Colors: `oklch(0.585 0.233 288 / 20%)` → `oklch(0.75 0.15 195 / 20%)`
+- Position: relative to contain decorative ring
+
+**Decorative Ring (.empty-state-ring):**
+- Position: Absolute, 8px outside parent
+- Animation: `pulse-ring` 2s ease-out infinite
+- Effect: Scale from 1 to 1.3 while fading out
+
+### Accessibility
+
+**prefers-reduced-motion Media Query:**
+```css
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-modern::after { animation: none; }
+  .empty-state-ring { animation: none; opacity: 0.3; }
+  .skeleton-shimmer { animation: none; }
+  .badge-pulse { animation: none; }
+}
+```
+
+All animations disabled for users who prefer reduced motion, with fallback static states.
+
+### Keyframes Added
+
+| Keyframe | Effect |
+|----------|--------|
+| `pulse-ring` | Scale 1→1.3, opacity 1→0 over 2s |
+
+*Note: `shimmer` keyframe already existed from previous implementation.*
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `app/globals.css` | Added Phase 6 empty state & loading utilities |
+
+### Verification
+
+- ✅ `npm run build` passes with no errors
+- ✅ `npm run test:run` passes (55 tests)
+- ✅ `.skeleton-modern` class exists
+- ✅ `.empty-state` classes exist
+- ✅ `@keyframes pulse-ring` defined
+- ✅ `prefers-reduced-motion` media query included
+
+**Phase 6 Status: COMPLETE**
