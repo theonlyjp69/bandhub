@@ -92,7 +92,7 @@ export default function NewPollPage() {
               <Clock className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <CardTitle>Create Availability Poll</CardTitle>
+              <CardTitle className="text-headline">Create Availability Poll</CardTitle>
               <CardDescription>Find the best time for your band</CardDescription>
             </div>
           </div>
@@ -115,6 +115,7 @@ export default function NewPollPage() {
                 required
                 maxLength={200}
                 placeholder="e.g., Best time for next rehearsal?"
+                className="focus-ring-enhanced"
               />
             </div>
 
@@ -127,6 +128,7 @@ export default function NewPollPage() {
                 maxLength={2000}
                 rows={2}
                 placeholder="Optional description..."
+                className="focus-ring-enhanced"
               />
             </div>
 
@@ -189,13 +191,14 @@ export default function NewPollPage() {
                 id="closesAt"
                 value={closesAt}
                 onChange={(e) => setClosesAt(e.target.value)}
+                className="focus-ring-enhanced"
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading || !title.trim()}
-              className="w-full"
+              className="w-full btn-gradient"
             >
               {loading ? 'Creating...' : 'Create Poll'}
             </Button>

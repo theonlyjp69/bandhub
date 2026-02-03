@@ -65,7 +65,7 @@ export function RsvpButtons({ eventId, currentStatus }: Props) {
             onClick={() => handleRsvp(btn.value)}
             disabled={loading}
             variant="outline"
-            className={status === btn.value ? btn.activeClass : ''}
+            className={`${status === btn.value ? btn.activeClass : ''} ${btn.value === 'going' && status === 'going' ? 'btn-gradient' : ''}`}
           >
             <btn.icon className="mr-2 h-4 w-4" />
             {btn.label}

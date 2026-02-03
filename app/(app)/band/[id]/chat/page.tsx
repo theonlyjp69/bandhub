@@ -33,7 +33,7 @@ export default async function ChatPage({ params }: Props) {
         <div className="rounded-full bg-primary/10 p-2">
           <MessageSquare className="h-5 w-5 text-primary" />
         </div>
-        <h1 className="text-2xl font-bold tracking-tight">Chat</h1>
+        <h1 className="text-headline">Chat</h1>
       </div>
 
       <ChatRoom bandId={id} />

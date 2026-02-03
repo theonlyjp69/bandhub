@@ -54,13 +54,13 @@ export default async function CalendarPage({ params }: Props) {
             <Calendar className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Calendar</h1>
+            <h1 className="text-headline">Calendar</h1>
             <p className="text-muted-foreground text-sm">
               {upcomingEvents.length} upcoming event{upcomingEvents.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="btn-gradient">
           <Link href={`/band/${id}/events/new`}>
             <Plus className="mr-2 h-4 w-4" />
             Create Event
@@ -70,18 +70,18 @@ export default async function CalendarPage({ params }: Props) {
 
       <div className="space-y-8">
         <section>
-          <h2 className="text-lg font-semibold mb-4">Upcoming Events</h2>
+          <h2 className="text-title mb-4">Upcoming Events</h2>
           {upcomingEvents.length === 0 ? (
             <Card className="border-dashed">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <div className="rounded-full bg-muted p-4 mb-4">
                   <Calendar className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <h3 className="text-lg font-medium mb-2">No upcoming events</h3>
+                <h3 className="text-title mb-2">No upcoming events</h3>
                 <p className="text-muted-foreground text-center mb-4">
                   Create an event to get started
                 </p>
-                <Button asChild>
+                <Button asChild className="btn-gradient">
                   <Link href={`/band/${id}/events/new`}>
                     <Plus className="mr-2 h-4 w-4" />
                     Create Event
@@ -93,11 +93,11 @@ export default async function CalendarPage({ params }: Props) {
             <div className="space-y-3">
               {upcomingEvents.map((event) => (
                 <Link key={event.id} href={`/band/${id}/events/${event.id}`}>
-                  <Card className="hover:border-primary/50 transition-colors">
+                  <Card className="card-interactive stagger-item">
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
-                          <h3 className="font-medium">{event.title}</h3>
+                          <h3 className="text-title">{event.title}</h3>
                           <p className="text-sm text-muted-foreground">
                             {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', {
                               weekday: 'long',
@@ -136,15 +136,15 @@ export default async function CalendarPage({ params }: Props) {
 
         {pastEvents.length > 0 && (
           <section>
-            <h2 className="text-lg font-semibold text-muted-foreground mb-4">Past Events</h2>
+            <h2 className="text-title text-muted-foreground mb-4">Past Events</h2>
             <div className="space-y-3 opacity-60">
               {pastEvents.slice(0, 10).map((event) => (
                 <Link key={event.id} href={`/band/${id}/events/${event.id}`}>
-                  <Card className="hover:border-primary/50 transition-colors">
+                  <Card className="card-interactive stagger-item">
                     <CardContent className="p-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="font-medium">{event.title}</h3>
+                          <h3 className="text-title">{event.title}</h3>
                           <p className="text-sm text-muted-foreground mt-1">
                             {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', {
                               month: 'short',

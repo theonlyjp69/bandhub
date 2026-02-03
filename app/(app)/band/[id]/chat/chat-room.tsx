@@ -104,9 +104,9 @@ export function ChatRoom({ bandId, threadId }: Props) {
             onKeyDown={handleKeyDown}
             placeholder="Type a message..."
             maxLength={5000}
-            className="flex-1"
+            className="flex-1 focus-ring-enhanced"
           />
-          <Button type="submit" disabled={!input.trim() || sending}>
+          <Button type="submit" disabled={!input.trim() || sending} className="btn-gradient">
             <Send className="h-4 w-4" />
           </Button>
         </div>

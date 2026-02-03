@@ -56,12 +56,12 @@ export default async function EventPage({ params }: Props) {
         <Badge variant="outline" className={`mb-3 ${getEventTypeClass(event.event_type)}`}>
           {event.event_type?.replace('_', ' ')}
         </Badge>
-        <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
+        <h1 className="text-headline">{event.title}</h1>
       </div>
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">Details</CardTitle>
+          <CardTitle className="text-title text-muted-foreground uppercase tracking-wide">Details</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">
@@ -126,7 +126,7 @@ export default async function EventPage({ params }: Props) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">Your RSVP</CardTitle>
+          <CardTitle className="text-title text-muted-foreground uppercase tracking-wide">Your RSVP</CardTitle>
         </CardHeader>
         <CardContent>
           <RsvpButtons eventId={eventId} currentStatus={(userRsvp?.status as 'going' | 'maybe' | 'not_going') || null} />
@@ -135,7 +135,7 @@ export default async function EventPage({ params }: Props) {
 
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">
+          <CardTitle className="text-title text-muted-foreground uppercase tracking-wide">
             Responses ({rsvps.length})
           </CardTitle>
         </CardHeader>
@@ -160,7 +160,7 @@ export default async function EventPage({ params }: Props) {
           ) : (
             <div className="space-y-2">
               {rsvps.map((rsvp: { user_id: string | null; status: string | null; profiles: { display_name: string | null } | null }) => (
-                <div key={rsvp.user_id} className="flex items-center justify-between py-2 border-b last:border-0">
+                <div key={rsvp.user_id} className="stagger-item flex items-center justify-between py-2 border-b last:border-0">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarFallback className="bg-primary/10 text-primary text-xs">

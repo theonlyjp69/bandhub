@@ -86,7 +86,7 @@ export default function InvitationsPage() {
           <Mail className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Pending Invitations</h1>
+          <h1 className="text-headline">Pending Invitations</h1>
           <p className="text-muted-foreground text-sm">
             {invitations.length === 0
               ? 'No pending invitations'
@@ -107,7 +107,7 @@ export default function InvitationsPage() {
             <div className="rounded-full bg-muted p-4 mb-4">
               <Mail className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No pending invitations</h3>
+            <h3 className="text-title mb-2">No pending invitations</h3>
             <p className="text-muted-foreground text-center mb-4">
               When someone invites you to join their band, it will appear here.
             </p>
@@ -121,7 +121,7 @@ export default function InvitationsPage() {
       ) : (
         <div className="space-y-3">
           {invitations.map((invitation) => (
-            <Card key={invitation.id} className="hover:border-primary/50 transition-colors">
+            <Card key={invitation.id} className="card-interactive stagger-item">
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-primary/10 p-2">
@@ -141,6 +141,7 @@ export default function InvitationsPage() {
                     onClick={() => handleAccept(invitation.id)}
                     disabled={processingId === invitation.id}
                     size="sm"
+                    className="btn-gradient"
                   >
                     <Check className="mr-1 h-4 w-4" />
                     {processingId === invitation.id ? 'Processing...' : 'Accept'}

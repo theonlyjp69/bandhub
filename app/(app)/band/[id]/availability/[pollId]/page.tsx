@@ -48,7 +48,7 @@ export default async function PollPage({ params }: Props) {
 
       <div>
         <div className="flex items-center gap-3 mb-2">
-          <h1 className="text-2xl font-bold tracking-tight">{poll.title}</h1>
+          <h1 className="text-headline">{poll.title}</h1>
           {isClosed && <Badge variant="secondary">Closed</Badge>}
         </div>
         {poll.description && (
@@ -63,7 +63,7 @@ export default async function PollPage({ params }: Props) {
       </div>
 
       {bestTime && (
-        <Card className="border-green-500/30 bg-green-500/5">
+        <Card className="border-green-500/30 bg-green-500/5 elevation-2">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm text-green-400 uppercase tracking-wide flex items-center gap-2">
               <Star className="h-4 w-4" />
@@ -94,9 +94,9 @@ export default async function PollPage({ params }: Props) {
         />
       )}
 
-      <Card>
+      <Card className="elevation-2">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-muted-foreground uppercase tracking-wide">
+          <CardTitle className="text-title text-muted-foreground uppercase tracking-wide">
             All Responses ({responses.length})
           </CardTitle>
         </CardHeader>

@@ -74,7 +74,7 @@ export default async function BandPage({ params }: Props) {
 
       {/* Band header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{band.name}</h1>
+        <h1 className="text-headline">{band.name}</h1>
         {band.description && (
           <p className="text-muted-foreground mt-2">{band.description}</p>
         )}
@@ -102,7 +102,7 @@ export default async function BandPage({ params }: Props) {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Upcoming Events</CardTitle>
+              <CardTitle className="text-title">Upcoming Events</CardTitle>
               <Button variant="ghost" size="sm" asChild>
                 <Link href={`/band/${id}/calendar`} className="text-primary">
                   View all
@@ -117,7 +117,7 @@ export default async function BandPage({ params }: Props) {
             ) : (
               upcomingEvents.map((event) => (
                 <Link key={event.id} href={`/band/${id}/events/${event.id}`}>
-                  <div className="p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
+                  <div className="card-interactive stagger-item p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium">{event.title}</span>
                       <Badge variant="outline" className={getEventTypeClass(event.event_type)}>
@@ -144,7 +144,7 @@ export default async function BandPage({ params }: Props) {
                 </Link>
               ))
             )}
-            <Button variant="outline" className="w-full" asChild>
+            <Button className="btn-gradient w-full" asChild>
               <Link href={`/band/${id}/events/new`}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Event
@@ -157,7 +157,7 @@ export default async function BandPage({ params }: Props) {
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-lg">Announcements</CardTitle>
+              <CardTitle className="text-title">Announcements</CardTitle>
               <Button variant="ghost" size="sm" asChild>
                 <Link href={`/band/${id}/announcements`} className="text-primary">
                   View all
@@ -171,7 +171,7 @@ export default async function BandPage({ params }: Props) {
               <p className="text-sm text-muted-foreground py-4 text-center">No announcements yet</p>
             ) : (
               recentAnnouncements.map((announcement) => (
-                <div key={announcement.id} className="p-3 rounded-lg bg-accent/50">
+                <div key={announcement.id} className="stagger-item p-3 rounded-lg bg-accent/50">
                   {announcement.title && (
                     <h3 className="font-medium">{announcement.title}</h3>
                   )}

@@ -43,13 +43,13 @@ export default async function AvailabilityPage({ params }: Props) {
             <Clock className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">Availability Polls</h1>
+            <h1 className="text-headline">Availability Polls</h1>
             <p className="text-muted-foreground text-sm">
               {polls.length} poll{polls.length !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
-        <Button asChild>
+        <Button asChild className="btn-gradient">
           <Link href={`/band/${id}/availability/new`}>
             <Plus className="mr-2 h-4 w-4" />
             Create Poll
@@ -63,11 +63,11 @@ export default async function AvailabilityPage({ params }: Props) {
             <div className="rounded-full bg-muted p-4 mb-4">
               <Clock className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No availability polls yet</h3>
+            <h3 className="text-title mb-2">No availability polls yet</h3>
             <p className="text-muted-foreground text-center mb-4">
               Create a poll to find the best time for your band
             </p>
-            <Button asChild>
+            <Button asChild className="btn-gradient">
               <Link href={`/band/${id}/availability/new`}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create your first poll
@@ -83,12 +83,12 @@ export default async function AvailabilityPage({ params }: Props) {
 
             return (
               <Link key={poll.id} href={`/band/${id}/availability/${poll.id}`}>
-                <Card className="hover:border-primary/50 transition-colors">
+                <Card className="card-interactive stagger-item">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-medium">{poll.title}</h3>
+                          <h3 className="text-title">{poll.title}</h3>
                           {isClosed && (
                             <Badge variant="secondary">Closed</Badge>
                           )}

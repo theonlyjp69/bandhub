@@ -49,7 +49,7 @@ export function ThreadsList({ bandId, threads }: Props) {
     <div className="space-y-6">
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg">Start a New Thread</CardTitle>
+          <CardTitle className="text-title">Start a New Thread</CardTitle>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleCreate} className="flex gap-2">
@@ -59,9 +59,9 @@ export function ThreadsList({ bandId, threads }: Props) {
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Thread title..."
               maxLength={200}
-              className="flex-1"
+              className="flex-1 focus-ring-enhanced"
             />
-            <Button type="submit" disabled={loading || !title.trim()}>
+            <Button type="submit" disabled={loading || !title.trim()} className="btn-gradient">
               <Plus className="mr-2 h-4 w-4" />
               {loading ? 'Creating...' : 'Create'}
             </Button>
@@ -78,7 +78,7 @@ export function ThreadsList({ bandId, threads }: Props) {
             <div className="rounded-full bg-muted p-4 mb-4">
               <MessagesSquare className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No threads yet</h3>
+            <h3 className="text-title mb-2">No threads yet</h3>
             <p className="text-muted-foreground text-center">
               Start a discussion with your band above.
             </p>
@@ -90,7 +90,7 @@ export function ThreadsList({ bandId, threads }: Props) {
             const messageCount = thread.messages?.[0]?.count || 0
             return (
               <Link key={thread.id} href={`/band/${bandId}/threads/${thread.id}`}>
-                <Card className="hover:border-primary/50 transition-colors">
+                <Card className="card-interactive stagger-item">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-start gap-3">
@@ -98,7 +98,7 @@ export function ThreadsList({ bandId, threads }: Props) {
                           <MessageCircle className="h-4 w-4 text-primary" />
                         </div>
                         <div>
-                          <h3 className="font-medium">{thread.title}</h3>
+                          <h3 className="text-title">{thread.title}</h3>
                           <p className="text-muted-foreground text-sm mt-1">
                             Started by {thread.profiles?.display_name || 'Unknown'}
                             {thread.created_at && (

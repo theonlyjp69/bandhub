@@ -38,7 +38,7 @@ export default async function ThreadPage({ params }: Props) {
           <MessageCircle className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{thread.title}</h1>
+          <h1 className="text-headline">{thread.title}</h1>
           <p className="text-muted-foreground text-sm">
             Started by {thread.profiles?.display_name || 'Unknown'}
             {thread.created_at && (
