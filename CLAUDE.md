@@ -232,7 +232,7 @@ Full visual overhaul researched and documented. See [ui-modernization-research.m
 | 6 | Empty States & Loading | Complete |
 | 7 | Microinteractions | Complete |
 | 8 | Full Page Overhaul | Complete |
-| 9 | Final Testing & Docs | Pending |
+| 9 | Final Testing & Docs | Complete |
 
 **Phase 8 Summary (2026-02-02):**
 - Part 1: Core pages (dashboard, login, create-band) - 3 files, 18 changes
@@ -240,6 +240,22 @@ Full visual overhaul researched and documented. See [ui-modernization-research.m
 - Classes applied: `text-headline`, `text-title`, `card-interactive`, `stagger-item`, `btn-gradient`, `focus-ring-enhanced`, `elevation-2`
 - All 55 tests passing
 - PR: https://github.com/theonlyjp69/bandhub/pull/1
+
+## Design System (Post-Modernization)
+
+| Token Type | Example Values |
+|------------|----------------|
+| Colors | `--background`, `--card`, `--card-elevated`, `--surface-1/2/3`, `--accent-secondary` |
+| Shadows | `--shadow-xs/sm/md/lg/xl`, `--shadow-primary-glow` |
+| Typography | `.text-display`, `.text-headline`, `.text-title`, `.text-gradient-primary` |
+| Cards | `.card-interactive`, `.card-glass`, `.card-gradient-border`, `.card-elevated` |
+| Animations | `.stagger-item`, `.btn-gradient`, `.animate-scale-in`, `.animate-fade-in` |
+| Focus | `.focus-ring-enhanced` |
+| Layout | `.empty-state`, `.empty-state-icon`, `.skeleton-modern` |
+
+**Accessibility:** All animations respect `prefers-reduced-motion`.
+
+**Reference:** See `app/globals.css` for full implementation.
 
 ## Quick Links
 
