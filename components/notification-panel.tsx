@@ -34,6 +34,7 @@ interface NotificationPanelProps {
 function formatRelativeTime(dateStr: string): string {
   const now = Date.now()
   const date = new Date(dateStr).getTime()
+  if (isNaN(date)) return ''
   const seconds = Math.floor((now - date) / 1000)
 
   if (seconds < 60) return 'just now'
@@ -80,7 +81,7 @@ export function NotificationPanel({
     if (!notification.read_at) {
       onMarkAsRead(notification.id)
     }
-    if (notification.link) {
+    if (notification.link && notification.link.startsWith('/')) {
       router.push(notification.link)
     }
   }
@@ -137,10 +138,18 @@ export function NotificationPanel({
               return (
                 <div
                   key={notification.id}
-                  className={`relative flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/50 group ${
+                  role="button"
+                  tabIndex={0}
+                  className={`relative flex items-start gap-3 px-4 py-3 cursor-pointer transition-colors hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:outline-none group ${
                     isUnread ? 'bg-primary/5' : ''
                   }`}
                   onClick={() => handleClick(notification)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      handleClick(notification)
+                    }
+                  }}
                 >
                   {/* Icon */}
                   <div
@@ -173,7 +182,7 @@ export function NotificationPanel({
                   </div>
 
                   {/* Actions */}
-                  <div className="flex shrink-0 items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex shrink-0 items-center gap-1 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 transition-opacity">
                     {isUnread && (
                       <Button
                         variant="ghost"
