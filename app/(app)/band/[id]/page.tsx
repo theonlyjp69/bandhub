@@ -3,7 +3,7 @@ import { getUpcomingEvents } from '@/actions/events'
 import { getBandAnnouncements } from '@/actions/announcements'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -15,14 +15,31 @@ import {
   Users,
   FolderOpen,
   Clock,
-  Plus,
   MapPin,
   ArrowRight
 } from 'lucide-react'
 import { MobileNav } from '@/components/layout/mobile-nav'
+import { CreateEventModal } from '@/components/create-event-modal'
 
 type Props = {
   params: Promise<{ id: string }>
+}
+
+const EVENT_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  weekday: 'short',
+  month: 'short',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit'
+}
+
+function getEventTypeClass(type: string | null): string {
+  switch (type) {
+    case 'show': return 'event-show'
+    case 'rehearsal': return 'event-rehearsal'
+    case 'deadline': return 'event-deadline'
+    default: return 'event-other'
+  }
 }
 
 export default async function BandPage({ params }: Props) {
@@ -52,18 +69,8 @@ export default async function BandPage({ params }: Props) {
     { href: `/band/${id}/availability`, label: 'Availability', icon: Clock },
   ]
 
-  const getEventTypeClass = (type: string | null) => {
-    switch (type) {
-      case 'show': return 'event-show'
-      case 'rehearsal': return 'event-rehearsal'
-      case 'deadline': return 'event-deadline'
-      default: return 'event-other'
-    }
-  }
-
   return (
     <div className="space-y-6">
-      {/* Back link */}
       <Link
         href="/dashboard"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -72,7 +79,6 @@ export default async function BandPage({ params }: Props) {
         Back to Dashboard
       </Link>
 
-      {/* Band header */}
       <div>
         <h1 className="text-headline">{band.name}</h1>
         {band.description && (
@@ -80,7 +86,6 @@ export default async function BandPage({ params }: Props) {
         )}
       </div>
 
-      {/* Quick navigation */}
       <Card>
         <CardContent className="p-4">
           <nav className="flex flex-wrap gap-2">
@@ -96,9 +101,7 @@ export default async function BandPage({ params }: Props) {
         </CardContent>
       </Card>
 
-      {/* Content grid */}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Upcoming Events */}
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -126,13 +129,7 @@ export default async function BandPage({ params }: Props) {
                     </div>
                     <div className="flex items-center gap-1 text-sm text-muted-foreground">
                       <Calendar className="h-3 w-3" />
-                      {new Date(event.start_time).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                      })}
+                      {new Date(event.start_time).toLocaleDateString('en-US', EVENT_DATE_FORMAT)}
                     </div>
                     {event.location && (
                       <div className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
@@ -144,16 +141,14 @@ export default async function BandPage({ params }: Props) {
                 </Link>
               ))
             )}
-            <Button className="btn-gradient w-full" asChild>
-              <Link href={`/band/${id}/events/new`}>
-                <Plus className="mr-2 h-4 w-4" />
+            <CreateEventModal bandId={id} trigger={
+              <Button className="btn-gradient w-full">
                 Create Event
-              </Link>
-            </Button>
+              </Button>
+            } />
           </CardContent>
         </Card>
 
-        {/* Announcements */}
         <Card>
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
@@ -188,7 +183,6 @@ export default async function BandPage({ params }: Props) {
         </Card>
       </div>
 
-      {/* Mobile navigation */}
       <MobileNav bandId={id} />
     </div>
   )

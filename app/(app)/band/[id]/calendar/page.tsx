@@ -3,12 +3,35 @@ import { getBandEvents } from '@/actions/events'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Calendar, Plus, MapPin, Users } from 'lucide-react'
+import { ArrowLeft, Calendar, MapPin, Users } from 'lucide-react'
+import { CreateEventModal } from '@/components/create-event-modal'
 
 type Props = {
   params: Promise<{ id: string }>
+}
+
+const UPCOMING_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: '2-digit'
+}
+
+const PAST_DATE_FORMAT: Intl.DateTimeFormatOptions = {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric'
+}
+
+function getEventTypeClass(type: string | null): string {
+  switch (type) {
+    case 'show': return 'event-show'
+    case 'rehearsal': return 'event-rehearsal'
+    case 'deadline': return 'event-deadline'
+    default: return 'event-other'
+  }
 }
 
 export default async function CalendarPage({ params }: Props) {
@@ -28,15 +51,6 @@ export default async function CalendarPage({ params }: Props) {
   const now = new Date()
   const upcomingEvents = events.filter(e => e.start_time && new Date(e.start_time) >= now)
   const pastEvents = events.filter(e => e.start_time && new Date(e.start_time) < now)
-
-  const getEventTypeClass = (type: string | null) => {
-    switch (type) {
-      case 'show': return 'event-show'
-      case 'rehearsal': return 'event-rehearsal'
-      case 'deadline': return 'event-deadline'
-      default: return 'event-other'
-    }
-  }
 
   return (
     <div className="space-y-6">
@@ -60,12 +74,7 @@ export default async function CalendarPage({ params }: Props) {
             </p>
           </div>
         </div>
-        <Button asChild className="btn-gradient">
-          <Link href={`/band/${id}/events/new`}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Event
-          </Link>
-        </Button>
+        <CreateEventModal bandId={id} />
       </div>
 
       <div className="space-y-8">
@@ -81,12 +90,7 @@ export default async function CalendarPage({ params }: Props) {
                 <p className="text-muted-foreground text-center mb-4">
                   Create an event to get started
                 </p>
-                <Button asChild className="btn-gradient">
-                  <Link href={`/band/${id}/events/new`}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    Create Event
-                  </Link>
-                </Button>
+                <CreateEventModal bandId={id} />
               </CardContent>
             </Card>
           ) : (
@@ -99,13 +103,7 @@ export default async function CalendarPage({ params }: Props) {
                         <div className="space-y-1">
                           <h3 className="text-title">{event.title}</h3>
                           <p className="text-sm text-muted-foreground">
-                            {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', {
-                              weekday: 'long',
-                              month: 'long',
-                              day: 'numeric',
-                              hour: 'numeric',
-                              minute: '2-digit'
-                            })}
+                            {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', UPCOMING_DATE_FORMAT)}
                           </p>
                           {event.location && (
                             <div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -146,11 +144,7 @@ export default async function CalendarPage({ params }: Props) {
                         <div>
                           <h3 className="text-title">{event.title}</h3>
                           <p className="text-sm text-muted-foreground mt-1">
-                            {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', {
-                              month: 'short',
-                              day: 'numeric',
-                              year: 'numeric'
-                            })}
+                            {event.start_time && new Date(event.start_time).toLocaleDateString('en-US', PAST_DATE_FORMAT)}
                           </p>
                         </div>
                         <Badge variant="outline" className={getEventTypeClass(event.event_type)}>
