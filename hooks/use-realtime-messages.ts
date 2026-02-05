@@ -12,15 +12,13 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const supabase = useMemo(() => createClient(), [])
 
+  // Helper to add message only if not already present
+  const addIfNew = (prev: Message[], message: Message): Message[] =>
+    prev.some((m) => m.id === message.id) ? prev : [...prev, message]
+
   // Optimistic add - for immediate UI feedback when user sends a message
   const addMessage = useCallback((message: Message) => {
-    setMessages((prev) => {
-      // Avoid duplicates (in case realtime also delivers it)
-      if (prev.some((m) => m.id === message.id)) {
-        return prev
-      }
-      return [...prev, message]
-    })
+    setMessages((prev) => addIfNew(prev, message))
   }, [])
 
   useEffect(() => {
@@ -78,13 +76,7 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
             .single()
 
           if (data) {
-            setMessages((prev) => {
-              // Avoid duplicates (optimistic update may have already added it)
-              if (prev.some((m) => m.id === data.id)) {
-                return prev
-              }
-              return [...prev, data as Message]
-            })
+            setMessages((prev) => addIfNew(prev, data as Message))
           }
         }
       )

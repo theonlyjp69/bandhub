@@ -34,16 +34,23 @@ npm run test:e2e     # E2E tests (requires dev server)
 
 ```
 actions/     # 16 server action files (60+ functions)
-hooks/       # React hooks (realtime)
+hooks/       # React hooks (realtime, notifications, service worker)
+  ├── use-realtime-messages.ts  # Chat realtime subscription
+  ├── use-notifications.ts      # Notification realtime + CRUD
+  └── use-service-worker.ts     # SW registration + push subscription
 app/         # Next.js pages (20 routes)
 components/  # shadcn/ui + custom components
-  ├── ui/              # shadcn components (Dialog, Button, Input, etc.)
-  ├── layout/          # Layout components (MobileNav, etc.)
-  ├── create-event-modal.tsx  # Unified event/poll creation modal
-  ├── member-selector.tsx     # Private event visibility picker
-  └── time-slot-input.tsx     # Poll time options input
+  ├── ui/              # shadcn components (Dialog, Button, Popover, etc.)
+  ├── layout/          # Layout components (Navbar, MobileNav)
+  ├── notification-bell.tsx         # Navbar bell icon + unread badge
+  ├── notification-panel.tsx        # Notification list dropdown
+  ├── notification-preferences.tsx  # Settings dialog with toggles
+  ├── create-event-modal.tsx        # Unified event/poll creation modal
+  ├── member-selector.tsx           # Private event visibility picker
+  └── time-slot-input.tsx           # Poll time options input
 lib/         # Supabase clients
-supabase/    # 27 migrations
+public/      # Static assets + service worker (sw.js)
+supabase/    # 31 migrations
 tests/       # 98 Vitest tests
 docs/        # Documentation (see docs/README.md)
 plans/       # MASTER-PLAN.md + STAGE-9-DEPLOY.md
@@ -96,16 +103,23 @@ export async function action(id: string) {
 - **Modal-based workflow** - CreateEventModal replaces separate page
 - **Two modes:** Fixed Time (confirmed events) | Find a Time (availability polls)
 - **Visibility control:** Band-wide or private (specific members only)
-- **Poll resolution:** Creator manually selects winning time slot
+- **Poll voting:** Members vote Available/Maybe/Unavailable on time slots
+- **Poll resolution:** Creator confirms winning time slot, converts to fixed event
+- **RSVP tracking:** Optional with deadline, notes (500-char max)
 - **Notifications:** Toast + in-app + push (with preferences)
-- **RSVP tracking:** Optional with deadline and notes
+
+### Event Detail Experience
+- **Fixed events:** Time/location/RSVP buttons with optional notes, response list with notes
+- **Active polls:** Vote on time slots, view results, creator can confirm winning time
+- **Resolved polls:** Show confirmed time badge, full RSVP functionality
+- **Status handling:** Cancelled events disable RSVP, status badges throughout
 
 ## Key Patterns
 
 1. **Auth** - Check user → validate input → verify membership → execute
 2. **RLS** - 27 policies enforce database-level security
 3. **Files** - Supabase Storage, signed URLs (1hr), path: `{band_id}/{filename}`
-4. **Realtime** - Supabase channels for messages, cleanup on unmount
+4. **Realtime** - Supabase channels for messages + notifications, cleanup on unmount
 5. **Errors** - Generic messages prevent info leakage
 6. **Events** - Unified model: polls resolve to fixed events when time confirmed
 
@@ -146,4 +160,5 @@ SUPABASE_SERVICE_ROLE_KEY=     # For server-side operations
 - **UI Guidelines:** docs/03-logs/research/ui-ux-guidelines.md
 - **Design System:** app/globals.css
 - **Archive:** docs/archive/ (historical logs, stage plans, reviews)
-- **Create Event Flow:** docs/03-logs/implementation-logs/implementation-log-create-event-flow.md (Phase 3 complete)
+- **Create Event Flow:** docs/03-logs/implementation-logs/implementation-log-create-event-flow.md (All 5 phases complete)
+- **Notifications Spec:** docs/02-features/notifications/feature-spec.md

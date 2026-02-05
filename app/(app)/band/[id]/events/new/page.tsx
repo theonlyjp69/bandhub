@@ -45,11 +45,10 @@ export default function NewEventPage() {
       const startDateTime = `${startDate}T${startTime}:00`
       const endDateTime = endDate && endTime ? `${endDate}T${endTime}:00` : undefined
 
-      const metadata: Record<string, unknown> = {}
-      if (eventType === 'show') {
-        if (venue) metadata.venue = venue
-        if (pay) metadata.pay = pay
-      }
+      const metadata: Record<string, unknown> =
+        eventType === 'show'
+          ? { ...(venue && { venue }), ...(pay && { pay }) }
+          : {}
 
       const event = await createEvent({
         bandId,

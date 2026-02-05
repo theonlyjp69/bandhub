@@ -4,16 +4,19 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { setRsvp } from '@/actions/rsvps'
 import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 import { Check, HelpCircle, X } from 'lucide-react'
 
 type Props = {
   eventId: string
   currentStatus: 'going' | 'maybe' | 'not_going' | null
+  currentNote?: string | null
 }
 
-export function RsvpButtons({ eventId, currentStatus }: Props) {
+export function RsvpButtons({ eventId, currentStatus, currentNote }: Props) {
   const router = useRouter()
   const [status, setStatus] = useState(currentStatus)
+  const [note, setNote] = useState(currentNote ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -22,7 +25,7 @@ export function RsvpButtons({ eventId, currentStatus }: Props) {
     setError('')
 
     try {
-      await setRsvp(eventId, newStatus)
+      await setRsvp(eventId, newStatus, note || undefined)
       setStatus(newStatus)
       router.refresh()
     } catch (err) {
@@ -37,7 +40,7 @@ export function RsvpButtons({ eventId, currentStatus }: Props) {
       value: 'going' as const,
       label: 'Going',
       icon: Check,
-      activeClass: 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30',
+      activeClass: 'bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30 btn-gradient',
     },
     {
       value: 'maybe' as const,
@@ -53,6 +56,8 @@ export function RsvpButtons({ eventId, currentStatus }: Props) {
     },
   ]
 
+  const isActive = (value: string): boolean => status === value
+
   return (
     <div>
       {error && (
@@ -65,13 +70,22 @@ export function RsvpButtons({ eventId, currentStatus }: Props) {
             onClick={() => handleRsvp(btn.value)}
             disabled={loading}
             variant="outline"
-            className={`${status === btn.value ? btn.activeClass : ''} ${btn.value === 'going' && status === 'going' ? 'btn-gradient' : ''}`}
+            className={isActive(btn.value) ? btn.activeClass : ''}
           >
             <btn.icon className="mr-2 h-4 w-4" />
             {btn.label}
           </Button>
         ))}
       </div>
+      <Textarea
+        placeholder="Add a note (e.g., arriving late, bringing equipment)"
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        maxLength={500}
+        className="mt-3"
+        rows={2}
+      />
+      <p className="text-xs text-muted-foreground mt-1">{note.length}/500</p>
     </div>
   )
 }

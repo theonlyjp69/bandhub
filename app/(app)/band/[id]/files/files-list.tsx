@@ -32,17 +32,25 @@ type Props = {
 
 function formatFileSize(bytes: number | null): string {
   if (!bytes) return '0 B'
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+
+  const KB = 1024
+  const MB = KB * 1024
+
+  if (bytes < KB) return `${bytes} B`
+  if (bytes < MB) return `${(bytes / KB).toFixed(1)} KB`
+  return `${(bytes / MB).toFixed(1)} MB`
 }
 
 function getFileIcon(mimeType: string | null) {
   if (!mimeType) return File
-  if (mimeType.startsWith('image/')) return FileImage
-  if (mimeType.startsWith('audio/')) return FileAudio
-  if (mimeType.startsWith('video/')) return FileVideo
+
+  const type = mimeType.split('/')[0]
+
+  if (type === 'image') return FileImage
+  if (type === 'audio') return FileAudio
+  if (type === 'video') return FileVideo
   if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return FileText
+
   return File
 }
 

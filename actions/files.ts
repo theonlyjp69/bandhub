@@ -180,12 +180,13 @@ export async function updateFileMetadata(fileId: string, updates: { name?: strin
   if (!file) throw new Error('File not found')
   if (file.uploaded_by !== user.id) throw new Error('Access denied')
 
+  const updateData: { name?: string; description?: string } = {}
+  if (updates.name !== undefined) updateData.name = updates.name
+  if (updates.description !== undefined) updateData.description = updates.description
+
   const { data, error } = await supabase
     .from('files')
-    .update({
-      ...(updates.name !== undefined && { name: updates.name }),
-      ...(updates.description !== undefined && { description: updates.description })
-    })
+    .update(updateData)
     .eq('id', fileId)
     .select()
     .single()
@@ -244,17 +245,14 @@ export async function uploadFileWithStorage(formData: FormData) {
 
   // Generate unique file path with secure filename sanitization
   const timestamp = Date.now()
-  // Extract only the base filename (no path components)
   const baseName = file.name.split(/[/\\]/).pop() || 'file'
-  // Remove all dangerous characters and path traversal sequences
   const safeName = baseName
-    .replace(/\.\./g, '_')           // Remove path traversal
-    .replace(/[^a-zA-Z0-9._-]/g, '_') // Allow only safe chars
-    .replace(/^\.+/, '_')             // Don't start with dots
-    .substring(0, 100)                // Limit filename length
+    .replace(/\.\./g, '_')
+    .replace(/[^a-zA-Z0-9._-]/g, '_')
+    .replace(/^\.+/, '_')
+    .substring(0, 100)
   const filePath = `${bandId}/${timestamp}_${safeName}`
 
-  // Final validation: ensure path stays within band directory
   if (filePath.includes('..') || !filePath.startsWith(`${bandId}/`)) {
     throw new Error('Invalid filename')
   }

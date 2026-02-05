@@ -41,7 +41,7 @@ export async function sendMessage(bandId: string, content: string, threadId?: st
     .from('messages')
     .insert({
       band_id: bandId,
-      thread_id: threadId || null,
+      thread_id: threadId ?? null,
       user_id: user.id,
       content
     })
@@ -74,7 +74,7 @@ export async function getMessages(bandId: string, threadId?: string, limit = 50)
 
   if (!member) throw new Error('Access denied')
 
-  let query = supabase
+  const baseQuery = supabase
     .from('messages')
     .select(`
       *,
@@ -84,13 +84,10 @@ export async function getMessages(bandId: string, threadId?: string, limit = 50)
     .order('created_at', { ascending: true })
     .limit(limit)
 
-  if (threadId) {
-    query = query.eq('thread_id', threadId)
-  } else {
-    query = query.is('thread_id', null) // Main chat = no thread
-  }
-
-  const { data, error } = await query
+  // Filter by thread: specific thread or main chat (null thread_id)
+  const { data, error } = threadId
+    ? await baseQuery.eq('thread_id', threadId)
+    : await baseQuery.is('thread_id', null)
 
   if (error) throw error
   return data

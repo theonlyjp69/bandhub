@@ -2,9 +2,19 @@
 
 import { createClient } from '@/lib/supabase/server'
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
 function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email) && email.length <= 254
+  return EMAIL_REGEX.test(email) && email.length <= 254
+}
+
+function validateInvitationAccess(
+  invitation: { email: string; status: string | null } | null,
+  userEmail: string
+): void {
+  if (!invitation) throw new Error('Invitation not found')
+  if (invitation.email !== userEmail) throw new Error('This invitation is not for you')
+  if (invitation.status !== 'pending') throw new Error('Invitation already processed')
 }
 
 export async function createInvitation(bandId: string, email: string) {
@@ -83,37 +93,24 @@ export async function acceptInvitation(invitationId: string) {
   if (!user.email) throw new Error('User email required')
   if (!invitationId || typeof invitationId !== 'string') throw new Error('Invalid input')
 
-  // Get invitation
   const { data: invitation } = await supabase
     .from('invitations')
     .select('*')
     .eq('id', invitationId)
     .single()
 
-  if (!invitation) throw new Error('Invitation not found')
+  validateInvitationAccess(invitation, user.email)
 
-  // Verify the invitation is for this user's email
-  if (invitation.email !== user.email) {
-    throw new Error('This invitation is not for you')
-  }
-
-  // Verify invitation is still pending
-  if (invitation.status !== 'pending') {
-    throw new Error('Invitation already processed')
-  }
-
-  // Add user to band
   const { error: memberError } = await supabase
     .from('band_members')
     .insert({
-      band_id: invitation.band_id,
+      band_id: invitation!.band_id,
       user_id: user.id,
       role: 'member'
     })
 
   if (memberError) throw new Error('Failed to join band')
 
-  // Update invitation status
   const { error: updateError } = await supabase
     .from('invitations')
     .update({ status: 'accepted' })
@@ -130,24 +127,13 @@ export async function declineInvitation(invitationId: string) {
   if (!user.email) throw new Error('User email required')
   if (!invitationId || typeof invitationId !== 'string') throw new Error('Invalid input')
 
-  // Get invitation to verify it belongs to this user
   const { data: invitation } = await supabase
     .from('invitations')
     .select('email, status')
     .eq('id', invitationId)
     .single()
 
-  if (!invitation) throw new Error('Invitation not found')
-
-  // Verify the invitation is for this user's email
-  if (invitation.email !== user.email) {
-    throw new Error('This invitation is not for you')
-  }
-
-  // Verify invitation is still pending
-  if (invitation.status !== 'pending') {
-    throw new Error('Invitation already processed')
-  }
+  validateInvitationAccess(invitation, user.email)
 
   const { error } = await supabase
     .from('invitations')
