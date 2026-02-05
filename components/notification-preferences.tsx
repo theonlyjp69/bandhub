@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import { useServiceWorker } from '@/hooks/use-service-worker'
 import { Settings } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -33,6 +34,7 @@ const PREFERENCE_OPTIONS = [
 export function NotificationPreferences() {
   const [prefs, setPrefs] = useState<Preferences | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const { isSupported, registerPush, unregisterPush } = useServiceWorker()
 
   const loadPreferences = useCallback(async () => {
     setIsLoading(true)
@@ -55,6 +57,25 @@ export function NotificationPreferences() {
     } catch {
       // Revert on failure
       setPrefs(prev => prev ? { ...prev, [key]: !value } : null)
+    }
+  }
+
+  const handlePushToggle = async (checked: boolean) => {
+    if (!prefs) return
+
+    if (checked) {
+      // Request permission and register push subscription
+      const success = await registerPush()
+      if (success) {
+        setPrefs(prev => prev ? { ...prev, pushEnabled: true } : null)
+        await updatePreferences({ pushEnabled: true })
+      }
+      // If permission denied, don't toggle
+    } else {
+      // Unregister push subscription and disable
+      await unregisterPush()
+      setPrefs(prev => prev ? { ...prev, pushEnabled: false } : null)
+      await updatePreferences({ pushEnabled: false })
     }
   }
 
@@ -115,7 +136,12 @@ export function NotificationPreferences() {
                 <p className="text-xs text-muted-foreground">
                   Receive browser push notifications
                 </p>
-                {prefs.pushEnabled && typeof window !== 'undefined' && 'Notification' in window && (
+                {!isSupported && (
+                  <p className="text-[11px] text-muted-foreground/70">
+                    Push notifications are not supported in this browser
+                  </p>
+                )}
+                {isSupported && prefs.pushEnabled && typeof window !== 'undefined' && 'Notification' in window && (
                   <p className="text-[11px] text-muted-foreground/70">
                     Browser permission: {Notification.permission}
                   </p>
@@ -124,7 +150,8 @@ export function NotificationPreferences() {
               <Switch
                 id="pushEnabled"
                 checked={prefs.pushEnabled}
-                onCheckedChange={(checked) => handleToggle('pushEnabled', checked)}
+                disabled={!isSupported}
+                onCheckedChange={(checked) => handlePushToggle(checked)}
               />
             </div>
           </div>
