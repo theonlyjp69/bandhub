@@ -16,14 +16,11 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 
 export function useServiceWorker() {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
-  const [isSupported, setIsSupported] = useState(false)
+  const isSupported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window
   const registering = useRef(false)
 
   useEffect(() => {
-    const supported = 'serviceWorker' in navigator && 'PushManager' in window
-    setIsSupported(supported)
-
-    if (!supported) return
+    if (!isSupported) return
 
     // Register service worker
     if (!registering.current) {
@@ -32,7 +29,7 @@ export function useServiceWorker() {
         .then(reg => setRegistration(reg))
         .catch(() => { /* SW registration failed, push won't work */ })
     }
-  }, [])
+  }, [isSupported])
 
   const registerPush = useCallback(async (): Promise<boolean> => {
     if (!registration) return false
