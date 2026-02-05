@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import {
   getUserNotifications,
@@ -19,71 +19,97 @@ export function useNotifications(userId: string) {
   const [unreadCount, setUnreadCount] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [hasMore, setHasMore] = useState(true)
+  const isFetchingMore = useRef(false)
 
   const supabase = useMemo(() => createClient(), [])
 
-  // Mark as read - optimistic update
+  // Mark as read - optimistic update (checks if already read)
   const markAsRead = useCallback(async (id: string) => {
+    let wasUnread = false
     setNotifications(prev =>
-      prev.map(n => n.id === id ? { ...n, read_at: new Date().toISOString() } : n)
+      prev.map(n => {
+        if (n.id === id && !n.read_at) {
+          wasUnread = true
+          return { ...n, read_at: new Date().toISOString() }
+        }
+        return n
+      })
     )
-    setUnreadCount(prev => Math.max(0, prev - 1))
+    if (wasUnread) {
+      setUnreadCount(prev => Math.max(0, prev - 1))
+    }
     try {
       await markAsReadAction(id)
     } catch {
-      // Revert on failure
-      setNotifications(prev =>
-        prev.map(n => n.id === id ? { ...n, read_at: null } : n)
-      )
-      setUnreadCount(prev => prev + 1)
+      if (wasUnread) {
+        setNotifications(prev =>
+          prev.map(n => n.id === id ? { ...n, read_at: null } : n)
+        )
+        setUnreadCount(prev => prev + 1)
+      }
     }
   }, [])
 
-  // Mark all as read - optimistic update
+  // Mark all as read - captures snapshot via functional updater to avoid stale closure
   const markAllAsRead = useCallback(async () => {
-    const previousNotifications = notifications
-    const previousUnreadCount = unreadCount
-    setNotifications(prev =>
-      prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
-    )
-    setUnreadCount(0)
+    let snapshot: Notification[] = []
+    let prevUnread = 0
+    setNotifications(prev => {
+      snapshot = prev
+      return prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
+    })
+    setUnreadCount(prev => {
+      prevUnread = prev
+      return 0
+    })
     try {
       await markAllAsReadAction()
     } catch {
-      // Revert on failure
-      setNotifications(previousNotifications)
-      setUnreadCount(previousUnreadCount)
+      setNotifications(snapshot)
+      setUnreadCount(prevUnread)
     }
-  }, [notifications, unreadCount])
+  }, [])
 
-  // Delete notification - optimistic update
+  // Delete notification - captures removed item via functional updater
   const deleteNotification = useCallback(async (id: string) => {
-    const notification = notifications.find(n => n.id === id)
-    setNotifications(prev => prev.filter(n => n.id !== id))
-    if (notification && !notification.read_at) {
+    let removed: Notification | undefined
+    setNotifications(prev => {
+      removed = prev.find(n => n.id === id)
+      return prev.filter(n => n.id !== id)
+    })
+    if (removed && !removed.read_at) {
       setUnreadCount(prev => Math.max(0, prev - 1))
     }
     try {
       await deleteNotificationAction(id)
     } catch {
-      // Revert on failure
-      if (notification) {
-        setNotifications(prev => [...prev, notification].sort(
+      if (removed) {
+        setNotifications(prev => [...prev, removed!].sort(
           (a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime()
         ))
-        if (!notification.read_at) {
+        if (!removed.read_at) {
           setUnreadCount(prev => prev + 1)
         }
       }
     }
-  }, [notifications])
+  }, [])
 
-  // Fetch more (pagination)
+  // Track current length via ref to avoid stale closure in fetchMore
+  const notificationsLengthRef = useRef(0)
+  notificationsLengthRef.current = notifications.length
+
+  // Fetch more (pagination) with concurrent call guard
   const fetchMore = useCallback(async () => {
-    const data = await getUserNotifications(20, notifications.length)
-    if (data.length < 20) setHasMore(false)
-    setNotifications(prev => [...prev, ...data])
-  }, [notifications.length])
+    if (isFetchingMore.current) return
+    isFetchingMore.current = true
+    try {
+      const data = await getUserNotifications(20, notificationsLengthRef.current)
+      if (data.length < 20) setHasMore(false)
+      setNotifications(prev => [...prev, ...data])
+    } finally {
+      isFetchingMore.current = false
+    }
+  }, [])
 
   // Initial fetch + realtime subscription
   useEffect(() => {
@@ -125,6 +151,26 @@ export function useNotifications(userId: string) {
           setUnreadCount(prev => prev + 1)
           toast(newNotification.title, {
             description: newNotification.body || undefined
+          })
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${userId}`
+        },
+        (payload) => {
+          const updated = payload.new as Notification
+          setNotifications(prev => {
+            const existing = prev.find(n => n.id === updated.id)
+            // Decrement unread if this notification was unread and is now read
+            if (existing && !existing.read_at && updated.read_at) {
+              setUnreadCount(c => Math.max(0, c - 1))
+            }
+            return prev.map(n => n.id === updated.id ? updated : n)
           })
         }
       )
