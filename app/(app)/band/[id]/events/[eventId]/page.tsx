@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ArrowLeft, Calendar, MapPin, Building2, DollarSign, User, Check, HelpCircle, X, type LucideIcon } from 'lucide-react'
 import { RsvpButtons } from './rsvp-buttons'
 import { PollVoting } from './poll-voting'
+import { ChatRoom } from '../../chat/chat-room'
 
 interface PollOption {
   slotKey: string
@@ -293,6 +294,22 @@ export default async function EventPage({ params }: Props) {
           )}
         </CardContent>
       </Card>
+
+      {/* Event Discussion - show for all events except cancelled */}
+      {!isCancelled && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-title text-muted-foreground uppercase tracking-wide">
+              Event Discussion
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="h-96">
+              <ChatRoom bandId={bandId} eventId={eventId} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

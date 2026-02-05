@@ -12,10 +12,11 @@ import { MessageSquare, Send } from 'lucide-react'
 type Props = {
   bandId: string
   threadId?: string
+  eventId?: string
 }
 
-export function ChatRoom({ bandId, threadId }: Props) {
-  const { messages, addMessage } = useRealtimeMessages(bandId, threadId)
+export function ChatRoom({ bandId, threadId, eventId }: Props) {
+  const { messages, addMessage } = useRealtimeMessages(bandId, threadId, eventId)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [error, setError] = useState('')
@@ -33,7 +34,7 @@ export function ChatRoom({ bandId, threadId }: Props) {
     setError('')
 
     try {
-      const message = await sendMessage(bandId, input.trim(), threadId)
+      const message = await sendMessage(bandId, input.trim(), threadId, eventId)
       addMessage(message) // Optimistic update - show immediately
       setInput('')
     } catch (err) {

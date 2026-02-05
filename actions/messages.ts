@@ -2,7 +2,7 @@
 
 import { createClient } from '@/lib/supabase/server'
 
-export async function sendMessage(bandId: string, content: string, threadId?: string) {
+export async function sendMessage(bandId: string, content: string, threadId?: string, eventId?: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -10,6 +10,7 @@ export async function sendMessage(bandId: string, content: string, threadId?: st
   if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
   if (!content || typeof content !== 'string') throw new Error('Invalid content')
   if (threadId && typeof threadId !== 'string') throw new Error('Invalid thread ID')
+  if (eventId && typeof eventId !== 'string') throw new Error('Invalid event ID')
 
   // Input length limits
   if (content.length > 5000) throw new Error('Content too long (max 5000)')
@@ -37,11 +38,25 @@ export async function sendMessage(bandId: string, content: string, threadId?: st
     }
   }
 
+  // If eventId provided, verify event belongs to this band
+  if (eventId) {
+    const { data: event } = await supabase
+      .from('events')
+      .select('band_id')
+      .eq('id', eventId)
+      .single()
+
+    if (!event || event.band_id !== bandId) {
+      throw new Error('Event not found')
+    }
+  }
+
   const { data, error } = await supabase
     .from('messages')
     .insert({
       band_id: bandId,
       thread_id: threadId ?? null,
+      event_id: eventId ?? null,
       user_id: user.id,
       content
     })
@@ -55,13 +70,14 @@ export async function sendMessage(bandId: string, content: string, threadId?: st
   return data
 }
 
-export async function getMessages(bandId: string, threadId?: string, limit = 50) {
+export async function getMessages(bandId: string, threadId?: string, eventId?: string, limit = 50) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not authenticated')
   if (!bandId || typeof bandId !== 'string') throw new Error('Invalid band ID')
   if (threadId && typeof threadId !== 'string') throw new Error('Invalid thread ID')
+  if (eventId && typeof eventId !== 'string') throw new Error('Invalid event ID')
   if (typeof limit !== 'number' || limit < 1 || limit > 500) throw new Error('Invalid limit (must be 1-500)')
 
   // Verify user is a member of this band
@@ -84,10 +100,17 @@ export async function getMessages(bandId: string, threadId?: string, limit = 50)
     .order('created_at', { ascending: true })
     .limit(limit)
 
-  // Filter by thread: specific thread or main chat (null thread_id)
-  const { data, error } = threadId
-    ? await baseQuery.eq('thread_id', threadId)
-    : await baseQuery.is('thread_id', null)
+  // Three-way scoping: event chat, thread chat, or main chat
+  let query
+  if (eventId) {
+    query = baseQuery.eq('event_id', eventId)
+  } else if (threadId) {
+    query = baseQuery.eq('thread_id', threadId)
+  } else {
+    query = baseQuery.is('thread_id', null).is('event_id', null)
+  }
+
+  const { data, error } = await query
 
   if (error) throw error
   return data

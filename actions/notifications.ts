@@ -1,6 +1,7 @@
 'use server'
 
 import { createClient, createServiceClient } from '@/lib/supabase/server'
+import { sendPushNotification } from './push'
 import type { Json } from '@/types/database'
 
 interface CreateNotificationInput {
@@ -218,4 +219,17 @@ export async function notifyBandMembers(
     .insert(notifications)
 
   if (insertError) throw new Error('Failed to create notifications')
+
+  // Send push notifications to recipients with push enabled
+  for (const userId of filteredRecipients) {
+    try {
+      await sendPushNotification(userId, {
+        title: data.title,
+        body: data.body,
+        data: { link: data.link, eventId: data.eventId, type }
+      })
+    } catch {
+      // Push failures must not break the notification flow
+    }
+  }
 }

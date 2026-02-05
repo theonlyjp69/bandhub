@@ -8,7 +8,7 @@ type Message = Database['public']['Tables']['messages']['Row'] & {
   profiles: { display_name: string | null; avatar_url: string | null } | null
 }
 
-export function useRealtimeMessages(bandId: string, threadId?: string) {
+export function useRealtimeMessages(bandId: string, threadId?: string, eventId?: string) {
   const [messages, setMessages] = useState<Message[]>([])
   const supabase = useMemo(() => createClient(), [])
 
@@ -30,10 +30,13 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
         .eq('band_id', bandId)
         .order('created_at', { ascending: true })
 
-      if (threadId) {
+      // Three-way scoping: event chat, thread chat, or main chat
+      if (eventId) {
+        query = query.eq('event_id', eventId)
+      } else if (threadId) {
         query = query.eq('thread_id', threadId)
       } else {
-        query = query.is('thread_id', null)
+        query = query.is('thread_id', null).is('event_id', null)
       }
 
       const { data } = await query
@@ -43,13 +46,12 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
     fetchMessages()
 
     // Subscribe to new messages
-    const channelName = `messages:${bandId}:${threadId || 'main'}`
+    const channelName = eventId
+      ? `messages:${bandId}:event:${eventId}`
+      : `messages:${bandId}:${threadId || 'main'}`
 
     // Build filter for the subscription
-    // Note: Supabase realtime filter syntax uses comma for AND
-    const filter = threadId
-      ? `band_id=eq.${bandId},thread_id=eq.${threadId}`
-      : `band_id=eq.${bandId}`
+    const filter = `band_id=eq.${bandId}`
 
     const channel = supabase
       .channel(channelName)
@@ -62,10 +64,14 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
           filter
         },
         async (payload) => {
-          // For main chat, filter out thread messages client-side
-          // since realtime doesn't support is.null filter
-          if (!threadId && payload.new.thread_id !== null) {
-            return
+          // Client-side filtering for correct scoping
+          const newMsg = payload.new as Record<string, unknown>
+          if (eventId) {
+            if (newMsg.event_id !== eventId) return
+          } else if (threadId) {
+            if (newMsg.thread_id !== threadId) return
+          } else {
+            if (newMsg.thread_id !== null || newMsg.event_id !== null) return
           }
 
           // Fetch the full message with profile
@@ -98,7 +104,7 @@ export function useRealtimeMessages(bandId: string, threadId?: string) {
       supabase.removeChannel(channel)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bandId, threadId])
+  }, [bandId, threadId, eventId])
 
   return { messages, addMessage }
 }

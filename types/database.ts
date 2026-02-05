@@ -468,6 +468,7 @@ export type Database = {
           band_id: string | null
           content: string
           created_at: string | null
+          event_id: string | null
           id: string
           thread_id: string | null
           user_id: string | null
@@ -476,6 +477,7 @@ export type Database = {
           band_id?: string | null
           content: string
           created_at?: string | null
+          event_id?: string | null
           id?: string
           thread_id?: string | null
           user_id?: string | null
@@ -484,6 +486,7 @@ export type Database = {
           band_id?: string | null
           content?: string
           created_at?: string | null
+          event_id?: string | null
           id?: string
           thread_id?: string | null
           user_id?: string | null
@@ -494,6 +497,13 @@ export type Database = {
             columns: ["band_id"]
             isOneToOne: false
             referencedRelation: "bands"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
             referencedColumns: ["id"]
           },
           {

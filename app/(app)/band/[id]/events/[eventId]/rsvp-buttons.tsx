@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { setRsvp } from '@/actions/rsvps'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Check, HelpCircle, X } from 'lucide-react'
+import { Check, HelpCircle, X, Save } from 'lucide-react'
 
 type Props = {
   eventId: string
@@ -19,6 +19,7 @@ export function RsvpButtons({ eventId, currentStatus, currentNote }: Props) {
   const [note, setNote] = useState(currentNote ?? '')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [noteChanged, setNoteChanged] = useState(false)
 
   const handleRsvp = async (newStatus: 'going' | 'maybe' | 'not_going') => {
     setLoading(true)
@@ -27,9 +28,26 @@ export function RsvpButtons({ eventId, currentStatus, currentNote }: Props) {
     try {
       await setRsvp(eventId, newStatus, note || undefined)
       setStatus(newStatus)
+      setNoteChanged(false)
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update RSVP')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSaveNote = async () => {
+    if (!status) return
+    setLoading(true)
+    setError('')
+
+    try {
+      await setRsvp(eventId, status, note || undefined)
+      setNoteChanged(false)
+      router.refresh()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save note')
     } finally {
       setLoading(false)
     }
@@ -80,12 +98,28 @@ export function RsvpButtons({ eventId, currentStatus, currentNote }: Props) {
       <Textarea
         placeholder="Add a note (e.g., arriving late, bringing equipment)"
         value={note}
-        onChange={(e) => setNote(e.target.value)}
+        onChange={(e) => {
+          setNote(e.target.value)
+          setNoteChanged(e.target.value !== (currentNote ?? ''))
+        }}
         maxLength={500}
         className="mt-3"
         rows={2}
       />
-      <p className="text-xs text-muted-foreground mt-1">{note.length}/500</p>
+      <div className="flex items-center justify-between mt-1">
+        <p className="text-xs text-muted-foreground">{note.length}/500</p>
+        {status && noteChanged && (
+          <Button
+            onClick={handleSaveNote}
+            disabled={loading}
+            variant="outline"
+            size="sm"
+          >
+            <Save className="mr-1 h-3 w-3" />
+            Save Note
+          </Button>
+        )}
+      </div>
     </div>
   )
 }

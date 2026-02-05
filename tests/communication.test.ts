@@ -527,6 +527,158 @@ describe('Communication', () => {
     })
   })
 
+  describe('Event Chat', () => {
+    let supabase: SupabaseClient
+    let userId: string
+    let testBandId: string | null = null
+    let testEventId: string | null = null
+
+    beforeAll(async () => {
+      if (!process.env.TEST_USER_1_EMAIL || !process.env.TEST_USER_1_PASSWORD) {
+        return
+      }
+      const auth = await createAuthenticatedClient(
+        process.env.TEST_USER_1_EMAIL,
+        process.env.TEST_USER_1_PASSWORD
+      )
+      supabase = auth.supabase
+      userId = auth.user.id
+
+      const band = await createTestBand(supabase, userId)
+      testBandId = band.id
+
+      // Create a test event for chat
+      const { data: event } = await supabase
+        .from('events')
+        .insert({
+          band_id: testBandId,
+          title: 'Chat Test Event',
+          start_time: new Date().toISOString(),
+          created_by: userId,
+          mode: 'fixed',
+          status: 'open'
+        })
+        .select()
+        .single()
+
+      testEventId = event?.id || null
+    })
+
+    afterAll(async () => {
+      if (testBandId && supabase) {
+        await cleanupBand(supabase, testBandId)
+      }
+    })
+
+    test.skipIf(!process.env.TEST_USER_1_EMAIL)('can send message to event chat', async () => {
+      if (!testBandId || !testEventId) return
+
+      const { data: message, error } = await supabase
+        .from('messages')
+        .insert({
+          band_id: testBandId,
+          content: 'Event discussion message',
+          user_id: userId,
+          event_id: testEventId
+        })
+        .select()
+        .single()
+
+      expect(error).toBeNull()
+      expect(message).not.toBeNull()
+      expect(message?.content).toBe('Event discussion message')
+      expect(message?.event_id).toBe(testEventId)
+      expect(message?.thread_id).toBeNull()
+    })
+
+    test.skipIf(!process.env.TEST_USER_1_EMAIL)('event messages are separate from main chat', async () => {
+      if (!testBandId || !testEventId) return
+
+      // Send a main chat message
+      await supabase.from('messages').insert({
+        band_id: testBandId,
+        content: 'Main chat message',
+        user_id: userId,
+        thread_id: null,
+        event_id: null
+      })
+
+      // Get main chat (no thread, no event)
+      const { data: mainMessages } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('band_id', testBandId)
+        .is('thread_id', null)
+        .is('event_id', null)
+
+      // Get event chat
+      const { data: eventMessages } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('band_id', testBandId)
+        .eq('event_id', testEventId)
+
+      expect(mainMessages).not.toBeNull()
+      expect(eventMessages).not.toBeNull()
+
+      // No overlap
+      const mainIds = mainMessages!.map(m => m.id)
+      const eventIds = eventMessages!.map(m => m.id)
+      const overlap = mainIds.filter(id => eventIds.includes(id))
+      expect(overlap).toHaveLength(0)
+
+      // Event messages should have event_id set
+      for (const msg of eventMessages!) {
+        expect(msg.event_id).toBe(testEventId)
+      }
+    })
+
+    test.skipIf(!process.env.TEST_USER_1_EMAIL)('deleting event cascades messages', async () => {
+      if (!testBandId) return
+
+      // Create a temporary event
+      const { data: tempEvent } = await supabase
+        .from('events')
+        .insert({
+          band_id: testBandId,
+          title: 'Temp Cascade Event',
+          start_time: new Date().toISOString(),
+          created_by: userId,
+          mode: 'fixed',
+          status: 'open'
+        })
+        .select()
+        .single()
+
+      const tempEventId = tempEvent!.id
+
+      // Add messages to event
+      await supabase.from('messages').insert([
+        { band_id: testBandId, event_id: tempEventId, content: 'Event msg 1', user_id: userId },
+        { band_id: testBandId, event_id: tempEventId, content: 'Event msg 2', user_id: userId }
+      ])
+
+      // Verify messages exist
+      const { data: before } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('event_id', tempEventId)
+
+      expect(before).toHaveLength(2)
+
+      // Delete event
+      await supabase.from('events').delete().eq('id', tempEventId)
+
+      // Verify messages are deleted (cascade)
+      const { data: after } = await supabase
+        .from('messages')
+        .select('*')
+        .eq('event_id', tempEventId)
+
+      expect(after).toEqual([])
+    })
+  })
+
   describe('Thread Cascade Deletion', () => {
     let supabase: SupabaseClient
     let userId: string

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendPushNotification } from '@/actions/push'
 import type { Database } from '@/types/database'
 
 export const runtime = 'nodejs'
@@ -93,6 +94,19 @@ export async function GET(request: NextRequest) {
     if (notifications.length > 0) {
       await supabase.from('notifications').insert(notifications)
       rsvpReminders += notifications.length
+
+      // Send push notifications for RSVP reminders
+      for (const n of notifications) {
+        try {
+          await sendPushNotification(n.user_id, {
+            title: n.title,
+            body: n.body,
+            data: { link: n.link, eventId: event.id, type: 'rsvp_reminder' }
+          })
+        } catch {
+          // Push failures must not break the cron flow
+        }
+      }
     }
 
     // Mark reminder as sent
@@ -144,6 +158,19 @@ export async function GET(request: NextRequest) {
     if (notifications.length > 0) {
       await supabase.from('notifications').insert(notifications)
       pollReminders += notifications.length
+
+      // Send push notifications for poll reminders
+      for (const n of notifications) {
+        try {
+          await sendPushNotification(n.user_id, {
+            title: n.title,
+            body: n.body,
+            data: { link: n.link, eventId: event.id, type: 'poll_reminder' }
+          })
+        } catch {
+          // Push failures must not break the cron flow
+        }
+      }
     }
 
     // Mark reminder as sent
