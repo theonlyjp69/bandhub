@@ -12,7 +12,13 @@ import {
 import { toast } from 'sonner'
 import type { Database } from '@/types/database'
 
-type Notification = Database['public']['Tables']['notifications']['Row']
+export type Notification = Database['public']['Tables']['notifications']['Row']
+
+const PAGE_SIZE = 20
+
+function sortByCreatedAtDesc(a: Notification, b: Notification): number {
+  return new Date(b.created_at ?? '').getTime() - new Date(a.created_at ?? '').getTime()
+}
 
 export function useNotifications(userId: string) {
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -23,7 +29,6 @@ export function useNotifications(userId: string) {
 
   const supabase = useMemo(() => createClient(), [])
 
-  // Mark as read - optimistic update (checks if already read)
   const markAsRead = useCallback(async (id: string) => {
     let wasUnread = false
     setNotifications(prev =>
@@ -50,13 +55,12 @@ export function useNotifications(userId: string) {
     }
   }, [])
 
-  // Mark all as read - captures snapshot via functional updater to avoid stale closure
   const markAllAsRead = useCallback(async () => {
     let snapshot: Notification[] = []
     let prevUnread = 0
     setNotifications(prev => {
       snapshot = prev
-      return prev.map(n => ({ ...n, read_at: n.read_at || new Date().toISOString() }))
+      return prev.map(n => ({ ...n, read_at: n.read_at ?? new Date().toISOString() }))
     })
     setUnreadCount(prev => {
       prevUnread = prev
@@ -70,7 +74,6 @@ export function useNotifications(userId: string) {
     }
   }, [])
 
-  // Delete notification - captures removed item via functional updater
   const deleteNotification = useCallback(async (id: string) => {
     let removed: Notification | undefined
     setNotifications(prev => {
@@ -84,9 +87,7 @@ export function useNotifications(userId: string) {
       await deleteNotificationAction(id)
     } catch {
       if (removed) {
-        setNotifications(prev => [...prev, removed!].sort(
-          (a, b) => new Date(b.created_at || '').getTime() - new Date(a.created_at || '').getTime()
-        ))
+        setNotifications(prev => [...prev, removed!].sort(sortByCreatedAtDesc))
         if (!removed.read_at) {
           setUnreadCount(prev => prev + 1)
         }
@@ -94,35 +95,32 @@ export function useNotifications(userId: string) {
     }
   }, [])
 
-  // Track current length via ref to avoid stale closure in fetchMore
   const notificationsLengthRef = useRef(0)
   notificationsLengthRef.current = notifications.length
 
-  // Fetch more (pagination) with concurrent call guard
   const fetchMore = useCallback(async () => {
     if (isFetchingMore.current) return
     isFetchingMore.current = true
     try {
-      const data = await getUserNotifications(20, notificationsLengthRef.current)
-      if (data.length < 20) setHasMore(false)
+      const data = await getUserNotifications(PAGE_SIZE, notificationsLengthRef.current)
+      if (data.length < PAGE_SIZE) setHasMore(false)
       setNotifications(prev => [...prev, ...data])
     } finally {
       isFetchingMore.current = false
     }
   }, [])
 
-  // Initial fetch + realtime subscription
   useEffect(() => {
-    const init = async () => {
+    async function init() {
       setIsLoading(true)
       try {
         const [data, count] = await Promise.all([
-          getUserNotifications(20, 0),
+          getUserNotifications(PAGE_SIZE, 0),
           getUnreadCount()
         ])
         setNotifications(data)
         setUnreadCount(count)
-        if (data.length < 20) setHasMore(false)
+        if (data.length < PAGE_SIZE) setHasMore(false)
       } finally {
         setIsLoading(false)
       }
@@ -130,7 +128,6 @@ export function useNotifications(userId: string) {
 
     init()
 
-    // Realtime subscription
     const channel = supabase
       .channel(`notifications:${userId}`)
       .on(
@@ -142,15 +139,15 @@ export function useNotifications(userId: string) {
           filter: `user_id=eq.${userId}`
         },
         (payload) => {
-          const newNotification = payload.new as Notification
+          const incoming = payload.new as Notification
           setNotifications(prev =>
-            prev.some(n => n.id === newNotification.id)
+            prev.some(n => n.id === incoming.id)
               ? prev
-              : [newNotification, ...prev]
+              : [incoming, ...prev]
           )
           setUnreadCount(prev => prev + 1)
-          toast(newNotification.title, {
-            description: newNotification.body || undefined
+          toast(incoming.title, {
+            description: incoming.body ?? undefined
           })
         }
       )
@@ -166,7 +163,6 @@ export function useNotifications(userId: string) {
           const updated = payload.new as Notification
           setNotifications(prev => {
             const existing = prev.find(n => n.id === updated.id)
-            // Decrement unread if this notification was unread and is now read
             if (existing && !existing.read_at && updated.read_at) {
               setUnreadCount(c => Math.max(0, c - 1))
             }

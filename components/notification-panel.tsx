@@ -10,16 +10,15 @@ import {
   BarChart,
   Check,
   CheckCheck,
-  Trash2
+  Trash2,
+  type LucideIcon
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
 import { NotificationPreferences } from './notification-preferences'
-import type { Database } from '@/types/database'
-
-type Notification = Database['public']['Tables']['notifications']['Row']
+import type { Notification } from '@/hooks/use-notifications'
 
 interface NotificationPanelProps {
   notifications: Notification[]
@@ -33,10 +32,9 @@ interface NotificationPanelProps {
 }
 
 function formatRelativeTime(dateStr: string): string {
-  const now = Date.now()
   const date = new Date(dateStr).getTime()
   if (isNaN(date)) return ''
-  const seconds = Math.floor((now - date) / 1000)
+  const seconds = Math.floor((Date.now() - date) / 1000)
 
   if (seconds < 60) return 'just now'
   const minutes = Math.floor(seconds / 60)
@@ -45,25 +43,15 @@ function formatRelativeTime(dateStr: string): string {
   if (hours < 24) return `${hours}h`
   const days = Math.floor(hours / 24)
   if (days < 7) return `${days}d`
-  const weeks = Math.floor(days / 7)
-  return `${weeks}w`
+  return `${Math.floor(days / 7)}w`
 }
 
-function getNotificationIcon(type: string) {
-  switch (type) {
-    case 'event_created':
-      return CalendarPlus
-    case 'event_updated':
-      return CalendarClock
-    case 'event_cancelled':
-      return CalendarX
-    case 'rsvp_reminder':
-      return Clock
-    case 'poll_reminder':
-      return BarChart
-    default:
-      return Bell
-  }
+const NOTIFICATION_ICONS: Record<string, LucideIcon> = {
+  event_created: CalendarPlus,
+  event_updated: CalendarClock,
+  event_cancelled: CalendarX,
+  rsvp_reminder: Clock,
+  poll_reminder: BarChart,
 }
 
 export function NotificationPanel({
@@ -136,7 +124,7 @@ export function NotificationPanel({
         <ScrollArea className="max-h-[400px]">
           <div className="divide-y divide-border">
             {notifications.map(notification => {
-              const Icon = getNotificationIcon(notification.type)
+              const Icon = NOTIFICATION_ICONS[notification.type] ?? Bell
               const isUnread = !notification.read_at
 
               return (

@@ -14,21 +14,17 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { getPreferences, updatePreferences } from '@/actions/notification-preferences'
+import {
+  getPreferences,
+  updatePreferences,
+  type NotificationPreferences as Preferences
+} from '@/actions/notification-preferences'
 
-interface Preferences {
-  eventCreated: boolean
-  eventUpdated: boolean
-  rsvpReminder: boolean
-  pollReminder: boolean
-  pushEnabled: boolean
-}
-
-const PREFERENCE_OPTIONS = [
-  { key: 'eventCreated' as const, label: 'New Events', description: 'When a new event is created in your band' },
-  { key: 'eventUpdated' as const, label: 'Event Updates', description: 'When an event is modified or cancelled' },
-  { key: 'rsvpReminder' as const, label: 'RSVP Reminders', description: 'Reminders for upcoming RSVP deadlines' },
-  { key: 'pollReminder' as const, label: 'Poll Reminders', description: 'Reminders for open availability polls' },
+const PREFERENCE_OPTIONS: { key: keyof Omit<Preferences, 'pushEnabled'>; label: string; description: string }[] = [
+  { key: 'eventCreated', label: 'New Events', description: 'When a new event is created in your band' },
+  { key: 'eventUpdated', label: 'Event Updates', description: 'When an event is modified or cancelled' },
+  { key: 'rsvpReminder', label: 'RSVP Reminders', description: 'Reminders for upcoming RSVP deadlines' },
+  { key: 'pollReminder', label: 'Poll Reminders', description: 'Reminders for open availability polls' },
 ]
 
 export function NotificationPreferences() {
@@ -46,33 +42,27 @@ export function NotificationPreferences() {
     }
   }, [])
 
-  const handleToggle = async (key: keyof Preferences, value: boolean) => {
+  async function handleToggle(key: keyof Preferences, value: boolean) {
     if (!prefs) return
 
-    // Optimistic update
     setPrefs(prev => prev ? { ...prev, [key]: value } : null)
-
     try {
       await updatePreferences({ [key]: value })
     } catch {
-      // Revert on failure
       setPrefs(prev => prev ? { ...prev, [key]: !value } : null)
     }
   }
 
-  const handlePushToggle = async (checked: boolean) => {
+  async function handlePushToggle(checked: boolean) {
     if (!prefs) return
 
     if (checked) {
-      // Request permission and register push subscription
       const success = await registerPush()
       if (success) {
         setPrefs(prev => prev ? { ...prev, pushEnabled: true } : null)
         await updatePreferences({ pushEnabled: true })
       }
-      // If permission denied, don't toggle
     } else {
-      // Unregister push subscription and disable
       await unregisterPush()
       setPrefs(prev => prev ? { ...prev, pushEnabled: false } : null)
       await updatePreferences({ pushEnabled: false })
@@ -121,7 +111,7 @@ export function NotificationPreferences() {
                 <Switch
                   id={key}
                   checked={prefs[key]}
-                  onCheckedChange={(checked) => handleToggle(key, checked)}
+                  onCheckedChange={checked => handleToggle(key, checked)}
                 />
               </div>
             ))}
@@ -141,7 +131,7 @@ export function NotificationPreferences() {
                     Push notifications are not supported in this browser
                   </p>
                 )}
-                {isSupported && prefs.pushEnabled && typeof window !== 'undefined' && 'Notification' in window && (
+                {isSupported && prefs.pushEnabled && (
                   <p className="text-[11px] text-muted-foreground/70">
                     Browser permission: {Notification.permission}
                   </p>
@@ -151,7 +141,7 @@ export function NotificationPreferences() {
                 id="pushEnabled"
                 checked={prefs.pushEnabled}
                 disabled={!isSupported}
-                onCheckedChange={(checked) => handlePushToggle(checked)}
+                onCheckedChange={handlePushToggle}
               />
             </div>
           </div>

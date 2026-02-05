@@ -14,42 +14,37 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return outputArray
 }
 
+const IS_PUSH_SUPPORTED =
+  typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window
+
 export function useServiceWorker() {
   const [registration, setRegistration] = useState<ServiceWorkerRegistration | null>(null)
-  const isSupported = typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window
-  const registering = useRef(false)
+  const didRegister = useRef(false)
 
   useEffect(() => {
-    if (!isSupported) return
+    if (!IS_PUSH_SUPPORTED || didRegister.current) return
+    didRegister.current = true
 
-    // Register service worker
-    if (!registering.current) {
-      registering.current = true
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => setRegistration(reg))
-        .catch(() => { /* SW registration failed, push won't work */ })
-    }
-  }, [isSupported])
+    navigator.serviceWorker.register('/sw.js')
+      .then(setRegistration)
+      .catch(() => {})
+  }, [])
 
   const registerPush = useCallback(async (): Promise<boolean> => {
     if (!registration) return false
 
-    // Request notification permission
     const permission = await Notification.requestPermission()
     if (permission !== 'granted') return false
 
-    // Get VAPID public key
     const vapidKey = await getVapidPublicKey()
     if (!vapidKey) return false
 
-    // Subscribe to push
     const applicationServerKey = urlBase64ToUint8Array(vapidKey)
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: applicationServerKey.buffer as ArrayBuffer
     })
 
-    // Extract keys and save to server
     const json = subscription.toJSON()
     if (!json.endpoint || !json.keys) return false
 
@@ -74,5 +69,5 @@ export function useServiceWorker() {
     }
   }, [registration])
 
-  return { registration, isSupported, registerPush, unregisterPush }
+  return { registration, isSupported: IS_PUSH_SUPPORTED, registerPush, unregisterPush }
 }
