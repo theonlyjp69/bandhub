@@ -52,7 +52,7 @@ export function MobileNav({ bandId }: MobileNavProps) {
               <item.icon className="h-5 w-5" />
               <span className="text-xs font-medium">{item.label}</span>
               {isActive && (
-                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-primary" />
+                <span className="absolute bottom-1 w-1 h-1 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]" />
               )}
             </Link>
           )

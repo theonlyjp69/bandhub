@@ -50,7 +50,7 @@ export default async function AnnouncementsPage({ params }: Props) {
           <Megaphone className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Announcements</h1>
+          <h1 className="text-headline">Announcements</h1>
           <p className="text-muted-foreground text-sm">
             {announcements.length} announcement{announcements.length !== 1 ? 's' : ''}
           </p>

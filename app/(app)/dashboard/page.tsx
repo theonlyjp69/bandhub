@@ -17,12 +17,12 @@ export default async function DashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">My Bands</h1>
+          <h1 className="text-headline">My Bands</h1>
           <p className="text-muted-foreground">
             Manage your bands and collaborations
           </p>
         </div>
-        <Button asChild>
+        <Button asChild className="btn-gradient">
           <Link href="/create-band">
             <Plus className="mr-2 h-4 w-4" />
             Create Band
@@ -57,15 +57,16 @@ export default async function DashboardPage() {
       {/* Bands grid */}
       {bands.length === 0 ? (
         <Card className="border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12">
-            <div className="rounded-full bg-muted p-4 mb-4">
+          <CardContent className="empty-state">
+            <div className="empty-state-icon">
               <Music className="h-8 w-8 text-muted-foreground" />
+              <span className="empty-state-ring" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No bands yet</h3>
+            <h3 className="text-title mb-2">No bands yet</h3>
             <p className="text-muted-foreground text-center mb-4">
               Get started by creating your first band or accepting an invitation.
             </p>
-            <Button asChild>
+            <Button asChild className="btn-gradient">
               <Link href="/create-band">
                 <Plus className="mr-2 h-4 w-4" />
                 Create your first band
@@ -77,7 +78,7 @@ export default async function DashboardPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {bands.map((band) => (
             <Link key={band.id} href={`/band/${band.id}`}>
-              <Card className="h-full hover:border-primary/50 hover:bg-accent/50 transition-all cursor-pointer group">
+              <Card className="h-full card-interactive stagger-item group">
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="rounded-full bg-primary/10 p-2">
@@ -85,7 +86,7 @@ export default async function DashboardPage() {
                     </div>
                     <ArrowRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
-                  <CardTitle className="text-lg mt-3">{band.name}</CardTitle>
+                  <CardTitle className="text-title mt-3">{band.name}</CardTitle>
                   {band.description && (
                     <CardDescription className="line-clamp-2">
                       {band.description}

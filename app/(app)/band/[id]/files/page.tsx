@@ -45,7 +45,7 @@ export default async function FilesPage({ params }: Props) {
           <FolderOpen className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Files</h1>
+          <h1 className="text-headline">Files</h1>
           <p className="text-muted-foreground text-sm">
             {files.length} file{files.length !== 1 ? 's' : ''}
           </p>

@@ -261,32 +261,29 @@ export async function getBestTimeSlot(pollId: string) {
   const slotCounts: Record<number, number> = {}
 
   // Count responses per slot
-  responses.forEach((response) => {
+  for (const response of responses) {
     const slots = response.available_slots as number[] | null
-    if (Array.isArray(slots)) {
-      slots.forEach((slotIndex: number) => {
-        slotCounts[slotIndex] = (slotCounts[slotIndex] || 0) + 1
-      })
+    if (!Array.isArray(slots)) continue
+    for (const slotIndex of slots) {
+      slotCounts[slotIndex] = (slotCounts[slotIndex] || 0) + 1
     }
-  })
+  }
 
   // Find slot with most responses
   let bestSlot = -1
   let maxCount = 0
-  Object.entries(slotCounts).forEach(([slot, count]) => {
+  for (const [slot, count] of Object.entries(slotCounts)) {
     if (count > maxCount) {
       maxCount = count
       bestSlot = parseInt(slot)
     }
-  })
+  }
 
   if (bestSlot === -1) return null
 
   const dateOptions = poll.date_options as unknown as DateOption[]
-
-  // Validate slot index is within bounds
   if (!Array.isArray(dateOptions) || bestSlot >= dateOptions.length) {
-    return null  // Invalid poll data or corrupted responses
+    return null
   }
 
   return {

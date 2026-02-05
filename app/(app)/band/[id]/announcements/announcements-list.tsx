@@ -74,7 +74,7 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
       {isAdmin && (
         <Card>
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Create Announcement</CardTitle>
+            <CardTitle className="text-title">Create Announcement</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -87,6 +87,7 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
                   onChange={(e) => setTitle(e.target.value)}
                   maxLength={200}
                   placeholder="Announcement title (optional)"
+                  className="focus-ring-enhanced"
                 />
               </div>
               <div className="space-y-2">
@@ -99,9 +100,10 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
                   maxLength={5000}
                   rows={4}
                   placeholder="Write your announcement..."
+                  className="focus-ring-enhanced"
                 />
               </div>
-              <Button type="submit" disabled={loading || !content.trim()}>
+              <Button type="submit" disabled={loading || !content.trim()} className="btn-gradient">
                 {loading ? 'Posting...' : 'Post Announcement'}
               </Button>
             </form>
@@ -121,7 +123,7 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
             <div className="rounded-full bg-muted p-4 mb-4">
               <Megaphone className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No announcements yet</h3>
+            <h3 className="text-title mb-2">No announcements yet</h3>
             <p className="text-muted-foreground text-center">
               {isAdmin ? 'Create your first announcement above.' : 'Check back later for updates.'}
             </p>
@@ -143,7 +145,7 @@ export function AnnouncementsList({ bandId, announcements, isAdmin, currentUserI
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         {announcement.title && (
-                          <h3 className="text-lg font-medium mb-1">{announcement.title}</h3>
+                          <h3 className="text-title mb-1">{announcement.title}</h3>
                         )}
                         <p className="text-muted-foreground text-sm">
                           {announcement.profiles?.display_name || 'Unknown'}

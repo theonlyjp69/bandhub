@@ -14,7 +14,7 @@
 | 6.5 Communication Flow Test | ✅ Complete | 20 tests passing |
 | 6.6 E2E Test | ✅ Complete | 11 tests scaffolded |
 
-**Total:** 56 Vitest tests (all passing) + 11 E2E tests scaffolded
+**Total:** 55 Vitest tests (all passing) + 11 E2E tests scaffolded
 
 ### RLS Policy Fixes Applied
 - Migration 21: Band creation flow (bands + band_members INSERT/SELECT/UPDATE/DELETE)

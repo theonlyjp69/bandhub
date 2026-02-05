@@ -25,6 +25,7 @@ export default async function AppLayout({
       <Navbar
         user={{ email: user.email || '' }}
         profile={profile}
+        userId={user.id}
       />
       <main className="container max-w-screen-xl mx-auto px-4 py-6 pb-20 md:pb-6">
         {children}

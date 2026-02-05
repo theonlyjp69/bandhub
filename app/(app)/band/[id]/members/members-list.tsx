@@ -95,7 +95,7 @@ export function MembersList({ bandId, members, isAdmin, currentUserId }: Props) 
       {isAdmin && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="text-title flex items-center gap-2">
               <UserPlus className="h-4 w-4" />
               Invite New Member
             </CardTitle>
@@ -108,9 +108,9 @@ export function MembersList({ bandId, members, isAdmin, currentUserId }: Props) 
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
                 required
-                className="flex-1"
+                className="flex-1 focus-ring-enhanced"
               />
-              <Button type="submit" disabled={inviteLoading}>
+              <Button type="submit" disabled={inviteLoading} className="btn-gradient">
                 {inviteLoading ? 'Sending...' : 'Invite'}
               </Button>
             </form>
@@ -132,7 +132,7 @@ export function MembersList({ bandId, members, isAdmin, currentUserId }: Props) 
 
       <div className="space-y-2">
         {members.map((member) => (
-          <Card key={member.id}>
+          <Card key={member.id} className="card-interactive stagger-item">
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
                 <Avatar>

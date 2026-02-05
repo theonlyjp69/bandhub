@@ -37,6 +37,14 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  /* UI Modernization - Phase 1 mappings */
+  --color-card-elevated: var(--card-elevated);
+  --color-border-strong: var(--border-strong);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-accent-secondary-foreground: var(--accent-secondary-foreground);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -81,13 +89,22 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.585 0.233 288);
+  /* UI Modernization - Phase 2: Elevation system */
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 20%);
+  --shadow-sm: 0 2px 4px oklch(0 0 0 / 20%), 0 1px 2px oklch(0 0 0 / 30%);
+  --shadow-md: 0 4px 8px oklch(0 0 0 / 25%), 0 2px 4px oklch(0 0 0 / 20%);
+  --shadow-lg: 0 8px 16px oklch(0 0 0 / 30%), 0 4px 8px oklch(0 0 0 / 20%);
+  --shadow-xl: 0 12px 24px oklch(0 0 0 / 35%), 0 6px 12px oklch(0 0 0 / 25%);
+  /* Glow effects for accents */
+  --shadow-primary-glow: 0 0 20px oklch(0.585 0.233 288 / 30%);
+  --shadow-primary-glow-lg: 0 0 40px oklch(0.585 0.233 288 / 40%);
 }
 
 /* Dark mode (default) - Linear-inspired */
 .dark {
-  --background: oklch(0.13 0 0);
+  --background: oklch(0.08 0.01 285);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.17 0 0);
+  --card: oklch(0.14 0.01 285);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.17 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -101,7 +118,7 @@
   --accent: oklch(0.22 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.55 0.2 25);
-  --border: oklch(1 0 0 / 10%);
+  --border: oklch(1 0 0 / 15%);
   --input: oklch(1 0 0 / 12%);
   --ring: oklch(0.585 0.233 288);
   --chart-1: oklch(0.585 0.233 288);
@@ -117,6 +134,16 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.585 0.233 288);
+  /* UI Modernization - Phase 1 */
+  --card-elevated: oklch(0.18 0.01 285);
+  --border-strong: oklch(1 0 0 / 25%);
+  --accent-secondary: oklch(0.75 0.15 195);
+  --accent-secondary-foreground: oklch(0.1 0 0);
+  --primary-gradient-start: oklch(0.65 0.25 290);
+  --primary-gradient-end: oklch(0.50 0.25 280);
+  --surface-1: oklch(0.10 0.01 285);
+  --surface-2: oklch(0.12 0.01 285);
+  --surface-3: oklch(0.16 0.01 285);
 }
 
 @layer base {
@@ -126,6 +153,66 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* UI Modernization - Phase 3: Typography scale */
+@layer utilities {
+  .text-display {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  .text-headline {
+    font-size: clamp(1.5rem, 3vw, 1.875rem);
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    line-height: 1.2;
+  }
+
+  .text-title {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .text-body-lg {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  /* Gradient text utility */
+  .text-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Subtle gradient for secondary emphasis */
+  .text-gradient-subtle {
+    background: linear-gradient(135deg, oklch(0.9 0 0), oklch(0.7 0 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
+
+/* UI Modernization - Phase 2: Elevation utilities */
+.elevation-1 { box-shadow: var(--shadow-sm); }
+.elevation-2 { box-shadow: var(--shadow-md); }
+.elevation-3 { box-shadow: var(--shadow-lg); }
+.elevation-4 { box-shadow: var(--shadow-xl); }
+
+/* Primary glow utilities */
+.glow-primary { box-shadow: var(--shadow-primary-glow); }
+.glow-primary-lg { box-shadow: var(--shadow-primary-glow-lg); }
+
+/* Card elevated variant */
+.card-elevated {
+  background: var(--card-elevated);
+  box-shadow: var(--shadow-lg);
 }
 
 /* Event type badge colors */
@@ -159,7 +246,7 @@
   height: 8px;
 }
 .dark ::-webkit-scrollbar-track {
-  background: oklch(0.17 0 0);
+  background: oklch(0.14 0.01 285);
 }
 .dark ::-webkit-scrollbar-thumb {
   background: oklch(0.35 0 0);
@@ -179,11 +266,59 @@ button:not(:disabled):active,
 
 /* Card hover lift */
 .card-hover-lift {
-  @apply transition-all duration-200;
+  transition: transform 200ms ease, box-shadow 200ms ease;
 }
 .card-hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* UI Modernization - Phase 4: Card Variants */
+
+/* Glassmorphism card */
+.card-glass {
+  background: oklch(0.15 0.01 285 / 60%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid oklch(1 0 0 / 10%);
+}
+
+/* Gradient border card */
+.card-gradient-border {
+  position: relative;
+  background: var(--card);
+  border: none;
+}
+
+.card-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Interactive card (combines hover + focus) */
+.card-interactive {
+  transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+  cursor: pointer;
+}
+
+.card-interactive:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px oklch(0 0 0 / 20%);
+  box-shadow: var(--shadow-md);
+  background: var(--card-elevated);
+}
+
+.card-interactive:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 /* Focus ring animation */
@@ -265,4 +400,213 @@ a {
   );
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* UI Modernization - Phase 5: Navigation & Layout */
+
+/* Navbar gradient accent */
+.navbar-gradient-border {
+  position: relative;
+}
+
+.navbar-gradient-border::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--primary-gradient-start) 20%,
+    var(--primary-gradient-end) 80%,
+    transparent 100%
+  );
+}
+
+/* Subtle background gradient for pages */
+.bg-gradient-subtle {
+  background: linear-gradient(
+    180deg,
+    var(--background) 0%,
+    oklch(0.10 0.01 285) 100%
+  );
+}
+
+/* UI Modernization - Phase 6: Empty States & Loading Animations */
+
+/* Modern skeleton with shimmer - uses design system surface variables */
+.skeleton-modern {
+  position: relative;
+  overflow: hidden;
+  background: var(--surface-1);
+}
+
+.skeleton-modern::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--surface-3) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Empty state container */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+/* Empty state icon wrapper with gradient background */
+.empty-state-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg,
+    oklch(0.585 0.233 288 / 20%),
+    oklch(0.75 0.15 195 / 20%)
+  );
+  margin-bottom: 1.5rem;
+}
+
+/* Decorative ring animation */
+.empty-state-ring {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 1px solid oklch(0.585 0.233 288 / 30%);
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* UI Modernization - Phase 7: Microinteractions & Polish */
+
+/* Stagger animation for lists */
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stagger-item {
+  opacity: 0;
+  animation: stagger-in 0.3s ease-out forwards;
+}
+
+/* Stagger delays via CSS nth-child */
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+.stagger-item:nth-child(7) { animation-delay: 300ms; }
+.stagger-item:nth-child(8) { animation-delay: 350ms; }
+.stagger-item:nth-child(n+9) { animation-delay: 400ms; }
+
+/* Button gradient animation */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  background-size: 200% 200%;
+  transition: background-position 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background-position: 100% 100%;
+}
+
+/* Scale in animation */
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.2s ease-out forwards;
+}
+
+/* Enhanced focus ring */
+.focus-ring-enhanced {
+  transition: box-shadow 0.15s ease, outline 0.15s ease;
+}
+
+.focus-ring-enhanced:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px oklch(0.585 0.233 288 / 20%);
+}
+
+/* Smooth color transitions for all interactive elements */
+.transition-colors-smooth {
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* Accessibility: Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-modern::after {
+    animation: none;
+    background: var(--surface-2);
+  }
+
+  .empty-state-ring {
+    animation: none;
+    opacity: 0.3;
+  }
+
+  .skeleton-shimmer {
+    animation: none;
+  }
+
+  .badge-pulse {
+    animation: none;
+  }
+
+  .stagger-item {
+    animation: none;
+    opacity: 1;
+  }
+
+  .btn-gradient {
+    transition: none;
+  }
+
+  .animate-scale-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

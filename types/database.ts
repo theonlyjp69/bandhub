@@ -220,18 +220,21 @@ export type Database = {
           id: string
           status: string | null
           user_id: string | null
+          note: string | null
         }
         Insert: {
           event_id?: string | null
           id?: string
           status?: string | null
           user_id?: string | null
+          note?: string | null
         }
         Update: {
           event_id?: string | null
           id?: string
           status?: string | null
           user_id?: string | null
+          note?: string | null
         }
         Relationships: [
           {
@@ -250,6 +253,36 @@ export type Database = {
           },
         ]
       }
+      event_visibility: {
+        Row: {
+          event_id: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_visibility_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_visibility_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           band_id: string | null
@@ -261,6 +294,16 @@ export type Database = {
           id: string
           location: string | null
           metadata: Json | null
+          mode: string | null
+          poll_options: Json | null
+          poll_closes_at: string | null
+          resolved_at: string | null
+          resolved_slot_key: string | null
+          rsvp_deadline: string | null
+          require_rsvp: boolean | null
+          visibility: string | null
+          status: string | null
+          reminder_sent_at: string | null
           start_time: string
           title: string
         }
@@ -274,6 +317,16 @@ export type Database = {
           id?: string
           location?: string | null
           metadata?: Json | null
+          mode?: string | null
+          poll_options?: Json | null
+          poll_closes_at?: string | null
+          resolved_at?: string | null
+          resolved_slot_key?: string | null
+          rsvp_deadline?: string | null
+          require_rsvp?: boolean | null
+          visibility?: string | null
+          status?: string | null
+          reminder_sent_at?: string | null
           start_time: string
           title: string
         }
@@ -287,6 +340,16 @@ export type Database = {
           id?: string
           location?: string | null
           metadata?: Json | null
+          mode?: string | null
+          poll_options?: Json | null
+          poll_closes_at?: string | null
+          resolved_at?: string | null
+          resolved_slot_key?: string | null
+          rsvp_deadline?: string | null
+          require_rsvp?: boolean | null
+          visibility?: string | null
+          status?: string | null
+          reminder_sent_at?: string | null
           start_time?: string
           title?: string
         }
@@ -444,6 +507,168 @@ export type Database = {
             foreignKeyName: "messages_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poll_votes: {
+        Row: {
+          id: string
+          event_id: string
+          user_id: string
+          slot_key: string
+          response: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          event_id: string
+          user_id: string
+          slot_key: string
+          response: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          event_id?: string
+          user_id?: string
+          slot_key?: string
+          response?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poll_votes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          id: string
+          user_id: string
+          type: string
+          title: string
+          body: string | null
+          link: string | null
+          data: Json | null
+          read_at: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          type: string
+          title: string
+          body?: string | null
+          link?: string | null
+          data?: Json | null
+          read_at?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          type?: string
+          title?: string
+          body?: string | null
+          link?: string | null
+          data?: Json | null
+          read_at?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      push_subscriptions: {
+        Row: {
+          id: string
+          user_id: string
+          endpoint: string
+          keys: Json
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          endpoint: string
+          keys: Json
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          endpoint?: string
+          keys?: Json
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          user_id: string
+          event_created: boolean | null
+          event_updated: boolean | null
+          rsvp_reminder: boolean | null
+          poll_reminder: boolean | null
+          push_enabled: boolean | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          user_id: string
+          event_created?: boolean | null
+          event_updated?: boolean | null
+          rsvp_reminder?: boolean | null
+          poll_reminder?: boolean | null
+          push_enabled?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          user_id?: string
+          event_created?: boolean | null
+          event_updated?: boolean | null
+          rsvp_reminder?: boolean | null
+          poll_reminder?: boolean | null
+          push_enabled?: boolean | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },

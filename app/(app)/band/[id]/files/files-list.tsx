@@ -32,17 +32,25 @@ type Props = {
 
 function formatFileSize(bytes: number | null): string {
   if (!bytes) return '0 B'
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+
+  const KB = 1024
+  const MB = KB * 1024
+
+  if (bytes < KB) return `${bytes} B`
+  if (bytes < MB) return `${(bytes / KB).toFixed(1)} KB`
+  return `${(bytes / MB).toFixed(1)} MB`
 }
 
 function getFileIcon(mimeType: string | null) {
   if (!mimeType) return File
-  if (mimeType.startsWith('image/')) return FileImage
-  if (mimeType.startsWith('audio/')) return FileAudio
-  if (mimeType.startsWith('video/')) return FileVideo
+
+  const type = mimeType.split('/')[0]
+
+  if (type === 'image') return FileImage
+  if (type === 'audio') return FileAudio
+  if (type === 'video') return FileVideo
   if (mimeType.includes('pdf') || mimeType.includes('document') || mimeType.includes('text')) return FileText
+
   return File
 }
 
@@ -105,7 +113,7 @@ export function FilesList({ bandId, files, currentUserId }: Props) {
     <div className="space-y-6">
       <Card>
         <CardHeader className="pb-4">
-          <CardTitle className="text-lg flex items-center gap-2">
+          <CardTitle className="text-title flex items-center gap-2">
             <Upload className="h-5 w-5" />
             Upload File
           </CardTitle>
@@ -144,7 +152,7 @@ export function FilesList({ bandId, files, currentUserId }: Props) {
                 placeholder="Optional description..."
               />
             </div>
-            <Button type="submit" disabled={uploading}>
+            <Button type="submit" disabled={uploading} className="btn-gradient">
               <Upload className="mr-2 h-4 w-4" />
               {uploading ? 'Uploading...' : 'Upload'}
             </Button>
@@ -164,7 +172,7 @@ export function FilesList({ bandId, files, currentUserId }: Props) {
             <div className="rounded-full bg-muted p-4 mb-4">
               <FolderOpen className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-medium mb-2">No files yet</h3>
+            <h3 className="text-title mb-2">No files yet</h3>
             <p className="text-muted-foreground text-center">
               Upload files to share with your band.
             </p>
@@ -175,7 +183,7 @@ export function FilesList({ bandId, files, currentUserId }: Props) {
           {files.map((file) => {
             const FileIcon = getFileIcon(file.mime_type)
             return (
-              <Card key={file.id}>
+              <Card key={file.id} className="stagger-item">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="rounded-lg bg-primary/10 p-3">

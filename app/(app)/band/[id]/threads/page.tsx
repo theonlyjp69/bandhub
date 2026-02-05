@@ -38,7 +38,7 @@ export default async function ThreadsPage({ params }: Props) {
           <MessageCircle className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Discussion Threads</h1>
+          <h1 className="text-headline">Discussion Threads</h1>
           <p className="text-muted-foreground text-sm">
             {threads.length} thread{threads.length !== 1 ? 's' : ''}
           </p>

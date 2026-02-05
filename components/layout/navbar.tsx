@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Music, LogOut, User, Menu } from 'lucide-react'
+import { NotificationBell } from '@/components/notification-bell'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 
@@ -24,9 +25,10 @@ interface NavbarProps {
     display_name: string | null
     avatar_url: string | null
   } | null
+  userId: string
 }
 
-export function Navbar({ user, profile }: NavbarProps) {
+export function Navbar({ user, profile, userId }: NavbarProps) {
   const pathname = usePathname()
 
   const navLinks = [
@@ -38,7 +40,7 @@ export function Navbar({ user, profile }: NavbarProps) {
   const initials = displayName.slice(0, 2).toUpperCase()
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 navbar-gradient-border">
       <div className="container flex h-14 max-w-screen-2xl items-center">
         {/* Mobile menu */}
         <Sheet>
@@ -94,6 +96,9 @@ export function Navbar({ user, profile }: NavbarProps) {
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Notifications */}
+        <NotificationBell userId={userId} />
 
         {/* User dropdown */}
         <DropdownMenu>

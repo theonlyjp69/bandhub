@@ -186,7 +186,7 @@ BandHub is a web application for band coordination that unifies communication, e
 | Styling | Tailwind CSS + shadcn/ui |
 | Backend | Supabase (auth, database, realtime, storage) |
 | Database | PostgreSQL |
-| Calendar | react-big-calendar |
+| Calendar | List view (react-big-calendar installed but unused - simpler mobile-first UX) |
 | Hosting | Vercel |
 
 ---

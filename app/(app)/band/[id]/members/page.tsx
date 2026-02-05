@@ -48,7 +48,7 @@ export default async function MembersPage({ params }: Props) {
           <Users className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Members</h1>
+          <h1 className="text-headline">Members</h1>
           <p className="text-muted-foreground text-sm">
             {members.length} member{members.length !== 1 ? 's' : ''} in {band.name}
           </p>

@@ -45,11 +45,10 @@ export default function NewEventPage() {
       const startDateTime = `${startDate}T${startTime}:00`
       const endDateTime = endDate && endTime ? `${endDate}T${endTime}:00` : undefined
 
-      const metadata: Record<string, unknown> = {}
-      if (eventType === 'show') {
-        if (venue) metadata.venue = venue
-        if (pay) metadata.pay = pay
-      }
+      const metadata: Record<string, unknown> =
+        eventType === 'show'
+          ? { ...(venue && { venue }), ...(pay && { pay }) }
+          : {}
 
       const event = await createEvent({
         bandId,
@@ -86,7 +85,7 @@ export default function NewEventPage() {
               <CalendarPlus className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <CardTitle>Create Event</CardTitle>
+              <CardTitle className="text-headline">Create Event</CardTitle>
               <CardDescription>Add a new event to the calendar</CardDescription>
             </div>
           </div>
@@ -109,6 +108,7 @@ export default function NewEventPage() {
                 required
                 maxLength={200}
                 placeholder="e.g., Band Practice, Summer Gig"
+                className="focus-ring-enhanced"
               />
             </div>
 
@@ -136,6 +136,7 @@ export default function NewEventPage() {
                   value={startDate}
                   onChange={(e) => setStartDate(e.target.value)}
                   required
+                  className="focus-ring-enhanced"
                 />
               </div>
               <div className="space-y-2">
@@ -146,6 +147,7 @@ export default function NewEventPage() {
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
                   required
+                  className="focus-ring-enhanced"
                 />
               </div>
             </div>
@@ -158,6 +160,7 @@ export default function NewEventPage() {
                   id="endDate"
                   value={endDate}
                   onChange={(e) => setEndDate(e.target.value)}
+                  className="focus-ring-enhanced"
                 />
               </div>
               <div className="space-y-2">
@@ -167,6 +170,7 @@ export default function NewEventPage() {
                   id="endTime"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
+                  className="focus-ring-enhanced"
                 />
               </div>
             </div>
@@ -180,13 +184,14 @@ export default function NewEventPage() {
                 onChange={(e) => setLocation(e.target.value)}
                 maxLength={500}
                 placeholder="e.g., Practice space, venue address"
+                className="focus-ring-enhanced"
               />
             </div>
 
             {eventType === 'show' && (
               <Card className="bg-accent/30">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm">Show Details</CardTitle>
+                  <CardTitle className="text-title">Show Details</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -197,6 +202,7 @@ export default function NewEventPage() {
                       value={venue}
                       onChange={(e) => setVenue(e.target.value)}
                       placeholder="e.g., The Blue Note"
+                      className="focus-ring-enhanced"
                     />
                   </div>
                   <div className="space-y-2">
@@ -207,6 +213,7 @@ export default function NewEventPage() {
                       value={pay}
                       onChange={(e) => setPay(e.target.value)}
                       placeholder="e.g., $500, Door split"
+                      className="focus-ring-enhanced"
                     />
                   </div>
                 </CardContent>
@@ -222,13 +229,14 @@ export default function NewEventPage() {
                 maxLength={5000}
                 rows={4}
                 placeholder="Add any additional details..."
+                className="focus-ring-enhanced"
               />
             </div>
 
             <Button
               type="submit"
               disabled={loading || !title.trim() || !startDate || !startTime}
-              className="w-full"
+              className="w-full btn-gradient"
             >
               {loading ? 'Creating...' : 'Create Event'}
             </Button>
