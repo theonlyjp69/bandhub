@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Music, LogOut, User, Menu } from 'lucide-react'
+import { NotificationBell } from '@/components/notification-bell'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { cn } from '@/lib/utils'
 
@@ -24,9 +25,10 @@ interface NavbarProps {
     display_name: string | null
     avatar_url: string | null
   } | null
+  userId: string
 }
 
-export function Navbar({ user, profile }: NavbarProps) {
+export function Navbar({ user, profile, userId }: NavbarProps) {
   const pathname = usePathname()
 
   const navLinks = [
@@ -94,6 +96,9 @@ export function Navbar({ user, profile }: NavbarProps) {
 
         {/* Spacer */}
         <div className="flex-1" />
+
+        {/* Notifications */}
+        <NotificationBell userId={userId} />
 
         {/* User dropdown */}
         <DropdownMenu>

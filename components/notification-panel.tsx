@@ -16,6 +16,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Separator } from '@/components/ui/separator'
+import { NotificationPreferences } from './notification-preferences'
 import type { Database } from '@/types/database'
 
 type Notification = Database['public']['Tables']['notifications']['Row']
@@ -91,17 +92,20 @@ export function NotificationPanel({
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3">
         <h3 className="text-sm font-semibold">Notifications</h3>
-        {unreadCount > 0 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
-            onClick={onMarkAllAsRead}
-          >
-            <CheckCheck className="mr-1 h-3.5 w-3.5" />
-            Mark all read
-          </Button>
-        )}
+        <div className="flex items-center gap-1">
+          {unreadCount > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-auto px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+              onClick={onMarkAllAsRead}
+            >
+              <CheckCheck className="mr-1 h-3.5 w-3.5" />
+              Mark all read
+            </Button>
+          )}
+          <NotificationPreferences />
+        </div>
       </div>
       <Separator />
 
