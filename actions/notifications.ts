@@ -159,6 +159,11 @@ export async function notifyBandMembers(
     throw new Error('Invalid notification input')
   }
 
+  if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    console.error('SUPABASE_SERVICE_ROLE_KEY is not set — notifications cannot be created')
+    return
+  }
+
   const supabase = createServiceClient()
 
   // Get band members
@@ -228,8 +233,8 @@ export async function notifyBandMembers(
         body: data.body,
         data: { link: data.link, eventId: data.eventId, type }
       })
-    } catch {
-      // Push failures must not break the notification flow
+    } catch (err) {
+      console.error(`Push notification failed for user ${userId}:`, err)
     }
   }
 }
